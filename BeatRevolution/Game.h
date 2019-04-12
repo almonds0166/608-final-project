@@ -1,0 +1,45 @@
+#ifndef Game_h
+#define Game_h
+#include "Arduino.h"
+
+#define MAX_NOTES 500 // possibly bad practice, oops
+
+/**
+ * A game of Beat Revolution, ultimately consisting of two sabers and two displays
+ * UI and song selection is not a part of this class, it is just a game of Beat Revolution for a given song name
+ * Helper classes, Saber and Display, generally interact with the Game by directly updating and reading data stored in Game
+ * The same Game object will be used for the entire time that Beat Revolution runs -- not one Game per song. load and reset
+ * are used to set up new songs. Not totally sure if this is the correct design choice. 
+ */
+class Game
+{
+  private:
+  
+  // NOTE: start with one saber and one display
+  Saber saber_left;
+  Display display_left;
+  long note_times_left[MAX_NOTES];
+  char note_dirs_left[MAX_NOTES];
+  int note_index_left;
+  boolean last_note_was_hit_left;
+
+  uint16_t score;
+
+  uint32_t song_duration;
+  uint32_t start_time;
+  
+  // TODO: other fields, such as buttons, pointer to where music file is stored, timers, any indices, song length, etc etc
+
+  // TODO: any private helper methods
+
+  
+  public:
+  
+  Game(/* parameters such as various pins */);
+  void load(char* song_name);
+  void start();
+  boolean process();
+  void reset();
+};
+
+#endif

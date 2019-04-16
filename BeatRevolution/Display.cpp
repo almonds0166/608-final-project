@@ -24,16 +24,17 @@ Display::Display(TFT_eSPI* tft, float rate){
 }
 
 // start song/timer
-void Display::start(long* time_list, char* dir_list) {
+void Display::start(uint32_t* time_list, char* dir_list, boolean* hit_list) {
   note_times = time_list;
   note_dirs = dir_list;
+  note_hit = hit_list;
   buff_size = strlen(dir_list);
   start_time = millis();
 }
 
 void Display::process(/* parameters tbd */) {
   // use constant current time for all arrows
-  long cur_timer = millis();
+  uint32_t cur_timer = millis();
   //blank the previous arrows
   for(int i = 0; i<10; i++)
   {
@@ -79,8 +80,8 @@ void Display::process(/* parameters tbd */) {
 }
 
 // given time of beat and direction, find current y-center of arrow
-int Display::calc_center(int dir, long beat, long timer) {
-  long time_until = beat-timer+start_time;
+int Display::calc_center(int dir, uint32_t beat, uint32_t timer) {
+  uint32_t time_until = beat-timer+start_time;
   //Serial.println(time_until);
   int disp = int(time_until*ppm);
   if(disp > 132)
@@ -170,6 +171,6 @@ void Display::draw_arrow(char dir, int x, int y, uint16_t color){
 }
 
 // given the timing of a beat, determine the color of the arrow
-uint16_t Display::find_color(long beat) {
+uint16_t Display::find_color(uint32_t beat) {
   return TFT_GREEN;
 }

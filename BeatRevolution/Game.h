@@ -18,10 +18,9 @@ class Game
   // NOTE: start with one saber and one display
   Saber saber_left;
   Display display_left;
-  long note_times_left[MAX_NOTES];
+  uint32_t note_times_left[MAX_NOTES];
   char note_dirs_left[MAX_NOTES];
-  int note_index_left;
-  boolean last_note_was_hit_left;
+  boolean note_hit_left[MAX_NOTES]; // initialize to all False, since special treatment (removing note from display) is for hit note
 
   uint16_t score;
 

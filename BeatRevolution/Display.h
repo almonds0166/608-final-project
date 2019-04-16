@@ -11,15 +11,20 @@ class Display
 
   long* note_times;
   char* note_dirs;
+  int buff_size;
   TFT_eSPI* screen;
   float ppm; // pixels per ms
-  const int thresh = 50; // maximum ms tolerance in the late direction
+  const int thresh = 200; // maximum ms tolerance in the late direction
   // convert char and int versions of direction
   std::map<char, int> char_to_int;
   std::map<int, char> int_to_char;
   // coordinates for arrows at top of screen indicating correct hit time
+  /*
   const int arr_x[4] = {23,48,78,103};
   const int arr_y[4] = {20,18,22,20};
+  */
+  const int arr_x[4] = {18,48,78,108};
+  const int arr_y = 20;
   
   // background color
   const uint16_t BACKGROUND = TFT_BLACK;
@@ -45,7 +50,7 @@ class Display
   public:
   
   Display(TFT_eSPI* tft, float rate); //rate is pixels per ms
-  void start(); // start timer
+  void start(long* time_list, char* dir_list); // start timer
   void process(/* parameters tbd */);
   // TODO: other display methods as needed
   void draw_arrow(char dir, int x, int y,uint16_t color);

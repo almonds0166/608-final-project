@@ -16,17 +16,18 @@ Display::Display(TFT_eSPI* tft, float rate){
   screen = tft;
   screen->fillScreen(BACKGROUND);
 
-  // for testing, change later
+  // initialize past_ycoors
   for(int i = 0; i<10; i++)
   {
-    cur_dir[i] = i % 4;
-    cur_times[i] = 1000*(i+1);
-    past_ycoors[i] = -100;
+    past_ycoors[i] = -4;
   }
 }
 
 // start song/timer
-void Display::start() {
+void Display::start(long* time_list, char* dir_list) {
+  note_times = time_list;
+  note_dirs = dir_list;
+  buff_size = strlen(dir_list);
   start_time = millis();
 }
 
@@ -41,24 +42,31 @@ void Display::process(/* parameters tbd */) {
       draw_arrow(int_to_char[cur_dir[i]],arr_x[cur_dir[i]],past_ycoors[i],BACKGROUND);
     }
     //new y coordinate of arrow
-    int y_coor = calc_center(cur_dir[i],cur_times[i],cur_timer);
+    int y_coor = -4;
+    if(past_ycoors[i] > -4) // note has valid time and direction
+    {
+      y_coor = calc_center(cur_dir[i],cur_times[i],cur_timer);
+    }
     if(y_coor > -2)
     {
       past_ycoors[i] = y_coor;
-    } else {
-      // will be to take the next note
-      past_ycoors[i] = -100;
+    } else { // time to hit passed
+      // invalid note
+      past_ycoors[i] = -4;
+      if(ind < buff_size)
+      {
+        // get next note, will display on next iteration
+        cur_dir[i] = char_to_int[note_dirs[ind]];
+        cur_times[i] = note_times[ind];
+        ind++;
+        past_ycoors[i] = -3;
+      }
     }
-  }
-  Serial.println("new y values");
-  for(int i = 0; i<10; i++)
-  {
-    Serial.println(past_ycoors[i]);
   }
   // arrows at top of screen
   for(int i = 0; i<4; i++)
   {
-    draw_arrow(int_to_char[i],arr_x[i],arr_y[i],TFT_WHITE);
+    draw_arrow(int_to_char[i],arr_x[i],arr_y,TFT_WHITE);
   }
   //draw arrows in new locations
   for(int i = 0; i<10; i++)
@@ -73,36 +81,45 @@ void Display::process(/* parameters tbd */) {
 // given time of beat and direction, find current y-center of arrow
 int Display::calc_center(int dir, long beat, long timer) {
   long time_until = beat-timer+start_time;
-  Serial.println(time_until);
+  //Serial.println(time_until);
   int disp = int(time_until*ppm);
   if(disp > 132)
   {
     return -1; // too far away to display on screen
-  } else if (time_until < -1*thresh) // too far in other direction
+  } else if (time_until < -1*thresh or disp < -10) // too far in other direction
   {
     return -2;
   }
-  return (arr_y[dir] + disp);
+  return (arr_y + disp);
 }
 
-// draw arrow on screen with direction dir, rectangle center (x,y)
-void Display::draw_arrow(char dir, int x, int y,uint16_t color){
-  // triangle points
+//draw arrow on screen with direction dir, center (x,y)
+void Display::draw_arrow(char dir, int x, int y, uint16_t color){
+  //triangle points
   int x0;
   int x1;
   int x2;
   int y0;
   int y1;
   int y2;
+  //rectangle stuff
+  int rx;
+  int ry;
+  int rl;
+  int rw;
   switch(dir) {
     case 'u':
     {
       x0 = x-6;
       x1 = x+6;
       x2 = x;
-      y0 = y-4;
-      y1 = y-4;
-      y2 = y-10;
+      y0 = y;
+      y1 = y;
+      y2 = y-6;
+      rx = x-1;
+      ry = y;
+      rl = 3;
+      rw = 6;
     }
     break;
     case 'd':
@@ -110,33 +127,45 @@ void Display::draw_arrow(char dir, int x, int y,uint16_t color){
       x0 = x-6;
       x1 = x+6;
       x2 = x;
-      y0 = y+4;
-      y1 = y+4;
-      y2 = y+10;
+      y0 = y;
+      y1 = y;
+      y2 = y+6;
+      rx = x-1;
+      ry = y-5;
+      rl = 3;
+      rw = 6;
     }
     break;
     case 'l':
     {
-      x0 = x-4;
-      x1 = x-4;
-      x2 = x-10;
+      x0 = x;
+      x1 = x;
+      x2 = x-6;
       y0 = y-6;
       y1 = y+6;
       y2 = y;
+      rx = x;
+      ry = y-1;
+      rl = 6;
+      rw = 3;
     }
     break;
     case 'r':
     {
-      x0 = x+4;
-      x1 = x+4;
-      x2 = x+10;
+      x0 = x;
+      x1 = x;
+      x2 = x+6;
       y0 = y-6;
       y1 = y+6;
       y2 = y;
+      rx = x-5;
+      ry = y-1;
+      rl = 6;
+      rw = 3;
     }
     break;
   }
-  screen->fillRect(x-3,y-3,7,7,color);
+  screen->fillRect(rx,ry,rl,rw,color);
   screen->fillTriangle(x0,y0,x1,y1,x2,y2,color);
 }
 

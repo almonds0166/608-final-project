@@ -36,6 +36,8 @@ class Display
   uint32_t cur_times[10];
   // directions for current arrows to be displayed
   int cur_dir[10];
+  // indices of current arrows
+  int cur_ind[10];
   //next insertion into list of 10
   int ind;
   // index of time and direction of next note to be added

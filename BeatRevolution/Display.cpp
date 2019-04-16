@@ -48,19 +48,20 @@ void Display::process(/* parameters tbd */) {
     {
       y_coor = calc_center(cur_dir[i],cur_times[i],cur_timer);
     }
-    if(y_coor > -2)
+    if(y_coor > -2 and (not note_hit[cur_ind[i]])) // valid note, not missed, not already hit
     {
       past_ycoors[i] = y_coor;
-    } else { // time to hit passed
-      // invalid note
+    } else { // time to hit passed or note hit or invalid note
+      // invalid note, do not display
       past_ycoors[i] = -4;
       if(ind < buff_size)
       {
         // get next note, will display on next iteration
         cur_dir[i] = char_to_int[note_dirs[ind]];
         cur_times[i] = note_times[ind];
+        cur_ind[i] = ind;
         ind++;
-        past_ycoors[i] = -3;
+        past_ycoors[i] = -3; // recalculate on next loop
       }
     }
   }
@@ -81,14 +82,13 @@ void Display::process(/* parameters tbd */) {
 
 // given time of beat and direction, find current y-center of arrow
 int Display::calc_center(int dir, uint32_t beat, uint32_t timer) {
-  uint32_t time_until = beat-timer+start_time;
-  //Serial.println(time_until);
+  int32_t time_until = beat+start_time-timer;
   int disp = int(time_until*ppm);
   if(disp > 132)
   {
     return -1; // too far away to display on screen
   } else if (time_until < -1*thresh or disp < -10) // too far in other direction
-  {
+  { 
     return -2;
   }
   return (arr_y + disp);

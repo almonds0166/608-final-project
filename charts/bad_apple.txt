@@ -1,0 +1,16 @@
+offset 1486 ms_per_beat 435
+
+L 0 d
+L 869 d
+R 1521 d
+L 1739 d
+L 2608 d
+R 3043 d
+R 3260 d
+L 3478 d
+L 4347 d
+R 5000 d
+L 5217 d
+L 6086 d
+R 6521 d
+R 6739 d

@@ -20,10 +20,6 @@ class Display
   std::map<char, int> char_to_int;
   std::map<int, char> int_to_char;
   // coordinates for arrows at top of screen indicating correct hit time
-  /*
-  const int arr_x[4] = {23,48,78,103};
-  const int arr_y[4] = {20,18,22,20};
-  */
   const int arr_x[4] = {18,48,78,108};
   const int arr_y = 20;
   
@@ -36,6 +32,8 @@ class Display
   uint32_t cur_times[10];
   // directions for current arrows to be displayed
   int cur_dir[10];
+  // indices of current arrows
+  int cur_ind[10];
   //next insertion into list of 10
   int ind;
   // index of time and direction of next note to be added
@@ -48,6 +46,7 @@ class Display
   void draw_arrow(char dir, int x, int y,uint16_t color);
   int calc_center(int dir, uint32_t beat, uint32_t timer);
   uint16_t find_color(uint32_t beat);
+  void translate_arrow(char dir, int x, int y, uint16_t color);
 
   public:
   

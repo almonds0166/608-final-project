@@ -22,6 +22,9 @@ class Game
   char note_dirs_left[MAX_NOTES];
   boolean note_hit_left[MAX_NOTES]; // initialize to all False, since special treatment (removing note from display) is for hit note
 
+  uint8_t bpm;
+  uint32_t offset;
+
   uint16_t score;
 
   uint32_t song_duration;

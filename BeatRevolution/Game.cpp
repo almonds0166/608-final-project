@@ -13,8 +13,10 @@ Game::Game(/* parameters such as various pins */){
  * Load music, chart, and other data corresponding to the given song_name into fields. If files not found or wifi error, fail gracefully
  */
 void Game::load(char* song_name) {
-  // TODO @Matthew @Diana 
-  // download music + parse charts into Game's fields
+  // TODO @Matthew 
+  // parse charts into Game's fields
+  // initialize: note_times_left, note_dirs_left, bpm, offset, song_duration from server chart data
+  // initialize: note_hit_left to all False, score to 0
 }
 
 /**
@@ -23,7 +25,7 @@ void Game::load(char* song_name) {
  */
 void Game::start(char* song_name) {
   // TODO @Diana start playing music
-  // probably initialize timers, displays, and sabers
+  // initialize timers
 }
 
 /**

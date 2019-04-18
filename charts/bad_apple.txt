@@ -1,4 +1,4 @@
-offset 1486 ms_per_beat 435
+offset 1486 bpm 138
 
 L 0 d
 L 869 d

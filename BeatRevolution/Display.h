@@ -45,7 +45,7 @@ class Display
 
   uint32_t start_time;
 
-  // TODO: private helpers for displaying
+  // private helpers for displaying
   void draw_arrow(char dir, int x, int y,uint16_t color);
   int calc_center(int dir, uint32_t beat, uint32_t timer);
   uint16_t find_color(uint32_t beat);

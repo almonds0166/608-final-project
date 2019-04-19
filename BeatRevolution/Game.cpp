@@ -1,23 +1,18 @@
 #include "Arduino.h"
-#include "Game.h"
 #include <TFT_eSPI.h> 
 #include <SPI.h>
 #include <mpu9255_esp32.h>
+#include "Game.h"
 #include "Saber.h"
 #include "Display.h"
 
 #define MAX_NOTES 500
 
 /**
- * Create game by setting up pins, pointers to arrays, etc. The same Game object will be used the entire time, with the methods 
- * of reset and load to set the game up for different new songs. 
+ * The same Game object will be used the entire time, with the methods of reset and load to set the game up for different new songs. 
+ * Fields were already declared statically
  */
-Game::Game(int cs_pin_left, int cs_pin_right, TFT_eSPI* tft_pointer, MPU9255* imu_pointer){
-  // TODO initialize values, various pins, Sabers and Displays, etc
-  float rate_left = 0.05;
-  //saber_left = Saber(imu_pointer);
-  display_left = Display(tft_pointer, rate_left, cs_pin_left);
-  display_right = Display(tft_pointer, rate_left, cs_pin_right);
+Game::Game() {
 }
 
 /**
@@ -36,9 +31,9 @@ void Game::load(char* song_name) {
     note_hit_left[i] = false;
   }
 
-  // load display and saber
-  display_left.load(note_times_left, note_dirs_left, note_hit_left, total_num_notes_left);
-  //saber_left.load(note_times_left, note_dirs_left, note_hit_left, total_num_notes_left);
+  // load saber and display
+  saber_left->load(note_times_left, note_dirs_left, note_hit_left, total_num_notes_left);
+  display_left->load(note_times_left, note_dirs_left, note_hit_left, total_num_notes_left);
 }
 
 /**
@@ -48,8 +43,8 @@ void Game::load(char* song_name) {
 void Game::start(char* song_name) {
   // TODO @Diana start playing music
   // initialize timers
-  display_left.start();
-  //saber_left.start();
+  saber_left->start();
+  display_left->start();
 }
 
 /**
@@ -60,8 +55,8 @@ boolean Game::process() {
   if (millis()-start_time > song_duration) {
     return false;
   } else {
-    //saber_left.process(/* parameters tbd */);
-    display_left.process(/* parameters tbd */);
+    saber_left->process(/* parameters tbd */);
+    display_left->process(/* parameters tbd */);
     return true;
   }
 }
@@ -69,5 +64,6 @@ boolean Game::process() {
 void Game::reset() {
   // TODO 
   // clear all arrays, reset all values to defaults, etc, to be ready for next song/game
+  // might not actually need this function
 }
  

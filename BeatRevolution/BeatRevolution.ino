@@ -2,13 +2,15 @@
 
 #include <TFT_eSPI.h> 
 #include <SPI.h>
+#include <mpu9255_esp32.h>
 #include "Game.h"
 
-TFT_eSPI tft = TFT_eSPI();  // TODO: how to have two displays?
+TFT_eSPI tft = TFT_eSPI(); 
+MPU9255 imu;
 
 char song_name[50] = "test";
 
-Game game = Game(12,0,&tft,100);
+Game game;
 
 boolean complete = false;
 

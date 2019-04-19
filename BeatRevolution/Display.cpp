@@ -1,6 +1,12 @@
 #include "Arduino.h"
 #include "Display.h"
 
+/**
+ * tft is a pointer to the tft that ths display is writing to
+ * rate is the pixels-per-ms movement of arrows from bottom up
+ * cs is the pin number of the chip select correponding to tft -- changes to the display will be reflected
+ * iff the cs pin is set to low
+ */
 Display::Display(TFT_eSPI* tft, float rate, int cs){
   ppm = rate;
   cs_pin = cs;

@@ -42,7 +42,7 @@ class Game
   public:
   
   Game(Saber* saber_left_pointer, Display* display_left_pointer, Display* display_right_pointer);
-  void load(char* song_name);
+  void load(char* song_name); // can change argument to int song_index instead of char* once order of songs determined and synced
   void start(char* song_name);
   boolean process();
   void reset();

@@ -1,5 +1,3 @@
-// NOTE: this will not work until all the parts come together, probably test your code in your own .ino file with Serial prints or such
-
 #include <TFT_eSPI.h> 
 #include <SPI.h>
 #include <mpu9255_esp32.h>

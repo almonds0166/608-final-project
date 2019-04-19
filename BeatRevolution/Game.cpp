@@ -28,6 +28,7 @@ void Game::load(char* song_name) {
   // initialize: note_hit_left to all False, score to 0
   // below is a basic test version that doesn't involve the server
   int total_num_notes_left = 20;
+  song_duration = 30000;
   for (int i=0; i<total_num_notes_left; i++) {
     note_times_left[i] = 1000*(i+1);
     note_dirs_left[i] = 'd';
@@ -52,15 +53,15 @@ void Game::start(char* song_name) {
 
 /**
  * Update the game one timestep (read acce data, match note, update display, etc)
- * return false iff game ended
+ * return true iff game ended
  */
 boolean Game::process() {
   if (millis()-start_time > song_duration) {
-    return false;
+    return true;
   } else {
     saber_left->process(/* parameters tbd */);
     display_left->process(/* parameters tbd */);
-    return true;
+    return false;
   }
 }
 

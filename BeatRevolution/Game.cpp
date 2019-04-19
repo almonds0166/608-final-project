@@ -10,9 +10,12 @@
 
 /**
  * The same Game object will be used the entire time, with the methods of reset and load to set the game up for different new songs. 
- * Fields were already declared statically
+ * Objects were already declared statically in the main ino, now set pointers to correct places
  */
-Game::Game() {
+Game::Game(Saber* saber_left_pointer, Display* display_left_pointer, Display* display_right_pointer) {
+  saber_left = saber_left_pointer;
+  display_left = display_left_pointer;
+  display_right = display_right_pointer;
 }
 
 /**

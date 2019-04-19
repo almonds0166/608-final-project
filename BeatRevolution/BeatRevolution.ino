@@ -8,10 +8,16 @@
 TFT_eSPI tft = TFT_eSPI(); 
 MPU9255 imu;
 
+const int cs_pin_left = 12;
+const int cs_pin_right = 0;
+float rate = 0.05;
+
+Saber saber_left(&imu);
+Display display_left(&tft, rate, cs_pin_left);
+Display display_right(&tft, rate, cs_pin_right);
+Game game(&saber_left, &display_left, &display_right);
+
 char song_name[50] = "test";
-
-Game game;
-
 boolean complete = false;
 
 void setup(void) {

@@ -1,6 +1,3 @@
-#include <TFT_eSPI.h> 
-#include <SPI.h>
-#include <mpu9255_esp32.h>
 #include "Game.h"
 
 TFT_eSPI tft = TFT_eSPI(); 

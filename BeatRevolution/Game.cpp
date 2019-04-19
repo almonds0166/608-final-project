@@ -1,12 +1,4 @@
-#include "Arduino.h"
-#include <TFT_eSPI.h> 
-#include <SPI.h>
-#include <mpu9255_esp32.h>
 #include "Game.h"
-#include "Saber.h"
-#include "Display.h"
-
-#define MAX_NOTES 500
 
 /**
  * The same Game object will be used the entire time, with the methods of reset and load to set the game up for different new songs. 

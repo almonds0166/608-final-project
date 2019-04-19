@@ -1,6 +1,4 @@
-#include "Arduino.h"
 #include "Saber.h"
-#include <mpu9255_esp32.h>
 
 #define ACCE_HISTORY_SIZE 100
 #define ACCE_RECORD_PERIOD 2 // ms

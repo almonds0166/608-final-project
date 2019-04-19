@@ -5,24 +5,26 @@
 #define ACCE_HISTORY_SIZE 100
 #define ACCE_RECORD_PERIOD 2 // ms
 
-Saber::Saber(MPU9255* imu_object) {
-  imu = imu_object;
+Saber::Saber(MPU9255* imu_pointer) {
+  imu = imu_pointer;
 }
 
 /**
  * num_notes is the total number of notes in the chart for this hand (to prevent oob errors)
  */
-void Saber::start(uint32_t* time_list, char* dir_list, boolean* hit_list, uint8_t num_notes) {
+void Saber::load(uint32_t* time_list, char* dir_list, boolean* hit_list, uint8_t num_notes) {
   note_times = time_list;
   note_dirs = dir_list;
   note_hit = hit_list;
   total_num_notes = num_notes;
   note_index = 0;
-  // note: these two operations might be too slow and need to be put in load rather than start
+  
   memset(x_acce, 0, ACCE_HISTORY_SIZE); 
   memset(z_acce, 0, ACCE_HISTORY_SIZE);
   acce_index=0;
+}
 
+void Saber::start() {
   start_time = millis();
 }
 

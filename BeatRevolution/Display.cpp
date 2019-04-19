@@ -22,6 +22,8 @@ Display::Display(TFT_eSPI* tft, float rate, int cs){
   ind = 0;
   screen = tft;
   digitalWrite(cs_pin,LOW);
+  screen->setRotation(2);
+  screen->setTextSize(1); // default font size
   screen->fillScreen(BACKGROUND);
   digitalWrite(cs_pin,HIGH);
 
@@ -32,11 +34,12 @@ Display::Display(TFT_eSPI* tft, float rate, int cs){
   }
 }
 
-// start song/timer
-void Display::start(uint32_t* time_list, char* dir_list, boolean* hit_list) {
+void Display::load(uint32_t* time_list, char* dir_list, boolean* hit_list, int num_notes) {
   note_times = time_list;
   note_dirs = dir_list;
   note_hit = hit_list;
+  total_num_notes = num_notes;
+  
   buff_size = strlen(dir_list);
   digitalWrite(cs_pin,LOW);
   screen->fillScreen(BACKGROUND);
@@ -46,6 +49,11 @@ void Display::start(uint32_t* time_list, char* dir_list, boolean* hit_list) {
   {
     past_ycoors[i] = -4;
   }
+  start_time = millis();
+}
+
+// start song/timer
+void Display::start() {
   start_time = millis();
 }
 

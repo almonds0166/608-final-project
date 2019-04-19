@@ -32,8 +32,9 @@ class Saber
   
   public:
   
-  Saber(MPU9255* imu_object); // note, need to change pointer type if we make another imu class
-  void start(uint32_t* time_list, char* dir_list, boolean* hit_list, uint8_t num_notes);
+  Saber(MPU9255* imu_pointer); // note, need to change pointer type if we make another imu class
+  void load(uint32_t* time_list, char* dir_list, boolean* hit_list, uint8_t num_notes);
+  void start();
   void process(/* parameters tbd */); 
 };
 

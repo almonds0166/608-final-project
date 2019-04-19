@@ -12,10 +12,14 @@ class Display
   uint32_t* note_times;
   char* note_dirs;
   boolean* note_hit;
+
+  uint8_t total_num_notes;
+  
   int buff_size;
   TFT_eSPI* screen;
   int cs_pin;
   float ppm; // pixels per ms
+  
   const int thresh = 200; // maximum ms tolerance in the late direction
   // convert char and int versions of direction
   std::map<char, int> char_to_int;
@@ -52,7 +56,8 @@ class Display
   public:
   
   Display(TFT_eSPI* tft, float rate, int cs); //rate is pixels per ms
-  void start(uint32_t* time_list, char* dir_list, boolean* hit_list); // start timer
+  void load(uint32_t* time_list, char* dir_list, boolean* hit_list, int num_notes); 
+  void start(); // start timer
   void process(/* parameters tbd */);
 };
 

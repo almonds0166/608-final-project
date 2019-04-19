@@ -1,8 +1,9 @@
 #include "Arduino.h"
 #include "Display.h"
 
-Display::Display(TFT_eSPI* tft, float rate){
+Display::Display(TFT_eSPI* tft, float rate, int cs){
   ppm = rate;
+  cs_pin = cs;
   //initialize map
   char_to_int['l'] = 0;
   char_to_int['d'] = 1;
@@ -14,7 +15,9 @@ Display::Display(TFT_eSPI* tft, float rate){
   int_to_char[3] = 'r';
   ind = 0;
   screen = tft;
+  digitalWrite(cs_pin,LOW);
   screen->fillScreen(BACKGROUND);
+  digitalWrite(cs_pin,HIGH);
 
   // initialize past_ycoors
   for(int i = 0; i<10; i++)
@@ -29,13 +32,22 @@ void Display::start(uint32_t* time_list, char* dir_list, boolean* hit_list) {
   note_dirs = dir_list;
   note_hit = hit_list;
   buff_size = strlen(dir_list);
+  digitalWrite(cs_pin,LOW);
+  screen->fillScreen(BACKGROUND);
+  digitalWrite(cs_pin,HIGH);
+  ind = 0;
+  for(int i = 0; i<10; i++)
+  {
+    past_ycoors[i] = -4;
+  }
   start_time = millis();
 }
 
 void Display::process(/* parameters tbd */) {
   // use constant current time for all arrows
   uint32_t cur_timer = millis();
-  
+
+  digitalWrite(cs_pin,LOW);
   // arrows at top of screen
   for(int i = 0; i<4; i++)
   {
@@ -85,6 +97,7 @@ void Display::process(/* parameters tbd */) {
       past_ycoors[i] = -4;
     }
   }
+  digitalWrite(cs_pin,HIGH);
 }
 
 // given time of beat and direction, find current y-center of arrow
@@ -227,5 +240,10 @@ void Display::translate_arrow(char dir, int x, int y, uint16_t color) {
 
 // given the timing of a beat, determine the color of the arrow
 uint16_t Display::find_color(uint32_t beat) {
-  return TFT_GREEN;
+  if(cs_pin == 12)
+  {
+    return TFT_BLUE;
+  } else {
+    return TFT_GREEN;
+  }
 }

@@ -14,6 +14,7 @@ class Display
   boolean* note_hit;
   int buff_size;
   TFT_eSPI* screen;
+  int cs_pin;
   float ppm; // pixels per ms
   const int thresh = 200; // maximum ms tolerance in the late direction
   // convert char and int versions of direction
@@ -50,7 +51,7 @@ class Display
 
   public:
   
-  Display(TFT_eSPI* tft, float rate); //rate is pixels per ms
+  Display(TFT_eSPI* tft, float rate, int cs); //rate is pixels per ms
   void start(uint32_t* time_list, char* dir_list, boolean* hit_list); // start timer
   void process(/* parameters tbd */);
 };

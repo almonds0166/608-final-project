@@ -6,9 +6,9 @@
 
 TFT_eSPI tft = TFT_eSPI();  // TODO: how to have two displays?
 
-char song_name[50];
+char song_name[50] = "test";
 
-Game game = Game(12,0,&tft,);
+Game game = Game(12,0,&tft,100);
 
 boolean complete = false;
 

@@ -3,6 +3,8 @@
 #include <TFT_eSPI.h> 
 #include <SPI.h>
 #include <mpu9255_esp32.h>
+#include "Saber.h"
+#include "Display.h"
 
 #define MAX_NOTES 500
 

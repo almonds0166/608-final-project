@@ -23,7 +23,7 @@ Game::Game(int cs_pin_left, TFT_eSPI* tft_pointer, MPU9255* imu_pointer/* parame
 void Game::load(char* song_name) {
   // TODO @Matthew 
   // parse charts into Game's fields
-  // initialize: note_times_left, note_dirs_left, bpm, offset, song_duration from server chart data
+  // initialize: note_times_left, note_dirs_left, total_num_notes_left, bpm, offset, song_duration from server chart data
   // initialize: note_hit_left to all False, score to 0
   // below is a basic test version that doesn't involve the server
   int total_num_notes_left = 20;

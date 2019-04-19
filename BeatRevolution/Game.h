@@ -1,6 +1,8 @@
 #ifndef Game_h
 #define Game_h
 #include "Arduino.h"
+#include "Display.h"
+#include "Saber.h"
 
 #define MAX_NOTES 500 // possibly bad practice, oops
 

@@ -1,5 +1,8 @@
 #include "Arduino.h"
 #include "Game.h"
+#include <TFT_eSPI.h> 
+#include <SPI.h>
+#include <mpu9255_esp32.h>
 
 /**
  * Create game by setting up pins, pointers to arrays, etc. The same Game object will be used the entire time, with the methods 
@@ -7,6 +10,7 @@
  */
 Game::Game(/* parameters such as various pins */){
   // TODO initialize values, various pins, Sabers and Displays, etc
+  
 }
 
 /**

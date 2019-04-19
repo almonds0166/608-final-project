@@ -8,7 +8,7 @@ TFT_eSPI tft = TFT_eSPI();  // TODO: how to have two displays?
 
 char song_name[50];
 
-Game game(/* parameters such as various pins */);
+Game game = Game(12,0,&tft,);
 
 boolean complete = false;
 

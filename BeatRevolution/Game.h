@@ -20,6 +20,7 @@ class Game
   // NOTE: start with one saber and one display
   Saber saber_left;
   Display display_left;
+  Display display_right;
   uint32_t note_times_left[MAX_NOTES];
   char note_dirs_left[MAX_NOTES];
   boolean note_hit_left[MAX_NOTES]; // initialize to all False, since special treatment (removing note from display) is for hit note
@@ -39,7 +40,7 @@ class Game
   
   public:
   
-  Game(/* parameters such as various pins */);
+  Game(int cs_pin_left, int cs_pin_right, TFT_eSPI* tft_pointer, MPU9255* imu_pointer);
   void load(char* song_name);
   void start();
   boolean process();

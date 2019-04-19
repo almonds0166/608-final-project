@@ -38,9 +38,8 @@ void Display::load(uint32_t* time_list, char* dir_list, boolean* hit_list, int n
   note_times = time_list;
   note_dirs = dir_list;
   note_hit = hit_list;
-  total_num_notes = num_notes;
+  buff_size = num_notes;
   
-  buff_size = strlen(dir_list);
   digitalWrite(cs_pin,LOW);
   screen->fillScreen(BACKGROUND);
   digitalWrite(cs_pin,HIGH);

@@ -12,10 +12,8 @@ class Display
   uint32_t* note_times;
   char* note_dirs;
   boolean* note_hit;
-
-  uint8_t total_num_notes;
   
-  int buff_size;
+  uint8_t buff_size;
   TFT_eSPI* screen;
   int cs_pin;
   float ppm; // pixels per ms

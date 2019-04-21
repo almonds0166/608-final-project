@@ -18,8 +18,18 @@ boolean complete = false;
 void setup(void) {
   Serial.begin(115200);
   // TODO: connect to wifi
-  game.load(song_name); // once there is UI, this will be in a state machine transition in loop(), rather than in setup
-  game.start(song_name); // once there is UI, this will be in a state machine transition in loop(), rather than in setup
+
+  // NOTE: taking out the setupIMU stuff breaks everything
+  if (imu.setupIMU(1)) {
+    Serial.println("IMU Connected!");
+  } else {
+    Serial.println("IMU Not Connected :/");
+    Serial.println("Restarting");
+    ESP.restart(); // restart the ESP (proper way)
+  }
+
+  game.load(song_name);
+  game.start(song_name);
 }
 
 void loop() {

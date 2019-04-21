@@ -22,6 +22,7 @@ class Saber
   uint16_t* score;
 
   uint32_t start_time;
+  uint32_t last_acce_time;
 
   // y direction is toward/away from body, irrelevant
   double x_acce[ACCE_HISTORY_SIZE];

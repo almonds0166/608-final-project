@@ -17,14 +17,14 @@ class Game
 {
   private:
 
-  // NOTE: start with one saber and one display
-  Saber* saber_left;
-  Display* display_left;
-  uint32_t note_times_left[MAX_NOTES];
-  char note_dirs_left[MAX_NOTES];
-  boolean note_hit_left[MAX_NOTES]; // initialize to all False, since special treatment (removing note from display) is for hit note
-
-  Display* display_right;
+  // index of 0 is left side
+  // index of 1 is right side
+  Saber*   sabers[2];
+  Display* displays[2];
+  uint16_t total_num_notes[2];
+  uint32_t note_times[2][MAX_NOTES];
+  char     note_dirs[2][MAX_NOTES];
+  boolean  note_hit[2][MAX_NOTES];
 
   uint8_t bpm;
   uint32_t offset;
@@ -41,7 +41,7 @@ class Game
   
   public:
   
-  Game(Saber* saber_left_pointer, Display* display_left_pointer, Display* display_right_pointer);
+  Game(Saber** saber_pointers, Display** display_pointers);
   void load(char* song_name); // can change argument to int song_index instead of char* once order of songs determined and synced
   void start(char* song_name);
   boolean process();

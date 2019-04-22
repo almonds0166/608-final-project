@@ -25,6 +25,7 @@ Display::Display(TFT_eSPI* tft, float rate, int cs) {
   screen->init();
   screen->setRotation(2);
   screen->setTextSize(1); // default font size
+  screen->setTextColor(TFT_WHITE, BACKGROUND);
   screen->fillScreen(BACKGROUND);
   digitalWrite(cs_pin, HIGH);
 
@@ -55,6 +56,24 @@ void Display::load(uint32_t* time_list, char* dir_list, boolean* hit_list, int n
 // start song/timer
 void Display::start() {
   start_time = millis();
+}
+
+// display song title
+void Display::print_song(char* song_name) {
+  digitalWrite(cs_pin, LOW);
+  screen->setCursor(0,pixel_thresh+28,1);
+  screen->println(song_name);
+  digitalWrite(cs_pin, HIGH);
+}
+
+// display current score
+void Display::update_score(int cur_score) {
+  digitalWrite(cs_pin, LOW);
+  screen->fillRect(0,pixel_thresh+28,120,10,BACKGROUND);
+  screen->setCursor(0,pixel_thresh+28,1);
+  screen->print("Score: ");
+  screen->println(cur_score);
+  digitalWrite(cs_pin, HIGH);
 }
 
 void Display::process(/* parameters tbd */) {
@@ -118,7 +137,7 @@ void Display::process(/* parameters tbd */) {
 int Display::calc_center(int dir, uint32_t beat, uint32_t timer) {
   int32_t time_until = beat + start_time - timer;
   int disp = int(time_until * ppm);
-  if (disp > 132)
+  if (disp > pixel_thresh)
   {
     return -1; // too far away to display on screen
   } else if (time_until < -1 * thresh or disp < -10) // too far in other direction

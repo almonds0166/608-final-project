@@ -12,6 +12,7 @@ class Display
   uint32_t* note_times;
   char* note_dirs;
   boolean* note_hit;
+  int* score_ptr;
   
   uint8_t buff_size;
   TFT_eSPI* screen;
@@ -19,6 +20,7 @@ class Display
   float ppm; // pixels per ms
   
   const int thresh = 200; // maximum ms tolerance in the late direction
+  const int pixel_thresh = 122; // limit at bottom of screen for arrow display
   // convert char and int versions of direction
   std::map<char, int> char_to_int;
   std::map<int, char> int_to_char;
@@ -56,6 +58,8 @@ class Display
   Display(TFT_eSPI* tft, float rate, int cs); //rate is pixels per ms
   void load(uint32_t* time_list, char* dir_list, boolean* hit_list, int num_notes); 
   void start(); // start timer
+  void print_song(char* song_name);
+  void update_score(int cur_score);
   void process(/* parameters tbd */);
 };
 

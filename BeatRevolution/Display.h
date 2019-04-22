@@ -61,7 +61,7 @@ class Display
   void start(); // start timer
   void print_song(char* song_name);
   void update_score();
-  void process(/* parameters tbd */);
+  void process();
 };
 
 #endif

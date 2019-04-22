@@ -67,7 +67,7 @@ void Game::load(char* song_name) {
       note_hit[side][i] = false;
 
     // Load sabers and displays
-    sabers[side]->load(note_times[side], note_dirs[side], note_hit[side], total_num_notes[side]);
+    sabers[side]->load(note_times[side], note_dirs[side], note_hit[side], total_num_notes[side], &score);
     displays[side]->load(note_times[side], note_dirs[side], note_hit[side], total_num_notes[side], &score);
   }
 
@@ -75,9 +75,8 @@ void Game::load(char* song_name) {
   displays[0]->print_song(song_name);
   displays[1]->update_score();
   
-  // duration is calculated as two seconds after the last note
-  // (for now at least; we may implement a smarter version later)
-  song_duration = note_times[0][total_num_notes[0] - 1] + offset + 2000;
+  // TODO: include song_duration into the song's text file (similar to bpm and offset) and load that
+  song_duration = 20000;
   // initialize the player's score to zero
   score = 0;
 }
@@ -101,8 +100,8 @@ boolean Game::process() {
   if (millis()-start_time > song_duration) {
     return true;
   } else {
-    sabers[0]->process(/* parameters tbd */);
-    displays[0]->process(/* parameters tbd */);
+    sabers[0]->process();
+    displays[0]->process();
     displays[1]->process();
     displays[1]->update_score();
     return false;

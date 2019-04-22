@@ -3,14 +3,13 @@
 #include "Arduino.h"
 #include <mpu9255_esp32.h>
 
-#define ACCE_HISTORY_SIZE 100
-#define ACCE_RECORD_PERIOD 2 // ms
+#define ACCE_HISTORY_SIZE 60
+#define ACCE_RECORD_PERIOD 4 // ms
 
 class Saber
 {
   private:
 
-  // TODO: which of these fields should be fields, and which should just be arguments passed into process()? 
   uint32_t* note_times;
   char* note_dirs;
   boolean* note_hit;
@@ -22,7 +21,7 @@ class Saber
   uint16_t* score;
 
   uint32_t start_time;
-  uint32_t last_acce_time;
+  uint32_t last_acce_time; // last time that acceleration was recorded
 
   // y direction is toward/away from body, irrelevant
   double x_acce[ACCE_HISTORY_SIZE];
@@ -33,10 +32,10 @@ class Saber
   
   public:
   
-  Saber(MPU9255* imu_pointer); // note, need to change pointer type if we make another imu class
-  void load(uint32_t* time_list, char* dir_list, boolean* hit_list, uint8_t num_notes);
+  Saber(MPU9255* imu_pointer); // note, might need to change pointer type if we make another imu class
+  void load(uint32_t* time_list, char* dir_list, boolean* hit_list, uint8_t num_notes, uint16_t* score_pointer); 
   void start();
-  void process(/* parameters tbd */); 
+  void process(); 
 };
 
 #endif

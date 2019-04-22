@@ -1,8 +1,5 @@
 #include "Saber.h"
 
-#define ACCE_HISTORY_SIZE 100
-#define ACCE_RECORD_PERIOD 2 // ms
-
 Saber::Saber(MPU9255* imu_pointer) {
   imu = imu_pointer;
 }
@@ -10,11 +7,12 @@ Saber::Saber(MPU9255* imu_pointer) {
 /**
  * num_notes is the total number of notes in the chart for this hand (to prevent oob errors)
  */
-void Saber::load(uint32_t* time_list, char* dir_list, boolean* hit_list, uint8_t num_notes) {
+void Saber::load(uint32_t* time_list, char* dir_list, boolean* hit_list, uint8_t num_notes, uint16_t* score_pointer) {
   note_times = time_list;
   note_dirs = dir_list;
   note_hit = hit_list;
   total_num_notes = num_notes;
+  score = score_pointer;
   note_index = 0;
   
   memset(x_acce, 0, ACCE_HISTORY_SIZE); 
@@ -30,7 +28,7 @@ void Saber::start() {
  * Read imu data and update stored accelerate data if needed (depending on time), match against expected 
  * movement (based on index into lists), update index and note_hit if note hit or missed
  */
-void Saber::process(/* parameters tbd */) {
+void Saber::process() {
   if (note_index >= total_num_notes) {
     return; // index oob, entire chart has been processed
   }
@@ -62,7 +60,8 @@ void Saber::process(/* parameters tbd */) {
   if (outcome == 1) { // note hit
     note_hit[note_index] = true;
     note_index++;
-    // TODO: update score
+    // TODO: better way of updating score?
+    *score = *score + 100;
   } else if (outcome == -1) { // note missed
     note_index++; // no need to change note_hit, as all contents are initialized to 0
   }
@@ -73,18 +72,23 @@ void Saber::process(/* parameters tbd */) {
 // expected time is relative to the start time, so a note at the beginning of the song should have expected
 // time of 0
 int8_t Saber::match(uint32_t expected_time, char expected_dir) {
-//  Serial.println("matching note");
-//  Serial.println(expected_time);
-//  Serial.println(expected_dir);
-  const int beat_lateness_limit = 200;
   
-  if (expected_time > millis() - start_time) {
-//    Serial.println("too far in future");
+  const int beat_earliness_limit = 0;
+  // a beat can be matched as early as beat_earliness_limit ms before the expected time
+  const int beat_lateness_limit = 200;
+  // if a beat is not detected for beat_lateness_limit ms after the expected timestamp, mark as missed
+  const int measurements_above_limit_count = 3; 
+  const double first_acce_limit = 3;
+  const double second_acce_limit = 1;
+  // must spend this many measurements above limit, aka measurements_above_limit_count*ACCE_RECORD_PERIOD ms,
+  // above the 1st/2nd threshold to count as 1st(0->1)/2nd(2->3) state transitions
+
+  // don't rearrange to have minuses in the inequality, all numbers involves are unsigned
+  if (start_time + expected_time > millis() + beat_lateness_limit) { 
     return 0; // beat too far in the future
   }
 
-  if (millis() - start_time - expected_time > beat_lateness_limit) {
-//    Serial.println("too far past");
+  if (millis() > start_time + expected_time + beat_lateness_limit) {
     return -1; // beat too far past
   }
   
@@ -101,10 +105,6 @@ int8_t Saber::match(uint32_t expected_time, char expected_dir) {
   int entered_correct_dir_index = -1;
   int entered_reverse_dir_index = -1;
 
-  const int measurements_above_limit_count = 3; 
-  // must spend this many measurements above limit, aka measurements_above_limit_count*ACCE_RECORD_PERIOD ms,
-  // above the threshold to count as state transition
-  const double acce_limit = 2;
   double cur_acce;
   
   for (int i = acce_index; i < acce_index+ACCE_HISTORY_SIZE; i++) {
@@ -123,12 +123,12 @@ int8_t Saber::match(uint32_t expected_time, char expected_dir) {
       case 0:
       if (expected_dir == 'u' || expected_dir == 'r') {
         // initial acceleration should be positive for those directions
-        if (cur_acce >= acce_limit) {
+        if (cur_acce >= first_acce_limit) {
           state = 1;
           entered_correct_dir_index = i;
         }
       } else {
-        if (cur_acce <= -acce_limit) {
+        if (cur_acce <= -first_acce_limit) {
           state = 1;
           entered_correct_dir_index = i;
         }
@@ -137,14 +137,14 @@ int8_t Saber::match(uint32_t expected_time, char expected_dir) {
 
       case 1:
       if (expected_dir == 'u' || expected_dir == 'r') {
-        if (cur_acce < acce_limit) { // dropped too soon
+        if (cur_acce < first_acce_limit) { // dropped too soon
           state = 0;
         } else if (i - entered_correct_dir_index >= measurements_above_limit_count) {
           // enough time passed with high acce
           state = 2;
         }
       } else {
-        if (cur_acce > -acce_limit) {
+        if (cur_acce > -first_acce_limit) {
           state = 0;
         } else if (i - entered_correct_dir_index >= measurements_above_limit_count) {
           // enough time passed with high acce
@@ -156,12 +156,12 @@ int8_t Saber::match(uint32_t expected_time, char expected_dir) {
       case 2:
       if (expected_dir == 'u' || expected_dir == 'r') {
         // reverse acceleration should be negative for those directions
-        if (cur_acce <= -acce_limit) {
+        if (cur_acce <= -second_acce_limit) {
           state = 3;
           entered_reverse_dir_index = i;
         }
       } else {
-        if (cur_acce >= acce_limit) {
+        if (cur_acce >= second_acce_limit) {
           state = 3;
           entered_reverse_dir_index = i;
         }
@@ -170,7 +170,7 @@ int8_t Saber::match(uint32_t expected_time, char expected_dir) {
 
       case 3:
       if (expected_dir == 'u' || expected_dir == 'r') {
-        if (cur_acce > -acce_limit) { // dropped too soon
+        if (cur_acce > -second_acce_limit) { // dropped too soon
           state = 2;
         } else if (i - entered_reverse_dir_index >= measurements_above_limit_count) {
           // enough time passed with high acce
@@ -180,7 +180,7 @@ int8_t Saber::match(uint32_t expected_time, char expected_dir) {
           return 1;
         }
       } else {
-        if (cur_acce < acce_limit) {
+        if (cur_acce < second_acce_limit) {
           state = 2;
         } else if (i - entered_reverse_dir_index >= measurements_above_limit_count) {
           // enough time passed with high acce

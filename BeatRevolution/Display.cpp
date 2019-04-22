@@ -88,7 +88,7 @@ void Display::update_score() {
   }
 }
 
-void Display::process(/* parameters tbd */) {
+void Display::process() {
   // use constant current time for all arrows
   uint32_t cur_timer = millis();
 

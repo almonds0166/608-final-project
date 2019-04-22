@@ -31,9 +31,8 @@ void Game::load(char* song_name) {
   // load saber and display
   saber_left->load(note_times_left, note_dirs_left, note_hit_left, total_num_notes_left);
   display_left->load(note_times_left, note_dirs_left, note_hit_left, total_num_notes_left, &score);
-  display_right->load(note_times_left, note_dirs_left, note_hit_left, total_num_notes_left, &score);
   display_left->print_song(song_name);
-  display_right->update_score();
+  display_right->load(note_times_left, note_dirs_left, note_hit_left, total_num_notes_left, &score);
 }
 
 /**
@@ -59,6 +58,7 @@ boolean Game::process() {
     saber_left->process(/* parameters tbd */);
     display_left->process(/* parameters tbd */);
     display_right->process();
+    display_right->update_score();
     return false;
   }
 }

@@ -42,9 +42,14 @@ void Display::load(uint32_t* time_list, char* dir_list, boolean* hit_list, int n
   note_hit = hit_list;
   buff_size = num_notes;
   score_ptr = score_loc;
+  prev_score = 0;
 
+  // display score of 0 to initialize
   digitalWrite(cs_pin, LOW);
   screen->fillScreen(BACKGROUND);
+  screen->setCursor(0,pixel_thresh+28,1);
+  screen->print("Score: ");
+  screen->println(0);
   digitalWrite(cs_pin, HIGH);
   ind = 0;
   for (int i = 0; i < 10; i++)
@@ -70,12 +75,17 @@ void Display::print_song(char* song_name) {
 // display current score
 void Display::update_score() {
   uint16_t cur_score = *score_ptr;
-  digitalWrite(cs_pin, LOW);
-  screen->fillRect(0,pixel_thresh+28,120,10,BACKGROUND);
-  screen->setCursor(0,pixel_thresh+28,1);
-  screen->print("Score: ");
-  screen->println(cur_score);
-  digitalWrite(cs_pin, HIGH);
+  // rewrite display only if score changed
+  if(cur_score != prev_score)
+  {
+    digitalWrite(cs_pin, LOW);
+    screen->fillRect(0,pixel_thresh+28,120,10,BACKGROUND);
+    screen->setCursor(0,pixel_thresh+28,1);
+    screen->print("Score: ");
+    screen->println(cur_score);
+    digitalWrite(cs_pin, HIGH);
+    prev_score = cur_score;
+  }
 }
 
 void Display::process(/* parameters tbd */) {

@@ -13,6 +13,7 @@ class Display
   char* note_dirs;
   boolean* note_hit;
   uint16_t* score_ptr;
+  uint16_t prev_score;
   
   uint8_t buff_size;
   TFT_eSPI* screen;

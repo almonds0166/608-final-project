@@ -12,7 +12,7 @@ Display display_left(&tft, rate, cs_pin_left);
 Display display_right(&tft, rate, cs_pin_right);
 Game game(&saber_left, &display_left, &display_right);
 
-char song_name[50] = "test to make long";
+char song_name[50] = "test";
 boolean complete = false;
 
 void setup(void) {
@@ -20,7 +20,7 @@ void setup(void) {
   // TODO: connect to wifi
 
   // NOTE: taking out the setupIMU stuff breaks everything
- 
+  
   if (imu.setupIMU(1)) {
     Serial.println("IMU Connected!");
   } else {
@@ -28,6 +28,7 @@ void setup(void) {
     Serial.println("Restarting");
     ESP.restart(); // restart the ESP (proper way)
   }
+  
   
 
   game.load(song_name);

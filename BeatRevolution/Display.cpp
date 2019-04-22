@@ -36,11 +36,12 @@ Display::Display(TFT_eSPI* tft, float rate, int cs) {
   }
 }
 
-void Display::load(uint32_t* time_list, char* dir_list, boolean* hit_list, int num_notes) {
+void Display::load(uint32_t* time_list, char* dir_list, boolean* hit_list, int num_notes, uint16_t* score_loc) {
   note_times = time_list;
   note_dirs = dir_list;
   note_hit = hit_list;
   buff_size = num_notes;
+  score_ptr = score_loc;
 
   digitalWrite(cs_pin, LOW);
   screen->fillScreen(BACKGROUND);
@@ -67,7 +68,8 @@ void Display::print_song(char* song_name) {
 }
 
 // display current score
-void Display::update_score(int cur_score) {
+void Display::update_score() {
+  uint16_t cur_score = *score_ptr;
   digitalWrite(cs_pin, LOW);
   screen->fillRect(0,pixel_thresh+28,120,10,BACKGROUND);
   screen->setCursor(0,pixel_thresh+28,1);

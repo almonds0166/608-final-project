@@ -12,7 +12,7 @@ class Display
   uint32_t* note_times;
   char* note_dirs;
   boolean* note_hit;
-  int* score_ptr;
+  uint16_t* score_ptr;
   
   uint8_t buff_size;
   TFT_eSPI* screen;
@@ -56,10 +56,10 @@ class Display
   public:
   
   Display(TFT_eSPI* tft, float rate, int cs); //rate is pixels per ms
-  void load(uint32_t* time_list, char* dir_list, boolean* hit_list, int num_notes); 
+  void load(uint32_t* time_list, char* dir_list, boolean* hit_list, int num_notes, uint16_t* score_loc); 
   void start(); // start timer
   void print_song(char* song_name);
-  void update_score(int cur_score);
+  void update_score();
   void process(/* parameters tbd */);
 };
 

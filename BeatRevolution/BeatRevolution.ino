@@ -20,8 +20,7 @@ void setup(void) {
   // TODO: connect to wifi
 
   // NOTE: taking out the setupIMU stuff breaks everything
-
-  /*
+ 
   if (imu.setupIMU(1)) {
     Serial.println("IMU Connected!");
   } else {
@@ -29,7 +28,7 @@ void setup(void) {
     Serial.println("Restarting");
     ESP.restart(); // restart the ESP (proper way)
   }
-  */
+  
 
   game.load(song_name);
   game.start(song_name);

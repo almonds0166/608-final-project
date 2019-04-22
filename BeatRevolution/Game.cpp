@@ -26,11 +26,14 @@ void Game::load(char* song_name) {
     note_dirs_left[i] = 'd';
     note_hit_left[i] = false;
   }
+  score = 0;
 
   // load saber and display
-  //saber_left->load(note_times_left, note_dirs_left, note_hit_left, total_num_notes_left);
-  display_left->load(note_times_left, note_dirs_left, note_hit_left, total_num_notes_left);
-  display_right->load(note_times_left, note_dirs_left, note_hit_left, total_num_notes_left);
+  saber_left->load(note_times_left, note_dirs_left, note_hit_left, total_num_notes_left);
+  display_left->load(note_times_left, note_dirs_left, note_hit_left, total_num_notes_left, &score);
+  display_right->load(note_times_left, note_dirs_left, note_hit_left, total_num_notes_left, &score);
+  display_left->print_song(song_name);
+  display_right->update_score();
 }
 
 /**
@@ -40,11 +43,9 @@ void Game::load(char* song_name) {
 void Game::start(char* song_name) {
   // TODO @Diana start playing music
   // initialize timers
-  //saber_left->start();
+  saber_left->start();
   display_left->start();
-  display_left->print_song(song_name);
   display_right->start();
-  display_right->update_score(0);
 }
 
 /**
@@ -55,7 +56,7 @@ boolean Game::process() {
   if (millis()-start_time > song_duration) {
     return true;
   } else {
-    //saber_left->process(/* parameters tbd */);
+    saber_left->process(/* parameters tbd */);
     display_left->process(/* parameters tbd */);
     display_right->process();
     return false;

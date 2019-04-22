@@ -1,4 +1,5 @@
-offset 1486 bpm 138
+offset 1486
+bpm 138
 
 L 0 d
 L 869 d

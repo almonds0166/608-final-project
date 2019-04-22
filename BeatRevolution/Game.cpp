@@ -1,38 +1,85 @@
 #include "Game.h"
+#include <HTTPClient.h>
+#include <string.h>
+#include <stdlib.h> // atoi
+
+#define CHARTS_ENDPOINT "http://608dev.net/sandbox/sc/almonds/br/chart.py?song=%s&side=%d"
+#define MAX_BODY_LENGTH 4000 /* don't set this too high, we only have so much memory */
 
 /**
  * The same Game object will be used the entire time, with the methods of reset and load to set the game up for different new songs. 
  * Objects were already declared statically in the main ino, now set pointers to correct places
  */
-Game::Game(Saber* saber_left_pointer, Display* display_left_pointer, Display* display_right_pointer) {
-  saber_left = saber_left_pointer;
-  display_left = display_left_pointer;
-  display_right = display_right_pointer;
+Game::Game(Saber** saber_pointers, Display** display_pointers) {
+  for (uint8_t side = 0; side < 2; side++) {
+    sabers[side]   = saber_pointers[side];
+    displays[side] = display_pointers[side];
+  }
 }
 
 /**
  * Load music, chart, and other data corresponding to the given song_name into fields. If files not found or wifi error, fail gracefully
  */
+// We will likely change song_name to song_index
 void Game::load(char* song_name) {
-  // TODO @Matthew 
-  // parse charts into Game's fields
-  // initialize: note_times_left, note_dirs_left, total_num_notes_left, bpm, offset, song_duration from server chart data
-  // initialize: note_hit_left to all False, score to 0
-  // below is a basic test version that doesn't involve the server
-  int total_num_notes_left = 20;
-  song_duration = 30000;
-  for (int i=0; i<total_num_notes_left; i++) {
-    note_times_left[i] = 1000*(i+1);
-    note_dirs_left[i] = 'd';
-    note_hit_left[i] = false;
-  }
-  score = 0;
+  // Get ready to download chart list
+  HTTPClient http;
+  char url[200];
+  String response;
+  char body[MAX_BODY_LENGTH];
+  char* ptr;
 
-  // load saber and display
-  saber_left->load(note_times_left, note_dirs_left, note_hit_left, total_num_notes_left);
-  display_left->load(note_times_left, note_dirs_left, note_hit_left, total_num_notes_left, &score);
-  display_left->print_song(song_name);
-  display_right->load(note_times_left, note_dirs_left, note_hit_left, total_num_notes_left, &score);
+  // get charts for and initialize both the left & right sides!
+  for (uint8_t side = 0; side < 2; side++) {
+    strcpy(body, "");
+    sprintf(url, CHARTS_ENDPOINT, song_name, side);
+    http.begin(url);
+    int http_code = http.GET();
+    Serial.println("____");
+    if (http_code > 0) {
+      response = http.getString(); // offset,bpm:ts,dir;ts,dir;ts,dir;...
+      int i = 0;
+      while (i < MAX_BODY_LENGTH) {
+        body[i] = response[i];
+        if(response[i++] == '\0') break;
+      }
+      Serial.printf("GET %s\n", url);
+      Serial.printf("Response:\n%s\n", body);
+    } else {
+      Serial.println("Something went wrong with the GET request!");
+      Serial.println(url);
+      Serial.println("...");
+      delay(500000);
+    }
+    Serial.println("%%%%");
+    
+    ptr = strtok(body, ","); offset = atoi(ptr); // first number returned is the offset
+    ptr = strtok(NULL, ":"); bpm    = atoi(ptr); // second number returned is the BPM
+    // the remaining numbers are timestamp,direction pairs
+    ptr = strtok(NULL, ",");
+    while (ptr != NULL) {
+      note_times[side][total_num_notes[side]]  = atoi(ptr);
+      note_dirs[side][total_num_notes[side]++] = (strtok(NULL, ";"))[0];
+      ptr = strtok(NULL, ",");
+    }
+  
+    for (int i = 0; i < total_num_notes[side]; i++)
+      note_hit[side][i] = false;
+
+    // Load sabers and displays
+    sabers[side]->load(note_times[side], note_dirs[side], note_hit[side], total_num_notes[side]);
+    displays[side]->load(note_times[side], note_dirs[side], note_hit[side], total_num_notes[side], &score);
+  }
+
+  // Print song name and score
+  displays[0]->print_song(song_name);
+  displays[1]->update_score();
+  
+  // duration is calculated as two seconds after the last note
+  // (for now at least; we may implement a smarter version later)
+  song_duration = note_times[0][total_num_notes[0] - 1] + offset + 2000;
+  // initialize the player's score to zero
+  score = 0;
 }
 
 /**
@@ -42,9 +89,8 @@ void Game::load(char* song_name) {
 void Game::start(char* song_name) {
   // TODO @Diana start playing music
   // initialize timers
-  saber_left->start();
-  display_left->start();
-  display_right->start();
+  sabers[0]->start(); // sabers[1]->start();
+  displays[0]->start(); displays[1]->start();
 }
 
 /**
@@ -55,10 +101,10 @@ boolean Game::process() {
   if (millis()-start_time > song_duration) {
     return true;
   } else {
-    saber_left->process(/* parameters tbd */);
-    display_left->process(/* parameters tbd */);
-    display_right->process();
-    display_right->update_score();
+    sabers[0]->process(/* parameters tbd */);
+    displays[0]->process(/* parameters tbd */);
+    displays[1]->process();
+    displays[1]->update_score();
     return false;
   }
 }

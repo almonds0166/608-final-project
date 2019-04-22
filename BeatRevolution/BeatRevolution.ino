@@ -1,11 +1,6 @@
 #include "Game.h"
 #include <WiFi.h>
 
-// Loop speed
-#define FPS 30
-const float LOOP = 1000.0 / FPS;
-uint32_t primary_timer;
-
 // WiFi
 char NETWORK[] = "MIT"; // ssid
 char PW[]      = "";    // p/w
@@ -63,8 +58,6 @@ void setup(void) {
   
   game.load(song_name);
   game.start(song_name);
-  
-  primary_timer = millis();
 }
 
 void loop() {
@@ -74,13 +67,4 @@ void loop() {
   if (!complete) {
     complete = game.process(); // game.process will do things such as update display, detect motion, play music, etc; it returns whether or not game is over
   }
-  
-  //Serial.println(" .");
-  float leftover = LOOP - (millis() - primary_timer);
-  if (leftover < 0) {
-    Serial.printf("[Warning]: Loop over by %0.f ms!\n", -leftover);
-  } else {
-    delay(leftover);
-  }
-  primary_timer = millis();
 }

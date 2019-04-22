@@ -2,32 +2,34 @@
 """
 almonds@mit.edu for help
 
-Example usage: /br/chart.py?song=2&left
+Example usage: /br/chart.py?song=bad_apple&left
 Example response: 1486,138:0,d;869,d;...
             (AKA) offset,bpm:timestamp,direction;timestamp,direction;...
 """
 
-SONGS = ["bad_apple"]
+import os
 
 def request_handler(request):
    if request["method"] != "GET" \
-   or not "song" in request["values"]:
-      return "400 - Expecting a GET request with parameter: song"
+   or not "song" in request["values"] \
+   or not "side" in request["values"]:
+      return "400 - Expecting a GET request with parameters: song, side"
 
    # Which song the client asked for
    song = request["values"]["song"]
-   if not song.isdigit(): return "400"
-   song = int(song)
-   if song < 0 or song >= len(SONGS):
-      return "400 - We only have {} songs.".format(len(SONGS))
+   song = song.lower()
+   fname = "__HOME__/br/{}.txt".format(song)
+
+   if not os.path.exists(fname):
+      return "500 - No file named: " + fname
 
    # Which side the client asked for
-   letter = "L" if "left" in request["args"] else "R"
+   letter = "L" if request["values"]["side"] == "0" else "R"
 
    offset = 0
    bpm    = 0
    out    = ""
-   with open("__HOME__/br/{}.txt".format(SONGS[song]), "r") as f:
+   with open(fname, "r") as f:
       for line in f:
          line = line.strip("\n ").split(" ")
          if not line: continue

@@ -3,6 +3,7 @@
 #include "Arduino.h"
 #include "Display.h"
 #include "Saber.h"
+#include <DFRobotDFPlayerMini.h>
 
 #define MAX_NOTES 500 // possibly bad practice, oops
 
@@ -21,6 +22,8 @@ class Game
   // index of 1 is right side
   Saber*   sabers[2];
   Display* displays[2];
+  DFRobotDFPlayerMini* mp3;
+  
   uint16_t total_num_notes[2];
   uint32_t note_times[2][MAX_NOTES];
   char     note_dirs[2][MAX_NOTES];
@@ -41,9 +44,9 @@ class Game
   
   public:
   
-  Game(Saber** saber_pointers, Display** display_pointers);
+  Game(Saber** saber_pointers, Display** display_pointers, DFRobotDFPlayerMini* mp3_pointer);
   void load(char* song_name); // can change argument to int song_index instead of char* once order of songs determined and synced
-  void start(char* song_name);
+  void start(int* song_index);
   boolean process();
   void reset();
 };

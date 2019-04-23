@@ -7,6 +7,8 @@ char PW[]      = "";    // p/w
 
 TFT_eSPI tft = TFT_eSPI(); 
 MPU9255 imu;
+HardwareSerial mySoftwareSerial(2); // handles communication with mp3
+DFRobotDFPlayerMini mp3;
 
 const int cs_pin_left = 12;
 const int cs_pin_right = 0;
@@ -21,9 +23,10 @@ Display display_right(&tft, rate, cs_pin_right);
 Saber*   sabers[2]   = {&saber_left, &saber_right};
 Display* displays[2] = {&display_left, &display_right};
 
-Game game(sabers, displays);
+Game game(sabers, displays, &mp3);
 
 char song_name[50] = "bad_apple"; // will eventually be an index
+int song_index = 1;
 boolean complete = false;
 
 void setup(void) {
@@ -55,9 +58,25 @@ void setup(void) {
     Serial.println("Restarting");
     ESP.restart(); // restart the ESP (proper way)
   }
+
+  mySoftwareSerial.begin(9600, SERIAL_8N1, 32, 33);  // speed, type, RX, TX
+  Serial.println(F("Initializing DFPlayer ... (May take 3~5 seconds)"));
+  delay(1000);
+  if (!mp3.begin(mySoftwareSerial)) {  // Use softwareSerial to communicate with mp3.
+    Serial.println(mp3.readType(), HEX);
+    Serial.println(F("Unable to begin:"));
+    Serial.println(F("1.Please recheck the connection!"));
+    Serial.println(F("2.Please insert the SD card!"));
+    while(true);
+  }
+  Serial.println(F("DFPlayer Mini online."));
+  mp3.setTimeOut(500); //Set serial communictaion time out 500ms
+  mp3.volume(15); // set volume (0~30)
+  mp3.EQ(DFPLAYER_EQ_NORMAL); // set EQ
+  mp3.outputDevice(DFPLAYER_DEVICE_SD); // set to read from SD
   
   game.load(song_name);
-  game.start(song_name);
+  game.start(&song_index);
 }
 
 void loop() {

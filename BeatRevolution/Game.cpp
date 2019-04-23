@@ -10,11 +10,12 @@
  * The same Game object will be used the entire time, with the methods of reset and load to set the game up for different new songs. 
  * Objects were already declared statically in the main ino, now set pointers to correct places
  */
-Game::Game(Saber** saber_pointers, Display** display_pointers) {
+Game::Game(Saber** saber_pointers, Display** display_pointers, DFRobotDFPlayerMini* mp3_pointer) {
   for (uint8_t side = 0; side < 2; side++) {
     sabers[side]   = saber_pointers[side];
     displays[side] = display_pointers[side];
   }
+  mp3 = mp3_pointer;
 }
 
 /**
@@ -85,9 +86,10 @@ void Game::load(char* song_name) {
  * Start the game. Set up timers, start playing music. From now on, process() will be called every few milliseconds until the song 
  * is over.
  */
-void Game::start(char* song_name) {
-  // TODO @Diana start playing music
-  // initialize timers
+void Game::start(int* song_index) {
+  mp3->play(*song_index);
+  start_time = millis();
+  
   sabers[0]->start(); // sabers[1]->start();
   displays[0]->start(); displays[1]->start();
 }

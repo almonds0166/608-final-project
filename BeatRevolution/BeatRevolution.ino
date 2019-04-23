@@ -25,7 +25,7 @@ Display* displays[2] = {&display_left, &display_right};
 
 Game game(sabers, displays, &mp3);
 
-char song_name[50] = "bad_apple"; // will eventually be an index
+char song_name[50] = "bad_apple";
 int song_index = 1;
 boolean complete = false;
 
@@ -75,7 +75,7 @@ void setup(void) {
   mp3.EQ(DFPLAYER_EQ_NORMAL); // set EQ
   mp3.outputDevice(DFPLAYER_DEVICE_SD); // set to read from SD
   
-  game.load(song_name);
+  game.load(song_index);
   game.start(&song_index);
 }
 

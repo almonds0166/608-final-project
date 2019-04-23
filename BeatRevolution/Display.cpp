@@ -36,7 +36,9 @@ Display::Display(TFT_eSPI* tft, float rate, int cs) {
   }
 }
 
-void Display::load(uint32_t* time_list, char* dir_list, boolean* hit_list, int num_notes, uint16_t* score_loc) {
+void Display::load(uint32_t beats_per_minute, uint32_t off, uint32_t* time_list, char* dir_list, boolean* hit_list, int num_notes, uint16_t* score_loc) {
+  mspb = 60000.0/beats_per_minute;
+  offset = off;
   note_times = time_list;
   note_dirs = dir_list;
   note_hit = hit_list;
@@ -285,10 +287,24 @@ void Display::translate_arrow(char dir, int x, int y, uint16_t color) {
 
 // given the timing of a beat, determine the color of the arrow
 uint16_t Display::find_color(uint32_t beat) {
-  if (cs_pin == 12)
+  // time of on-beat right before beat, with offset
+  uint32_t floor_beat_time = (uint32_t)(((uint32_t)((beat-offset)/mspb))*mspb);
+  // relative location of note wrt beat
+  float placement = (beat-offset-floor_beat_time)/mspb;
+  int subdivision = (int)(round(8*placement))%8;
+  switch(subdivision) 
   {
-    return TFT_BLUE;
-  } else {
-    return TFT_GREEN;
+    case 0:
+      return TFT_ORANGE;
+    break;
+    case 4:
+      return TFT_BLUE;
+    break;
+    case 2:
+      return TFT_GREEN;
+    break;
+    default:
+      return TFT_RED;
+    break;
   }
 }

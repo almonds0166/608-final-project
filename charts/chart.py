@@ -2,12 +2,18 @@
 """
 almonds@mit.edu for help
 
-Example usage: /br/chart.py?song=bad_apple&left
+Example usage: /br/chart.py?song=1&side=0
 Example response: 1486,138:0,d;869,d;...
             (AKA) offset,bpm:timestamp,direction;timestamp,direction;...
 """
 
 import os
+
+SONGS = [ None, \
+   "asterisk",
+   "bad_apple",
+   "navillera",
+   "the_blocks_we_loved" ]
 
 def request_handler(request):
    if request["method"] != "GET" \
@@ -15,15 +21,19 @@ def request_handler(request):
    or not "side" in request["values"]:
       return "400 - Expecting a GET request with parameters: song, side"
 
-   # Which song the client asked for
+   # Which *song* the client asked for
    song = request["values"]["song"]
-   song = song.lower()
-   fname = "__HOME__/br/{}.txt".format(song)
+   if not song.isdigit():
+      return "400 - \"" + song + "\" could not be parsed as an integer"
+   song = int(song)
+   if song < 1 or song >= len(SONGS):
+      return "400 - \"{}\" is not an appropriate song index. Expected: [1,{}]".format(song, len(SONGS)-1)
+   fname = "__HOME__/br/{}.txt".format(SONGS[song])
 
    if not os.path.exists(fname):
-      return "500 - No file named: " + fname
+      return "500 - No file found at: " + fname
 
-   # Which side the client asked for
+   # Which *side* the client asked for
    letter = "L" if request["values"]["side"] == "0" else "R"
 
    offset = 0

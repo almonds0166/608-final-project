@@ -45,7 +45,7 @@ class Game
   public:
   
   Game(Saber** saber_pointers, Display** display_pointers, DFRobotDFPlayerMini* mp3_pointer);
-  void load(char* song_name); // can change argument to int song_index instead of char* once order of songs determined and synced
+  void load(int song_index); // can change argument to int song_index instead of char* once order of songs determined and synced
   void start(int* song_index);
   boolean process();
   void reset();

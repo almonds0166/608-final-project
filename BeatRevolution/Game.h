@@ -29,6 +29,8 @@ class Game
   char     note_dirs[2][MAX_NOTES];
   boolean  note_hit[2][MAX_NOTES];
 
+  char** song_list;
+
   uint8_t bpm;
   uint32_t offset;
 
@@ -37,16 +39,11 @@ class Game
   uint32_t song_duration;
   uint32_t start_time;
   
-  // TODO: other fields, such as buttons, pointer to where music file is stored, timers, any indices, song length, etc etc
-
-  // TODO: any private helper methods
-
-  
   public:
   
-  Game(Saber** saber_pointers, Display** display_pointers, DFRobotDFPlayerMini* mp3_pointer);
-  void load(int song_index); // can change argument to int song_index instead of char* once order of songs determined and synced
-  void start(int* song_index);
+  Game(Saber** saber_pointers, Display** display_pointers, DFRobotDFPlayerMini* mp3_pointer, char** song_names);
+  void load(int song_index); 
+  void start(int song_index);
   boolean process();
   void reset();
 };

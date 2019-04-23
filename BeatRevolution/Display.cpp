@@ -44,15 +44,8 @@ void Display::load(uint32_t beats_per_minute, uint32_t off, uint32_t* time_list,
   note_hit = hit_list;
   buff_size = num_notes;
   score_ptr = score_loc;
-  prev_score = 0;
+  prev_score = -1; // so that 0 will be displayed initially
 
-  // display score of 0 to initialize
-  digitalWrite(cs_pin, LOW);
-  screen->fillScreen(BACKGROUND);
-  screen->setCursor(0,pixel_thresh+28,1);
-  screen->print("Score: ");
-  screen->println(0);
-  digitalWrite(cs_pin, HIGH);
   ind = 0;
   for (int i = 0; i < 10; i++)
   {

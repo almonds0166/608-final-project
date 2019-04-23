@@ -12,7 +12,7 @@ DFRobotDFPlayerMini mp3;
 
 const int cs_pin_left = 12;
 const int cs_pin_right = 0;
-float rate = 0.05;
+float rate = 0.07;
 
 Saber saber_left(&imu);
 Saber saber_right(&imu);
@@ -23,10 +23,15 @@ Display display_right(&tft, rate, cs_pin_right);
 Saber*   sabers[2]   = {&saber_left, &saber_right};
 Display* displays[2] = {&display_left, &display_right};
 
-Game game(sabers, displays, &mp3);
+char song1[] = "Asterisk";
+char song2[] = "Bad Apple";
+char song3[] = "Navillera";
+char song4[] = "The Blocks We Loved";
+char* song_names[5] = {NULL, song1, song2, song3, song4};
 
-char song_name[50] = "bad_apple";
-int song_index = 1;
+Game game(sabers, displays, &mp3, song_names);
+
+int song_index = 2;
 boolean complete = false;
 
 void setup(void) {
@@ -50,7 +55,6 @@ void setup(void) {
   Serial.println(" CONNECTED!");
 
   // NOTE: taking out the setupIMU stuff breaks everything
-  
   if (imu.setupIMU(1)) {
     Serial.println("IMU Connected!");
   } else {
@@ -58,7 +62,7 @@ void setup(void) {
     Serial.println("Restarting");
     ESP.restart(); // restart the ESP (proper way)
   }
-
+  
   mySoftwareSerial.begin(9600, SERIAL_8N1, 32, 33);  // speed, type, RX, TX
   Serial.println(F("Initializing DFPlayer ... (May take 3~5 seconds)"));
   delay(1000);
@@ -76,7 +80,7 @@ void setup(void) {
   mp3.outputDevice(DFPLAYER_DEVICE_SD); // set to read from SD
   
   game.load(song_index);
-  game.start(&song_index);
+  game.start(song_index);
 }
 
 void loop() {

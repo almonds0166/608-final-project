@@ -10,18 +10,18 @@
  * The same Game object will be used the entire time, with the methods of reset and load to set the game up for different new songs. 
  * Objects were already declared statically in the main ino, now set pointers to correct places
  */
-Game::Game(Saber** saber_pointers, Display** display_pointers, DFRobotDFPlayerMini* mp3_pointer) {
+Game::Game(Saber** saber_pointers, Display** display_pointers, DFRobotDFPlayerMini* mp3_pointer, char** song_names) {
   for (uint8_t side = 0; side < 2; side++) {
     sabers[side]   = saber_pointers[side];
     displays[side] = display_pointers[side];
   }
   mp3 = mp3_pointer;
+  song_list = song_names;
 }
 
 /**
- * Load music, chart, and other data corresponding to the given song_name into fields. If files not found or wifi error, fail gracefully
+ * Load music, chart, and other data corresponding to the given song_index into fields. If files not found or wifi error, fail gracefully
  */
-// We will likely change song_name to song_index
 void Game::load(int song_index) {
   // Get ready to download chart list
   HTTPClient http;
@@ -72,10 +72,6 @@ void Game::load(int song_index) {
     // REPLACE 60000 AND 0 WITH ACTUAL BPM AND OFFSET
     displays[side]->load(60000, 0, note_times[side], note_dirs[side], note_hit[side], total_num_notes[side], &score);
   }
-
-  // Print song name and score
-  //displays[0]->print_song(song_name);
-  displays[1]->update_score();
   
   // TODO: include song_duration into the song's text file (similar to bpm and offset) and load that
   song_duration = 20000;
@@ -87,12 +83,16 @@ void Game::load(int song_index) {
  * Start the game. Set up timers, start playing music. From now on, process() will be called every few milliseconds until the song 
  * is over.
  */
-void Game::start(int* song_index) {
-  mp3->play(*song_index);
+void Game::start(int song_index) {
+  mp3->play(song_index);
   start_time = millis();
   
-  sabers[0]->start(); // sabers[1]->start();
-  displays[0]->start(); displays[1]->start();
+  sabers[0]->start(); 
+  // sabers[1]->start();
+  displays[0]->start(); 
+  displays[0]->print_song(song_list[song_index]);
+  displays[1]->start();
+  displays[1]->update_score();
 }
 
 /**
@@ -104,6 +104,7 @@ boolean Game::process() {
     return true;
   } else {
     sabers[0]->process();
+    // sabers[1]->process();
     displays[0]->process();
     displays[1]->process();
     displays[1]->update_score();

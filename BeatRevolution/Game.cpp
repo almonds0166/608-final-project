@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdlib.h> // atoi
 
-#define CHARTS_ENDPOINT "http://608dev.net/sandbox/sc/almonds/br/chart.py?song=%s&side=%d"
+#define CHARTS_ENDPOINT "http://608dev.net/sandbox/sc/almonds/br/chart.py?song=%d&side=%d"
 #define MAX_BODY_LENGTH 4000 /* don't set this too high, we only have so much memory */
 
 /**
@@ -22,7 +22,7 @@ Game::Game(Saber** saber_pointers, Display** display_pointers, DFRobotDFPlayerMi
  * Load music, chart, and other data corresponding to the given song_name into fields. If files not found or wifi error, fail gracefully
  */
 // We will likely change song_name to song_index
-void Game::load(char* song_name) {
+void Game::load(int song_index) {
   // Get ready to download chart list
   HTTPClient http;
   char url[200];
@@ -33,7 +33,7 @@ void Game::load(char* song_name) {
   // get charts for and initialize both the left & right sides!
   for (uint8_t side = 0; side < 2; side++) {
     strcpy(body, "");
-    sprintf(url, CHARTS_ENDPOINT, song_name, side);
+    sprintf(url, CHARTS_ENDPOINT, song_index, side);
     http.begin(url);
     int http_code = http.GET();
     Serial.println("____");
@@ -74,7 +74,7 @@ void Game::load(char* song_name) {
   }
 
   // Print song name and score
-  displays[0]->print_song(song_name);
+  //displays[0]->print_song(song_name);
   displays[1]->update_score();
   
   // TODO: include song_duration into the song's text file (similar to bpm and offset) and load that

@@ -69,8 +69,7 @@ void Game::load(int song_index) {
 
     // Load sabers and displays
     sabers[side]->load(note_times[side], note_dirs[side], note_hit[side], total_num_notes[side], &score);
-    // REPLACE 60000 AND 0 WITH ACTUAL BPM AND OFFSET
-    displays[side]->load(60000, 0, note_times[side], note_dirs[side], note_hit[side], total_num_notes[side], &score);
+    displays[side]->load(bpm, offset, note_times[side], note_dirs[side], note_hit[side], total_num_notes[side], &score);
   }
   
   // TODO: include song_duration into the song's text file (similar to bpm and offset) and load that

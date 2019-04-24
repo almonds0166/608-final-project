@@ -279,7 +279,6 @@ void Display::translate_arrow(char dir, int x, int y, uint16_t color) {
 }
 
 // given the timing of a beat, determine the color of the arrow
-// TODO: function currently appears to be broken, always returns red
 uint16_t Display::find_color(uint32_t beat) {
   // time of on-beat right before beat, with offset
   uint32_t floor_beat_time = (uint32_t)(((uint32_t)((beat-offset)/mspb))*mspb);

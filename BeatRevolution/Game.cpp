@@ -59,7 +59,7 @@ void Game::load(int song_index) {
     // the remaining numbers are timestamp,direction pairs
     ptr = strtok(NULL, ",");
     while (ptr != NULL) {
-      note_times[side][total_num_notes[side]]  = atoi(ptr);
+      note_times[side][total_num_notes[side]]  = atoi(ptr) + offset;
       note_dirs[side][total_num_notes[side]++] = (strtok(NULL, ";"))[0];
       ptr = strtok(NULL, ",");
     }
@@ -73,7 +73,7 @@ void Game::load(int song_index) {
   }
   
   // TODO: include song_duration into the song's text file (similar to bpm and offset) and load that
-  song_duration = 20000;
+  song_duration = 60000;
   // initialize the player's score to zero
   score = 0;
 }

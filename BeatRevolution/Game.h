@@ -25,7 +25,7 @@ class Game
   DFRobotDFPlayerMini* mp3;
   
   uint16_t total_num_notes[2];
-  uint32_t note_times[2][MAX_NOTES];
+  uint32_t note_times[2][MAX_NOTES]; // note, note_times already account for offset, so that the first note is equal to offset not 0
   char     note_dirs[2][MAX_NOTES];
   boolean  note_hit[2][MAX_NOTES];
 

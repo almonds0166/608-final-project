@@ -1,5 +1,6 @@
 offset 8442
 bpm 138
+duration 123000
 
 L 0 d
 L 869 d

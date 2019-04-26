@@ -1,7 +1,7 @@
 #ifndef Saber_h
 #define Saber_h
 #include "Arduino.h"
-#include <mpu9255_esp32.h>
+#include "MPU9250.h"
 
 #define ACCE_HISTORY_SIZE 40
 #define ACCE_RECORD_PERIOD 4 // ms
@@ -16,8 +16,8 @@ class Saber
   uint8_t total_num_notes;
   uint8_t note_index;
 
-  MPU9255* imu;
-  int ad0_pin;
+  MPU9250* imu;
+  int cs_pin;
   
   uint16_t* score;
 
@@ -33,7 +33,7 @@ class Saber
   
   public:
   
-  Saber(MPU9255* imu_pointer, int ad0); // note, might need to change pointer type if we make another imu class
+  Saber(MPU9250* imu_pointer, int cs); 
   void load(uint32_t* time_list, char* dir_list, boolean* hit_list, uint8_t num_notes, uint16_t* score_pointer); 
   void start();
   void process(); 

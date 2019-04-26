@@ -5,11 +5,17 @@
 char NETWORK[] = "MIT"; // ssid
 char PW[]      = "";    // p/w
 
-//char NETWORK[] = "6s08"; // ssid
-//char PW[]      = "iesc6s08";    // p/w
+//char NETWORK[] = "6s08"; 
+//char PW[]      = "iesc6s08";
 
 TFT_eSPI tft = TFT_eSPI(); 
-MPU9255 imu;
+
+const int imu_cs_pin_left = 16;
+const int imu_cs_pin_right = 17;
+
+MPU9250 imu_left(SPI, imu_cs_pin_left);
+MPU9250 imu_right(SPI, imu_cs_pin_right);
+
 HardwareSerial mySoftwareSerial(2); // handles communication with mp3
 DFRobotDFPlayerMini mp3;
 
@@ -17,11 +23,8 @@ const int cs_pin_left = 12;
 const int cs_pin_right = 0;
 float rate = 0.07;
 
-const int ad0_pin_left = 19;
-const int ad0_pin_right = 17;
-
-Saber saber_left(&imu, ad0_pin_left);
-Saber saber_right(&imu, ad0_pin_right);
+Saber saber_left(&imu_left, imu_cs_pin_left);
+Saber saber_right(&imu_right, imu_cs_pin_right);
 
 Display display_left(&tft, rate, cs_pin_left);
 Display display_right(&tft, rate, cs_pin_right);
@@ -59,15 +62,43 @@ void setup(void) {
     ESP.restart();
   }
   Serial.println(" CONNECTED!");
-
-  // NOTE: taking out the setupIMU stuff breaks everything
-  if (imu.setupIMU(1)) {
-    Serial.println("IMU Connected!");
-  } else {
-    Serial.println("IMU Not Connected :/");
-    Serial.println("Restarting");
-    ESP.restart(); // restart the ESP (proper way)
+  
+  // start communication with IMU 
+  Serial.println("Attempting to connect to IMU left");
+  int status = imu_left.begin();
+  if (status < 0) {
+    Serial.println("IMU initialization unsuccessful");
+    Serial.println("Check IMU wiring or try cycling power");
+    Serial.print("Status: ");
+    Serial.println(status);
+    while(true) {}
   }
+  status = imu_left.setAccelRange(MPU9250::ACCEL_RANGE_8G);
+  if (status < 0) {
+    Serial.println("IMU left setting acce range unsuccessful");
+    Serial.print("Status: ");
+    Serial.println(status);
+    while(true) {}
+  }
+  Serial.println("IMU left connected and set up!");
+  
+  Serial.println("Attempting to connect to IMU right");
+  status = imu_right.begin();
+  if (status < 0) {
+    Serial.println("IMU initialization unsuccessful");
+    Serial.println("Check IMU wiring or try cycling power");
+    Serial.print("Status: ");
+    Serial.println(status);
+    while(true) {}
+  }
+  status = imu_right.setAccelRange(MPU9250::ACCEL_RANGE_8G);
+  if (status < 0) {
+    Serial.println("IMU right setting acce range unsuccessful");
+    Serial.print("Status: ");
+    Serial.println(status);
+    while(true) {}
+  }
+  Serial.println("IMU right connected and set up!");
   
   mySoftwareSerial.begin(9600, SERIAL_8N1, 32, 33);  // speed, type, RX, TX
   Serial.println(F("Initializing DFPlayer ... (May take 3~5 seconds)"));

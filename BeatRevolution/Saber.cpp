@@ -1,10 +1,10 @@
 #include "Saber.h"
 
-Saber::Saber(MPU9255* imu_pointer, int ad0) {
+Saber::Saber(MPU9250* imu_pointer, int cs) {
   imu = imu_pointer;
-  ad0_pin = ad0;
-  pinMode(ad0_pin, OUTPUT);
-  digitalWrite(ad0_pin, HIGH);
+  cs_pin = cs;
+  pinMode(cs_pin, OUTPUT);
+  digitalWrite(cs_pin, HIGH);
 }
 
 /**
@@ -38,23 +38,21 @@ void Saber::process() {
 
   // read new acceleration data if needed
   if (millis() - last_acce_time >= ACCE_RECORD_PERIOD) { // works best if function called at least once per ms
-    digitalWrite(ad0_pin, LOW);
-    delay(1);
-    imu->readAccelData(imu->accelCount);
-    delay(1);
-    float x = (imu->accelCount)[0]*(imu->aRes);
-    float z = (imu->accelCount)[2]*(imu->aRes) - 1;
-    delay(1);
-    digitalWrite(ad0_pin, HIGH);
+//    digitalWrite(cs_pin, LOW); // it's unclear to me why this line breaks things
+    imu->readSensor();
+    float x = imu->getAccelY_mss(); // what was previous the x direction on the imu is now the y direction in the new library
+                                    // a motion to the right starts positive and ends negative
+    float z = -(imu->getAccelZ_mss() + 9.8); // a motion up starts positive and ends negative
+    digitalWrite(cs_pin, HIGH);
     
     x_acce[acce_index] = x;
     z_acce[acce_index] = z;
 
     last_acce_time = millis();
 
-    char output[40];
-    sprintf(output,"%d,%4.2f,%4.2f",ad0_pin,x,z); //render numbers with %4.2 float formatting
-    Serial.println(output); //print to serial for plotting
+//    char output[40];
+//    sprintf(output,"%d,%4.2f,%4.2f",cs_pin,x,z); //render numbers with %4.2 float formatting
+//    Serial.println(output); //print to serial for plotting
     delay(0); // NOTE: don't take this line out, it fixes a bug for some reason
     
     // update acce_index, so that it now points to the oldest acceleration
@@ -81,14 +79,13 @@ void Saber::process() {
 // expected time is relative to the start time, so a note at the beginning of the song should have expected
 // time of 0
 int8_t Saber::match(uint32_t expected_time, char expected_dir) {
-  
   const int beat_earliness_limit = 0;
   // a beat can be matched as early as beat_earliness_limit ms before the expected time
   const int beat_lateness_limit = 150;
   // if a beat is not detected for beat_lateness_limit ms after the expected timestamp, mark as missed
   const int measurements_above_limit_count = 5; 
-  const double first_acce_limit = 2;
-  const double second_acce_limit = 1.5;
+  const double first_acce_limit = 20; // in m/s/s
+  const double second_acce_limit = 15;
   // must spend this many measurements above limit, aka measurements_above_limit_count*ACCE_RECORD_PERIOD ms,
   // above the 1st/2nd threshold to count as 1st(0->1)/2nd(2->3) state transitions
 
@@ -110,6 +107,7 @@ int8_t Saber::match(uint32_t expected_time, char expected_dir) {
      state 4: detected acceleration in the opposite direction and sufficient magnitude for sufficient time, 
               return hit. state transition doesn't actually happen, just return 
   */
+  
   int state = 0;
   int entered_correct_dir_index = -1;
   int entered_reverse_dir_index = -1;
@@ -203,4 +201,5 @@ int8_t Saber::match(uint32_t expected_time, char expected_dir) {
     }
   }
   return 0; // beat not too early or too late, but correct motion not detected
+  
 }

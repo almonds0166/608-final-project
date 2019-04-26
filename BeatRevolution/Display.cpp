@@ -34,6 +34,11 @@ Display::Display(TFT_eSPI* tft, float rate, int cs) {
   {
     past_ycoors[i] = -4;
   }
+  // initialize glows
+  for (int i = 0; i < 4; i++)
+  {
+    make_glow[i] = false;
+  }
 }
 
 void Display::load(uint32_t beats_per_minute, uint32_t off, uint32_t* time_list, char* dir_list, boolean* hit_list, int num_notes, uint16_t* score_loc) {
@@ -91,7 +96,19 @@ void Display::process() {
   // arrows at top of screen
   for (int i = 0; i < 4; i++)
   {
-    draw_arrow(int_to_char[i], arr_x[i], arr_y, TFT_WHITE);
+    if(make_glow[i]) //arrow should glow and fade
+    {
+      // check that too much time has not elapsed
+      uint16_t faded_color = glow_arrow(recent_hits[i]);
+      if (faded_color > 0) {
+        // draw arrow in appropriate color at this point in time
+        draw_arrow(int_to_char[i], arr_x[i], arr_y, glow_arrow(recent_hits[i]));
+      } else {
+        make_glow[i] = false;
+      }
+    } else { // draw normal arrow
+      draw_arrow(int_to_char[i], arr_x[i], arr_y, OFF_WHITE);
+    }
   }
 
   //translate arrows on screen
@@ -116,6 +133,12 @@ void Display::process() {
       } else { // note missed or hit, go to next note in list
         //blank previous arrow
         draw_arrow(int_to_char[cur_dir[i]], arr_x[cur_dir[i]], past_ycoors[i], BACKGROUND);
+        // note hit, tell bottom white arrow to do stuff
+        if (note_hit[cur_ind[i]])
+        { 
+          make_glow[cur_dir[i]] = true;
+          recent_hits[cur_dir[i]] = millis();
+        }
         if (ind < buff_size)
         {
           cur_dir[i] = char_to_int[note_dirs[ind]];
@@ -300,4 +323,15 @@ uint16_t Display::find_color(uint32_t beat) {
       return TFT_RED;
     break;
   }
+}
+
+//color of glow and fade arrow when note is hit at time full_bright
+uint16_t Display::glow_arrow(uint32_t full_bright) {
+  uint32_t diff = millis() - full_bright;
+  diff = diff/30;
+  if(diff < 21) {
+    uint16_t color = (31-diff) * 2113 + 32;
+    return(color);
+  }
+  return(0);
 }

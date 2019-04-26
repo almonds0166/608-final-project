@@ -16,6 +16,8 @@ class Display
   uint16_t prev_score;
   float mspb; //ms per beat
   uint32_t offset;
+  uint32_t recent_hits[4]; // time of most recent hits in each direction
+  boolean make_glow[4]; // determine if arrow should glow
   
   uint8_t buff_size;
   TFT_eSPI* screen;
@@ -33,6 +35,8 @@ class Display
   
   // background color
   const uint16_t BACKGROUND = TFT_BLACK;
+  // off-white default arrow color
+  const uint16_t OFF_WHITE = 23275;
 
   //past locations of current 10 arrows to be displayed
   int past_ycoors[10];
@@ -55,6 +59,7 @@ class Display
   int calc_center(int dir, uint32_t beat, uint32_t timer);
   uint16_t find_color(uint32_t beat);
   void translate_arrow(char dir, int x, int y, uint16_t color);
+  uint16_t glow_arrow(uint32_t full_bright);
 
   public:
   

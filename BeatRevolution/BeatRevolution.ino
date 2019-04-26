@@ -5,6 +5,9 @@
 char NETWORK[] = "MIT"; // ssid
 char PW[]      = "";    // p/w
 
+//char NETWORK[] = "6s08"; // ssid
+//char PW[]      = "iesc6s08";    // p/w
+
 TFT_eSPI tft = TFT_eSPI(); 
 MPU9255 imu;
 HardwareSerial mySoftwareSerial(2); // handles communication with mp3
@@ -78,7 +81,7 @@ void setup(void) {
   }
   Serial.println(F("DFPlayer Mini online."));
   mp3.setTimeOut(500); //Set serial communictaion time out 500ms
-  mp3.volume(20); // set volume (0~30)
+  mp3.volume(15); // set volume (0~30)
   mp3.EQ(DFPLAYER_EQ_NORMAL); // set EQ
   mp3.outputDevice(DFPLAYER_DEVICE_SD); // set to read from SD
   

@@ -84,11 +84,11 @@ int8_t Saber::match(uint32_t expected_time, char expected_dir) {
   
   const int beat_earliness_limit = 0;
   // a beat can be matched as early as beat_earliness_limit ms before the expected time
-  const int beat_lateness_limit = 200;
+  const int beat_lateness_limit = 150;
   // if a beat is not detected for beat_lateness_limit ms after the expected timestamp, mark as missed
-  const int measurements_above_limit_count = 3; 
-  const double first_acce_limit = 3;
-  const double second_acce_limit = 1;
+  const int measurements_above_limit_count = 5; 
+  const double first_acce_limit = 2;
+  const double second_acce_limit = 1.5;
   // must spend this many measurements above limit, aka measurements_above_limit_count*ACCE_RECORD_PERIOD ms,
   // above the 1st/2nd threshold to count as 1st(0->1)/2nd(2->3) state transitions
 

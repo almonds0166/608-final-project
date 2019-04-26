@@ -3,7 +3,7 @@
 #include "Arduino.h"
 #include <mpu9255_esp32.h>
 
-#define ACCE_HISTORY_SIZE 60
+#define ACCE_HISTORY_SIZE 40
 #define ACCE_RECORD_PERIOD 4 // ms
 
 class Saber

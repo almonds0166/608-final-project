@@ -14,8 +14,11 @@ const int cs_pin_left = 12;
 const int cs_pin_right = 0;
 float rate = 0.07;
 
-Saber saber_left(&imu);
-Saber saber_right(&imu);
+const int ad0_pin_left = 19;
+const int ad0_pin_right = 17;
+
+Saber saber_left(&imu, ad0_pin_left);
+Saber saber_right(&imu, ad0_pin_right);
 
 Display display_left(&tft, rate, cs_pin_left);
 Display display_right(&tft, rate, cs_pin_right);

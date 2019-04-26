@@ -1,7 +1,10 @@
 #include "Saber.h"
 
-Saber::Saber(MPU9255* imu_pointer) {
+Saber::Saber(MPU9255* imu_pointer, int ad0) {
   imu = imu_pointer;
+  ad0_pin = ad0;
+  pinMode(ad0_pin, OUTPUT);
+  digitalWrite(ad0_pin, HIGH);
 }
 
 /**
@@ -35,16 +38,22 @@ void Saber::process() {
 
   // read new acceleration data if needed
   if (millis() - last_acce_time >= ACCE_RECORD_PERIOD) { // works best if function called at least once per ms
+    digitalWrite(ad0_pin, LOW);
+    delay(1);
     imu->readAccelData(imu->accelCount);
-    last_acce_time = millis();
-    
+    delay(1);
     float x = (imu->accelCount)[0]*(imu->aRes);
     float z = (imu->accelCount)[2]*(imu->aRes) - 1;
+    delay(1);
+    digitalWrite(ad0_pin, HIGH);
+    
     x_acce[acce_index] = x;
     z_acce[acce_index] = z;
 
+    last_acce_time = millis();
+
     char output[40];
-    sprintf(output,"%4.2f,%4.2f",x,z); //render numbers with %4.2 float formatting
+    sprintf(output,"%d,%4.2f,%4.2f",ad0_pin,x,z); //render numbers with %4.2 float formatting
     Serial.println(output); //print to serial for plotting
     delay(0); // NOTE: don't take this line out, it fixes a bug for some reason
     

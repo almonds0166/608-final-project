@@ -76,7 +76,7 @@ void Game::load(int song_index) {
   }
   
   // TODO: include song_duration into the song's text file (similar to bpm and offset) and load that
-  song_duration = 60000;
+  song_duration = 123000;
 }
 
 /**
@@ -88,7 +88,7 @@ void Game::start(int song_index) {
   start_time = millis();
   
   sabers[0]->start(); 
-  // sabers[1]->start();
+  sabers[1]->start();
   displays[0]->start(); 
   displays[0]->print_song(song_list[song_index]);
   displays[1]->start();
@@ -104,7 +104,7 @@ boolean Game::process() {
     return true;
   } else {
     sabers[0]->process();
-    // sabers[1]->process();
+    sabers[1]->process();
     displays[0]->process();
     displays[1]->process();
     displays[1]->update_score();

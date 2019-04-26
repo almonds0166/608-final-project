@@ -17,6 +17,7 @@ class Saber
   uint8_t note_index;
 
   MPU9255* imu;
+  int ad0_pin;
   
   uint16_t* score;
 
@@ -32,7 +33,7 @@ class Saber
   
   public:
   
-  Saber(MPU9255* imu_pointer); // note, might need to change pointer type if we make another imu class
+  Saber(MPU9255* imu_pointer, int ad0); // note, might need to change pointer type if we make another imu class
   void load(uint32_t* time_list, char* dir_list, boolean* hit_list, uint8_t num_notes, uint16_t* score_pointer); 
   void start();
   void process(); 

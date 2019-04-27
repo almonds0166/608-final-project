@@ -5,11 +5,10 @@
 // state for gameplay??
 #define HIGHSCORE 2
 
-Interface::Interface(TFT_eSPI* tft1, int tft_pin1, TFT_eSPI* tft2, int tft_pin2, int button_pin1, int button_pin2, char* songs){
-    screen1 = tft1;
-    screen2 = tft2;
-    screen_pin1 = tft_pin1;
-    screen_pin2 = tft_pin2;
+Interface::Interface(TFT_eSPI* tft, int tft_pin1, int tft_pin2, int button_pin1, int button_pin2, char* songs){
+    screen = tft;
+    cs_pin_left = tft_pin1;
+    cs_pin_right = tft_pin2;
     button1 = button_pin1;
     button2 = button_pin2;
 

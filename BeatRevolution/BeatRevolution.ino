@@ -47,6 +47,16 @@ void setup(void) {
   Serial.begin(115200);
   while (!Serial); // wait until we can communicate
 
+  pinMode(imu_cs_pin_left, OUTPUT);
+  pinMode(imu_cs_pin_right, OUTPUT);
+  pinMode(cs_pin_left, OUTPUT);
+  pinMode(cs_pin_right, OUTPUT);
+
+  digitalWrite(imu_cs_pin_left, HIGH);
+  digitalWrite(imu_cs_pin_right, HIGH);
+  digitalWrite(cs_pin_left, HIGH);
+  digitalWrite(cs_pin_right, HIGH);
+
   // Connect to WiFi
   WiFi.begin(NETWORK, PW);
   uint8_t connect_attempts = 0;

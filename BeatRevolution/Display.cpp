@@ -20,7 +20,7 @@ Display::Display(TFT_eSPI* tft, float rate, int cs) {
   int_to_char[3] = 'r';
   ind = 0;
   screen = tft;
-  pinMode(cs_pin, OUTPUT);
+  
   digitalWrite(cs_pin, LOW);
   screen->init();
   screen->setRotation(2);

@@ -3,6 +3,7 @@
 #include "Arduino.h"
 #include "Display.h"
 #include "Saber.h"
+#include "Interface.h"
 #include <DFRobotDFPlayerMini.h>
 
 #define MAX_NOTES 500 // possibly bad practice, oops

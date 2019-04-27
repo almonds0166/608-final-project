@@ -1,3 +1,32 @@
+/*
+ * Wiring guide:
+ * 
+ * On the two IMUs, wire
+ *    VCC/GND - power/ground
+ *    SCL - 18
+ *    SDA - 23
+ *    AD0 - 19
+ *    NCS - imu_cs_pin_left or imu_cs_pin_left
+ * 
+ * On the two displays, wire
+ *    VCC/GND - power/ground
+ *    CS - cs_pin_left or cs_pin_right
+ *    RESET - 4
+ *    A0 - 2
+ *    SDA - 23
+ *    SCK - 18
+ *    LED - power
+ *    
+ * On the mp3 module, wire
+ *    VCC(first left) - power
+ *    RX(second left) - 33
+ *    TX(third left) - 32
+ *    SPK1(sixth left) - plus end on speaker 
+ *    GND(seventh left) - ground
+ *    SPK2(eighth left) - minus end on speaker
+ */
+
+
 #include "Game.h"
 #include <WiFi.h>
 
@@ -10,8 +39,8 @@ char PW[]      = "";    // p/w
 
 TFT_eSPI tft = TFT_eSPI(); 
 
+const int imu_cs_pin_left = 17;
 const int imu_cs_pin_left = 16;
-const int imu_cs_pin_right = 17;
 
 MPU9250 imu_left(SPI, imu_cs_pin_left);
 MPU9250 imu_right(SPI, imu_cs_pin_right);

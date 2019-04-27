@@ -40,7 +40,7 @@ char PW[]      = "";    // p/w
 TFT_eSPI tft = TFT_eSPI(); 
 
 const int imu_cs_pin_left = 17;
-const int imu_cs_pin_left = 16;
+const int imu_cs_pin_right = 16;
 
 MPU9250 imu_left(SPI, imu_cs_pin_left);
 MPU9250 imu_right(SPI, imu_cs_pin_right);

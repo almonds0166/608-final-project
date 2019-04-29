@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="UTF-8"/>
+   <title>{{ title }}</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+   <style>
+      html {
+         color: #c4c4c4;
+         background: #212121;
+         background-image:
+            linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1));
+         background-position: bottom;
+         background-repeat: no-repeat;
+         /*background-attachment: fixed;*/
+         background-size: cover;
+         -webkit-background-size: cover;
+         -moz-background-size: cover;
+         -o-background-size: cover;
+         min-height: 100%;
+         min-width: 480px; }
+
+      body {
+         font-family: Nunito, Verdana, Consolas, sans-serif;
+         font-size: x-large;
+         min-width: 480px;
+         max-width: 720px;
+         margin: 0 auto;
+         padding: 1.618em;
+         box-sizing: border-box;
+         background: rgba(33, 33, 33, 1); }
+
+      a { color: #0e9aa7; }
+      a:visited { color: #7f8e9e; }
+
+      table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%; }
+
+      tr {
+         border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+         border-top: 1px solid rgba(255, 255, 255, 0.3);
+         border-collapse: collapse; }
+
+      td, th {
+         text-align: center;
+         padding: 8px; }
+
+      tr:nth-child(even) { background-color: rgba(255, 255, 255, 0.1); }
+
+      /*footer {
+         background-color: #212121;
+         margin: -1.618em; }*/
+
+      .centered { text-align: center; }
+   </style>
+</head>
+<body>
+   <h1>{{ header }}</h1>
+   <div class="centered">
+      <form action="scoreboard" method="get" id="sortby">
+         Sort by:&nbsp;
+         <input type="radio" name="sortby" value="new" {{ new }}>time&nbsp;
+         <input type="radio" name="sortby" value="top" {{ top }}>score
+         <br>
+         Song:&nbsp;
+         <select name="song" form="sortby">
+            {{ songs }} <!-- A list of options -->
+         </select>
+         <br>
+         Player:&nbsp;
+         <input type="text" name="user" value="{{ user }}"/>
+         <br>
+         <input type="submit" value="Go"/>
+      </form>
+   </div>
+   <br>
+   <table>
+      {{ table }}
+   </table>
+</body>
+</html>

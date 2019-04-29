@@ -35,9 +35,11 @@ class Interface
   int song_index;
 
   void select_username(); // handles selecting a username
-  void select_song();
-  boolean Interface::update_song_index();
-  void display_score(); // handles displaying high scores
+  boolean update_song_index();
+  void update_song_display();
+  void display_recent_scores();
+  void display_player_score(uint16_t score);
+  void display_high_scores(); 
   void upload_score(/* params tbd */); // upload score, probably want to take score and maybe song name or username as params
 
   public:

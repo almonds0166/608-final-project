@@ -49,7 +49,7 @@ void Interface::process() {
     case GAMEPLAY_STATE: {
       boolean complete = false;
       while (!complete) {
-        complete = game.process(); // game.process will do things such as update display, detect motion, play music, etc
+        complete = game->process(); // game.process will do things such as update display, detect motion, play music, etc
       }
       // reach this point after game has completed
       upload_score(/* params tbd */);
@@ -60,7 +60,8 @@ void Interface::process() {
       // display player score and possibly some data about play on left screen
       // display list of high scores on right screen
       // long press either button to move into SONGSELECT state
-      display_score();
+      display_player_score(game->get_score());
+      display_high_scores();
       while (true) {
       /*
         if (either button long pressed) {
@@ -108,7 +109,7 @@ void Interface::update_song_display() {
   digitalWrite(cs_pin_left, HIGH);
 }
 
-void display_recent_scores() {
+void Interface::display_recent_scores() {
   // display on right screen
   // TODO @matt
   digitalWrite(cs_pin_right, LOW);
@@ -117,12 +118,19 @@ void display_recent_scores() {
 }
 
 /**
- * pull high scores and display it on right screen
+ * Display score of the game just played
  */
-void Interface::display_score() {
+void Interface::display_player_score(uint16_t score) {
+  // TODO @diana
+}
+
+/**
+ * Pull high scores and display it on right screen
+ */
+void Interface::display_high_scores() {
   // TODO @matt
 }
 
-void upload_score(/* params tbd */) {
+void Interface::upload_score(/* params tbd */) {
   // TODO @matt
 }

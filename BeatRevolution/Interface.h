@@ -34,3 +34,5 @@ class Interface {
     void select_username(); // handles selecting a username
     void handle_highscore(); // handles displaying high scores
 }
+
+#endif

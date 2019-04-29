@@ -49,6 +49,26 @@
 
       tr:nth-child(even) { background-color: rgba(255, 255, 255, 0.1); }
 
+      input, select {
+         /*width: 4.35em;*/
+         font-family: Nunito, Verdana, Consolas, sans-serif;
+         font-size: x-large;
+         padding: 5px 10px;
+         margin: 8px 8px;
+         border: 2px solid rgba(0,0,0,0);
+         box-sizing: border-box;
+         border-radius: 4px;
+         background-color: rgba(0,0,0,0);
+         color: #c4c4c4; }
+
+      .select-items { background-color: #212121; }
+
+      input[type=text], select { border: 1px solid #c4c4c4; }
+
+      input[type=submit] {
+         font-weight: bold;
+         width: 60%; }
+
       /*footer {
          background-color: #212121;
          margin: -1.618em; }*/
@@ -61,12 +81,12 @@
    <div class="centered">
       <form action="scoreboard" method="get" id="sortby">
          Sort by:&nbsp;
-         <input type="radio" name="sortby" value="new" {{ new }}>time&nbsp;
-         <input type="radio" name="sortby" value="top" {{ top }}>score
+         <label><input type="radio" name="sortby" value="new" {{ new }}>time&nbsp;</label>
+         <label><input type="radio" name="sortby" value="top" {{ top }}>score</label>
          <br>
          Song:&nbsp;
-         <select name="song" form="sortby">
-            {{ songs }} <!-- A list of options -->
+         <select name="song" form="sortby" class="select-items">
+            {{ songs }}
          </select>
          <br>
          Player:&nbsp;

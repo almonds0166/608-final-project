@@ -161,8 +161,9 @@ void setup(void) {
 }
 
 void loop() {
-  // TODO: state machine of UI
-  // for now, game just starts right away with hardcoded song name, and dies once the song has been played
+  // code here will eventually be:
+  // interface.process();
+  // after Interface has been implemented and an Interface object interface is declared prior
   
   if (!complete) {
     complete = game.process(); // game.process will do things such as update display, detect motion, play music, etc; it returns whether or not game is over

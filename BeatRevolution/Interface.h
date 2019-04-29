@@ -2,6 +2,8 @@
 #define Interface_h
 #include "Game.h"
 
+#define USERNAME_LENGTH_LIMIT 10
+
 #define USERNAME_STATE 0
 #define SONGSELECT_STATE 1
 #define GAMEPLAY_STATE 2
@@ -27,20 +29,21 @@ class Interface
 
   // variables for username selection
   char alphabet[50] = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  char username[10] = {0}; 
-  int char_index;
+  char username[USERNAME_LENGTH_LIMIT] = {0}; 
 
-  // @Matt this is where you put your variables?
-  char* song_list;
+  char** song_list;
+  int song_index;
+
+  void select_username(); // handles selecting a username
+  void select_song();
+  boolean Interface::update_song_index();
+  void display_score(); // handles displaying high scores
+  void upload_score(/* params tbd */); // upload score, probably want to take score and maybe song name or username as params
 
   public:
 
-  Interface(Game* game_pointer, TFT_eSPI* tft, int tft_pin1, int tft_pin2, int button_pin1, int button_pin2, char* songs);
+  Interface(Game* game_pointer, TFT_eSPI* tft, int tft_pin1, int tft_pin2, int button_pin1, int button_pin2, char** songs);
   void process(); // handles state changes
-  void select_username(); // handles selecting a username
-  void select_song();
-  void display_score(); // handles displaying high scores
-  void upload_score(/* params tbd */); // upload score, probably want to take score and maybe song name or username as params
 };
 
 #endif

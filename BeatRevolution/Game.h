@@ -46,7 +46,6 @@ class Game
   void start(int song_index);
   boolean process();
   void reset();
-  uint16_t get_score();
 };
 
 #endif

@@ -26,8 +26,7 @@
  *    SPK2(eighth left) - minus end on speaker
  */
 
-
-#include "Game.h"
+#include "Interface.h"
 #include <WiFi.h>
 
 // WiFi
@@ -52,13 +51,6 @@ const int cs_pin_left = 12;
 const int cs_pin_right = 0;
 float rate = 0.07;
 
-// TODO: wire up buttons
-const int button1_pin;
-const int button2_pin;
-
-// Button button1(button1_pin);
-// Button button2(button2_pin);
-
 Saber saber_left(&imu_left, imu_cs_pin_left);
 Saber saber_right(&imu_right, imu_cs_pin_right);
 
@@ -75,7 +67,13 @@ char song4[] = "The Blocks We Loved";
 char* song_names[5] = {NULL, song1, song2, song3, song4};
 
 Game game(sabers, displays, &mp3, song_names);
-// Interface interface(&game, &tft, imu_cs_pin_left, imu_cs_pin_right, &button1, &button2, song_names);
+
+const int button1_pin = 5;
+const int button2_pin = 13;
+Button button1(button1_pin);
+Button button2(button2_pin);
+
+Interface interface(&game, &tft, cs_pin_left, cs_pin_right, &button1, &button2, song_names);
 
 int song_index = 2;
 boolean complete = false;
@@ -84,6 +82,9 @@ void setup(void) {
   Serial.begin(115200);
   while (!Serial); // wait until we can communicate
 
+  pinMode(button1_pin, INPUT_PULLUP);
+  pinMode(button2_pin, INPUT_PULLUP);
+
   pinMode(imu_cs_pin_left, OUTPUT);
   pinMode(imu_cs_pin_right, OUTPUT);
   pinMode(cs_pin_left, OUTPUT);
@@ -91,9 +92,18 @@ void setup(void) {
 
   digitalWrite(imu_cs_pin_left, HIGH);
   digitalWrite(imu_cs_pin_right, HIGH);
+
+  digitalWrite(cs_pin_left, LOW);
+  digitalWrite(cs_pin_right, LOW);
+  tft.init();
+  tft.setRotation(2);
+  tft.setTextSize(1); // default font size
+  tft.setTextColor(TFT_WHITE, TFT_BLACK);
+  tft.fillScreen(TFT_BLACK);
   digitalWrite(cs_pin_left, HIGH);
   digitalWrite(cs_pin_right, HIGH);
-
+  
+  /*
   // Connect to WiFi
   WiFi.begin(NETWORK, PW);
   uint8_t connect_attempts = 0;
@@ -109,26 +119,9 @@ void setup(void) {
     ESP.restart();
   }
   Serial.println(" CONNECTED!");
-  
-  // start communication with IMU 
-  Serial.println("Attempting to connect to IMU left");
-  int status = imu_left.begin();
-  if (status < 0) {
-    Serial.println("IMU initialization unsuccessful");
-    Serial.println("Check IMU wiring or try cycling power");
-    Serial.print("Status: ");
-    Serial.println(status);
-    while(true) {}
-  }
-  status = imu_left.setAccelRange(MPU9250::ACCEL_RANGE_8G);
-  if (status < 0) {
-    Serial.println("IMU left setting acce range unsuccessful");
-    Serial.print("Status: ");
-    Serial.println(status);
-    while(true) {}
-  }
-  Serial.println("IMU left connected and set up!");
-  
+
+  int status;
+
   Serial.println("Attempting to connect to IMU right");
   status = imu_right.begin();
   if (status < 0) {
@@ -146,8 +139,28 @@ void setup(void) {
     while(true) {}
   }
   Serial.println("IMU right connected and set up!");
+  digitalWrite(imu_cs_pin_right, HIGH);
   
-  // start communication with mp3
+  // start communication with IMU 
+  Serial.println("Attempting to connect to IMU left");
+  status = imu_left.begin();
+  if (status < 0) {
+    Serial.println("IMU initialization unsuccessful");
+    Serial.println("Check IMU wiring or try cycling power");
+    Serial.print("Status: ");
+    Serial.println(status);
+    while(true) {}
+  }
+  status = imu_left.setAccelRange(MPU9250::ACCEL_RANGE_8G);
+  if (status < 0) {
+    Serial.println("IMU left setting acce range unsuccessful");
+    Serial.print("Status: ");
+    Serial.println(status);
+    while(true) {}
+  }
+  Serial.println("IMU left connected and set up!");
+  digitalWrite(imu_cs_pin_left, HIGH);
+  
   mySoftwareSerial.begin(9600, SERIAL_8N1, 32, 33);  // speed, type, RX, TX
   Serial.println(F("Initializing DFPlayer ... (May take 3~5 seconds)"));
   delay(1000);
@@ -160,20 +173,20 @@ void setup(void) {
   }
   Serial.println(F("DFPlayer Mini online."));
   mp3.setTimeOut(500); //Set serial communictaion time out 500ms
-  mp3.volume(20); // set volume (0~30)
+  mp3.volume(15); // set volume (0~30)
   mp3.EQ(DFPLAYER_EQ_NORMAL); // set EQ
   mp3.outputDevice(DFPLAYER_DEVICE_SD); // set to read from SD
-  
-  game.load(song_index);
-  game.start(song_index);
+  */
+//  game.load(song_index);
+//  game.start(song_index);
 }
 
 void loop() {
-  // code here will eventually be:
-  // interface.process();
-  // after Interface has been implemented and an Interface object interface is declared prior
+  // TODO: state machine of UI
+  interface.process();
+  // for now, game just starts right away with hardcoded song name, and dies once the song has been played
   
-  if (!complete) {
-    complete = game.process(); // game.process will do things such as update display, detect motion, play music, etc; it returns whether or not game is over
-  }
+//  if (!complete) {
+//    complete = game.process(); // game.process will do things such as update display, detect motion, play music, etc; it returns whether or not game is over
+//  }
 }

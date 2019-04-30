@@ -18,7 +18,6 @@ class Display
   uint32_t offset;
   uint32_t recent_hits[4]; // time of most recent hits in each direction
   boolean make_glow[4]; // determine if arrow should glow
-  uint8_t accuracies[4]; // accuracy of most recent arrow
   
   uint8_t buff_size;
   TFT_eSPI* screen;
@@ -60,7 +59,7 @@ class Display
   int calc_center(int dir, uint32_t beat, uint32_t timer);
   uint16_t find_color(uint32_t beat);
   void translate_arrow(char dir, int x, int y, uint16_t color);
-  uint16_t glow_arrow(uint32_t full_bright, uint8_t accuracy);
+  uint16_t glow_arrow(uint32_t full_bright);
 
   public:
   

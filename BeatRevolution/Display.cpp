@@ -20,14 +20,14 @@ Display::Display(TFT_eSPI* tft, float rate, int cs) {
   int_to_char[3] = 'r';
   ind = 0;
   screen = tft;
-  
-  digitalWrite(cs_pin, LOW);
-  screen->init();
-  screen->setRotation(2);
-  screen->setTextSize(1); // default font size
-  screen->setTextColor(TFT_WHITE, BACKGROUND);
-  screen->fillScreen(BACKGROUND);
-  digitalWrite(cs_pin, HIGH);
+//  pinMode(cs_pin, OUTPUT);
+//  digitalWrite(cs_pin, LOW);
+//  screen->init();
+//  screen->setRotation(2);
+//  screen->setTextSize(1); // default font size
+//  screen->setTextColor(TFT_WHITE, BACKGROUND);
+//  screen->fillScreen(BACKGROUND);
+//  digitalWrite(cs_pin, HIGH);
 
   // initialize past_ycoors
   for (int i = 0; i < 10; i++)
@@ -99,10 +99,10 @@ void Display::process() {
     if(make_glow[i]) //arrow should glow and fade
     {
       // check that too much time has not elapsed
-      uint16_t faded_color = glow_arrow(recent_hits[i],accuracies[i]);
+      uint16_t faded_color = glow_arrow(recent_hits[i]);
       if (faded_color > 0) {
         // draw arrow in appropriate color at this point in time
-        draw_arrow(int_to_char[i], arr_x[i], arr_y, faded_color);
+        draw_arrow(int_to_char[i], arr_x[i], arr_y, glow_arrow(recent_hits[i]));
       } else {
         make_glow[i] = false;
       }
@@ -138,11 +138,6 @@ void Display::process() {
         { 
           make_glow[cur_dir[i]] = true;
           recent_hits[cur_dir[i]] = millis();
-          accuracies[cur_dir[i]] = 2;
-        } else { // note missed, show purple for now; this will be taken out later
-          make_glow[cur_dir[i]] = true;
-          recent_hits[cur_dir[i]] = millis();
-          accuracies[cur_dir[i]] = 0;
         }
         if (ind < buff_size)
         {
@@ -330,25 +325,12 @@ uint16_t Display::find_color(uint32_t beat) {
   }
 }
 
-//color of glow and fade arrow when note is hit with some accuracy at time full_bright
-// eventually change this to early, late, on time?
-// red is also a color option but it doesn't look as nice
-uint16_t Display::glow_arrow(uint32_t full_bright, uint8_t accuracy) {
+//color of glow and fade arrow when note is hit at time full_bright
+uint16_t Display::glow_arrow(uint32_t full_bright) {
   uint32_t diff = millis() - full_bright;
   diff = diff/30;
   if(diff < 21) {
-    uint16_t color;
-    switch(accuracy) {
-      case 0: // note missed
-        color = (31-diff) + (33-diff/2)*32 + (31-diff)*2048; // purple
-      break;
-      case 1: // good
-        color = 11 + (63-2*diff)*32 + 11*2048; // bright green
-      break;
-      case 2: // perfect
-        color = (31-diff) * 2113 + 32; //white
-      break;
-    }
+    uint16_t color = (31-diff) * 2113 + 32;
     return(color);
   }
   return(0);

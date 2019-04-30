@@ -3,6 +3,8 @@
 Saber::Saber(MPU9250* imu_pointer, int cs) {
   imu = imu_pointer;
   cs_pin = cs;
+//  pinMode(cs_pin, OUTPUT);
+//  digitalWrite(cs_pin, HIGH);
 }
 
 /**

@@ -43,13 +43,17 @@ class Interface
   char** song_list;
   int song_index;
 
+  char recent_scores[5][4][2][10]; // pull recent scores at the beginning of game
+
   void select_username(); // handles selecting a username
   boolean update_song_index();
   void update_song_display();
-  void display_recent_scores();
+  void get_all_recent_scores();
+  void display_high_scores(char*** high_scores);
+  void display_recent_scores(int index);
+  void get_high_scores(char*** high_scores);
   void display_player_score(uint16_t score);
-  void display_high_scores(); 
-  void upload_score(/* params tbd */); // upload score, probably want to take score and maybe song name or username as params
+  void upload_score(uint16_t score); // upload score, probably want to take score and maybe song name or username as params
 
   public:
 

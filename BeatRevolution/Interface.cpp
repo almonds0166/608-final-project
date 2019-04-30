@@ -11,23 +11,7 @@ Interface::Interface(Game* game_pointer, TFT_eSPI* tft, int tft_pin_left, int tf
   state = USERNAME_STATE;
 
   song_list = songs;
-  song_index = 2;
-
-  //  digitalWrite(cs_pin_left, LOW);
-  //  screen->init();
-  //  screen->setRotation(2);
-  //  screen->setTextSize(1); // default font size
-  //  screen->setTextColor(TEXT, BACKGROUND);
-  //  screen->fillScreen(BACKGROUND);
-  //  digitalWrite(cs_pin_left, HIGH);
-  //
-  //  digitalWrite(cs_pin_right, LOW);
-  //  screen->init();
-  //  screen->setRotation(2);
-  //  screen->setTextSize(1); // default font size
-  //  screen->setTextColor(TEXT, BACKGROUND);
-  //  screen->fillScreen(BACKGROUND);
-  //  digitalWrite(cs_pin_right, HIGH);
+  song_index = -1; // initialize to invalid value, will be made valid when transitioning into SONGSELECT stage
 }
 
 /**
@@ -44,22 +28,27 @@ void Interface::process() {
     case SONGSELECT_STATE: {
       // display list of songs on left screen
       // display recent scores of currently selected song on right screen (lower priority)
-      // if short press up button, move up in song list (unless on first song, in which case do nothing)
-      // if short press down button, move down in song list (unless on last song, in which case do nothing)
-      // if long press down button, do game->load() and game->start(), then move into GAMEPLAY state
-      Serial.println("song selection");
+      // if short press left button, move up in song list (unless on first song, in which case do nothing)
+      // if short press right button, move down in song list (unless on last song, in which case do nothing)
+      // if long press right button, do game->load() and game->start(), then move into GAMEPLAY state
 
-      if (button2->update() == 2) {
+      // NOTE: do button readings here so that we avoid reading it twice and missing signals in our second reading, which was a bug previously
+      int flag1 = button1->update();
+      int flag2 = button2->update();
+      
+      if (flag2 == 2) {
+        Serial.println("long press, enter gameplay state");
+        clear_screens();
         game->load(song_index);
         game->start(song_index);
         state = GAMEPLAY_STATE;
         break;
       }
 
-      boolean updated = update_song_index();
+      boolean updated = update_song_index(flag1, flag2);
       if (updated) {
-//      update_song_display();
-//      display_recent_scores();
+        update_song_display();
+        display_recent_scores(song_index); 
       }
       break;
     }
@@ -69,8 +58,9 @@ void Interface::process() {
         complete = game->process(); // game.process will do things such as update display, detect motion, play music, etc
       }
       // reach this point after game has completed
-      //uint16_t score = game->get_score();
-      //upload_score(score);
+//      uint16_t score = game->get_score();
+//      upload_score(score);
+      clear_screens();
       state = SCORE_STATE;
       break;
     }
@@ -78,19 +68,21 @@ void Interface::process() {
       // display player score and possibly some data about play on left screen
       // display list of high scores on right screen
       // long press either button to move into SONGSELECT state
-//      display_player_score(game->get_score());
+      display_player_score(game->get_score());
 //      char high_scores[4][2][10];
 //      get_high_scores(high_scores);
 //      display_high_scores(high_scores);
       while (true) {
-        /*
-          if (either button long pressed) {
-            update_song_display();
-            display_recent_scores();
-            state = SONGSELECT_STATE;
-            break;
-          }
-        */
+        int flag1 = button1->update();
+        int flag2 = button2->update();
+        
+        if (flag1 == 2 || flag2 == 2) {
+          clear_screens();
+          song_index = -1; // hacky method to get screen to display, will improve later
+          state = SONGSELECT_STATE;
+          break;
+        }
+        
       }
       break;
     }
@@ -102,10 +94,10 @@ void Interface::select_username() {
   digitalWrite(cs_pin_right, LOW);
   screen->setCursor(0, 0, 1);
   screen->println("Select your username (<= 8 characters)\n");
-  screen->println("Press up to go to the previous letter\n");
-  screen->println("Press down to go to the next letter\n");
-  screen->println("Hold up to go to the next letter\n");
-  screen->println("Hold down to save your username\n");
+  screen->println("Press left to go to the previous letter\n");
+  screen->println("Press right to go to the next letter\n");
+  screen->println("Hold left to go to the next letter\n");
+  screen->println("Hold right to save your username\n");
   digitalWrite(cs_pin_right, HIGH);
 
   // display current username on left screen
@@ -159,11 +151,9 @@ void Interface::select_username() {
       }
     } else if (flag2 == 2) { // button 2 long press
       Serial.println("buttons 2 long press");
+      
       state = SONGSELECT_STATE;
       break;
-      // initialize the display
-      //      update_song_display();
-      //      display_recent_scores();
     }
 
     username_display[username_index] = alphabet[char_index];
@@ -188,15 +178,21 @@ void Interface::select_username() {
    Read button inputs, update song_index if needed
    return true iff an update occurred. In particular, if the up button is pressed but we were already at the first song
    and can't move up further, don't return true.
+   Also returns true if the song index is invalid (aka, just entered SONGSELECT state) and makes song index valid
 */
-boolean Interface::update_song_index() {
-  uint8_t flag1 = button1->update();
-  uint8_t flag2 = button2->update();
+boolean Interface::update_song_index(int flag1, int flag2) {
+  if (song_index == -1) {
+    song_index = 1;
+    return true;
+  }
 
   if (flag1 == 1 && song_index > 1) { // go up the list
+    Serial.println("decrement song_index");
     song_index--;
     return true;
-  } else if (flag2 == 1 && song_index < 4) { // go down the list
+  } 
+  if (flag2 == 1 && song_index < 4) { // go down the list
+    Serial.println("increment song_index");
     song_index++;
     return true;
   }
@@ -209,21 +205,6 @@ void Interface::update_song_display() {
   // selected song are also displayed
 
   digitalWrite(cs_pin_left, LOW);
-  //  char* display_list[7];
-  //  switch(song_index) { // there's probably a better way to do this but i am tired
-  //    case(0):
-  //        display_list = {"\0", "\0", "\0", song_list[1], song_list[2], song_list[3], song_list[4]};
-  //        break;
-  //    case(1):
-  //        display_list = {"\0", "\0", song_list[1], song_list[2], song_list[3], song_list[4], "\0"};
-  //        break;
-  //    case(2):
-  //        display_list = {"\0", song_list[1], song_list[2], song_list[3], song_list[4], "\0", "\0"};
-  //        break;
-  //    case(3):
-  //        display_list = {song_list[1], song_list[2], song_list[3], song_list[4], "\0", "\0", "\0"};
-  //        break;
-  //  }
 
   screen->fillScreen(BACKGROUND);
   screen->setCursor(0, MIDDLE_HEIGHT - 35, 1);
@@ -235,7 +216,7 @@ void Interface::update_song_display() {
       screen->setTextColor(TEXT);
       screen->setTextSize(1);
     } else {
-      if (song_index + i >= 1 && song_index + i < 4) { // replace 4 by number of songs
+      if (song_index + i >= 1 && song_index + i <= 4) { // replace 4 by number of songs
         screen->println(song_list[song_index + i]);
       }
     }
@@ -282,14 +263,16 @@ void Interface::get_high_scores(char*** high_scores) {
 }
 
 /**
-   Display score of the game just played
+   Display score of the game just played on the left screen
 */
 void Interface::display_player_score(uint16_t score) {
+  digitalWrite(cs_pin_left, LOW);
   screen->setCursor(0, MIDDLE_HEIGHT - 20, 1);
   screen->println("You earned:");
   screen->setTextSize(2);
   screen->print(score);
   screen->setTextSize(1);
+  digitalWrite(cs_pin_left, HIGH);
 }
 
 /**
@@ -297,4 +280,15 @@ void Interface::display_player_score(uint16_t score) {
 */
 void Interface::upload_score(uint16_t score) {
   // TODO @matt
+}
+
+/**
+ * Paint both screens with background color
+ */
+void Interface::clear_screens() {
+  digitalWrite(cs_pin_left, LOW);
+  digitalWrite(cs_pin_right, LOW);
+  screen->fillScreen(BACKGROUND);
+  digitalWrite(cs_pin_left, HIGH);
+  digitalWrite(cs_pin_right, HIGH);
 }

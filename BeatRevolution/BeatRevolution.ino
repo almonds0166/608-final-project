@@ -103,7 +103,7 @@ void setup(void) {
   digitalWrite(cs_pin_left, HIGH);
   digitalWrite(cs_pin_right, HIGH);
   
-  /*
+  
   // Connect to WiFi
   WiFi.begin(NETWORK, PW);
   uint8_t connect_attempts = 0;
@@ -176,17 +176,9 @@ void setup(void) {
   mp3.volume(15); // set volume (0~30)
   mp3.EQ(DFPLAYER_EQ_NORMAL); // set EQ
   mp3.outputDevice(DFPLAYER_DEVICE_SD); // set to read from SD
-  */
-//  game.load(song_index);
-//  game.start(song_index);
+  
 }
 
 void loop() {
-  // TODO: state machine of UI
   interface.process();
-  // for now, game just starts right away with hardcoded song name, and dies once the song has been played
-  
-//  if (!complete) {
-//    complete = game.process(); // game.process will do things such as update display, detect motion, play music, etc; it returns whether or not game is over
-//  }
 }

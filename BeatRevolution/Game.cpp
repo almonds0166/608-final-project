@@ -117,4 +117,8 @@ void Game::reset() {
   // clear all arrays, reset all values to defaults, etc, to be ready for next song/game
   // might not actually need this function
 }
+
+uint16_t Game::get_score() {
+  return score;
+}
  

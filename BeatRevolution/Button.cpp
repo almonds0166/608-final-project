@@ -18,6 +18,9 @@ void Button::read() {
   button_pressed = !button_state;
 }
 
+/**
+ * Return 0 for no press, 1 for short press, 2 for long press
+ */
 int Button::update() {
   read();
   flag = 0;

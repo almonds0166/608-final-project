@@ -42,7 +42,7 @@ class Game
   public:
   
   Game(Saber** saber_pointers, Display** display_pointers, DFRobotDFPlayerMini* mp3_pointer, char** song_names);
-  void load(int song_index); 
+  boolean load(int song_index); 
   void start(int song_index);
   boolean process();
   void reset();

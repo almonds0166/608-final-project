@@ -39,7 +39,14 @@ void Interface::process() {
       if (flag2 == 2) {
         Serial.println("long press, enter gameplay state");
         clear_screens();
-        game->load(song_index);
+        boolean load_success = game->load(song_index);
+        while (!load_success) { // if can't load, retry until we load
+            digitalWrite(cs_pin_left, LOW);
+            screen->setCursor(0, MIDDLE_HEIGHT - 20, 1);
+            screen->println("Having connection problems, reloading chart");
+            digitalWrite(cs_pin_left, HIGH);
+            load_success = game->load(song_index);
+        }
         game->start(song_index);
         state = GAMEPLAY_STATE;
         break;

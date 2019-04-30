@@ -20,9 +20,10 @@ Game::Game(Saber** saber_pointers, Display** display_pointers, DFRobotDFPlayerMi
 }
 
 /**
- * Load music, chart, and other data corresponding to the given song_index into fields. If files not found or wifi error, fail gracefully
+ * Load music, chart, and other data corresponding to the given song_index into fields. If files not found or wifi error, return false,
+ * otherwise, return true
  */
-void Game::load(int song_index) {
+boolean Game::load(int song_index) {
   // initialize the player's score to zero, happens before loading sabers and displays with score's address
   score = 0;
   
@@ -53,7 +54,7 @@ void Game::load(int song_index) {
       Serial.println("Something went wrong with the GET request!");
       Serial.println(url);
       Serial.println("...");
-      delay(500000);
+      return false; // load failed 
     }
     Serial.println("%%%%");
     
@@ -77,6 +78,7 @@ void Game::load(int song_index) {
   
   // TODO: include song_duration into the song's text file (similar to bpm and offset) and load that
   song_duration = 123000;
+  return true;
 }
 
 /**

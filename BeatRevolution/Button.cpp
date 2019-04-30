@@ -17,7 +17,7 @@ void Button::read() {
 }
 
 int Button::update() {
-    Button::read(); //TODO: unsure if this needs to be Button::read() or read()
+    read();
     flag = 0;
 
     if (state==0) { // Unpressed, rest state

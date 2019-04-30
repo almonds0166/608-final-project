@@ -52,6 +52,13 @@ const int cs_pin_left = 12;
 const int cs_pin_right = 0;
 float rate = 0.07;
 
+// TODO: wire up buttons
+const int button1_pin;
+const int button2_pin;
+
+// Button button1(button1_pin);
+// Button button2(button2_pin);
+
 Saber saber_left(&imu_left, imu_cs_pin_left);
 Saber saber_right(&imu_right, imu_cs_pin_right);
 
@@ -68,6 +75,7 @@ char song4[] = "The Blocks We Loved";
 char* song_names[5] = {NULL, song1, song2, song3, song4};
 
 Game game(sabers, displays, &mp3, song_names);
+// Interface interface(&game, &tft, imu_cs_pin_left, imu_cs_pin_right, &button1, &button2, song_names);
 
 int song_index = 2;
 boolean complete = false;

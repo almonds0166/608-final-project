@@ -8,6 +8,8 @@ class Button {
   uint32_t t_of_button_change;    
   uint32_t debounce_time;
   uint32_t long_press_time;
+  uint32_t last_updated_time;
+  uint32_t update_timeout;
   uint8_t pin;
   uint8_t flag;
   bool button_pressed;

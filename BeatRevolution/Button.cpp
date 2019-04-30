@@ -6,6 +6,8 @@ Button::Button(int p) {
     pin = p;
     t_of_state_2 = millis(); //init
     t_of_button_change = millis(); //init
+    last_updated_time = millis(); // init
+    update_timeout = 50;
     debounce_time = 10;
     long_press_time = 1000;
     button_pressed = 0;
@@ -19,6 +21,11 @@ void Button::read() {
 int Button::update() {
     read();
     flag = 0;
+
+    if (millis() - last_updated_time > update_timeout) {
+        state = 0;
+        return flag;
+    }
 
     if (state==0) { // Unpressed, rest state
         if (button_pressed) {

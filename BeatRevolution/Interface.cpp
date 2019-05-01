@@ -1,5 +1,7 @@
 #include "Interface.h"
 
+#define SCORES_ENDPOINT "http://608dev.net/sandbox/sc/almonds/br/scoreboard"
+
 Interface::Interface(Game* game_pointer, TFT_eSPI* tft, int tft_pin_left, int tft_pin_right, Button* button1_pointer, Button* button2_pointer, char** songs) {
   game = game_pointer;
   screen = tft;
@@ -300,7 +302,25 @@ void Interface::display_player_score(uint16_t score) {
    Upload score of score for user username for song song_index
 */
 void Interface::upload_score(uint16_t score) {
-  // TODO @matt
+  // Get ready to upload your score
+  HTTPClient http;
+  char url[200];
+  strcpy(url, SCORES_ENDPOINT);
+  String response;
+  char payload[40];
+  sprintf(payload, "?user=%s&song=%i&score=%i", username, song_index, score);
+
+  http.begin(url);
+  int http_code = http.POST(payload);
+  Serial.println("____");
+  if (http_code > 0) {
+    Serial.println(http.getString());
+  } else {
+    Serial.println("Something went wrong with the POST request!");
+    Serial.println(url);
+    Serial.println("...");
+  }
+  Serial.println("%%%%");
 }
 
 /**

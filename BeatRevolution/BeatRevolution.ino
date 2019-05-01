@@ -176,7 +176,8 @@ void setup(void) {
   mp3.volume(15); // set volume (0~30)
   mp3.EQ(DFPLAYER_EQ_NORMAL); // set EQ
   mp3.outputDevice(DFPLAYER_DEVICE_SD); // set to read from SD
-  
+
+  interface.get_all_high_scores();
 }
 
 void loop() {

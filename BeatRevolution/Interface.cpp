@@ -55,7 +55,7 @@ void Interface::process() {
       boolean updated = update_song_index(flag1, flag2);
       if (updated) {
         update_song_display();
-        display_recent_scores(song_index); 
+        display_high_scores();
       }
       break;
     }
@@ -64,21 +64,19 @@ void Interface::process() {
       while (!complete) {
         complete = game->process(); // game.process will do things such as update display, detect motion, play music, etc
       }
-      // reach this point after game has completed
-//      uint16_t score = game->get_score();
-//      upload_score(score);
+      uint16_t score = game->get_score();
+      upload_score(score);
+      get_high_scores(song_index); // incorporate the new score just created by the last play
       clear_screens();
       state = SCORE_STATE;
       break;
     }
     case SCORE_STATE: {
-      // display player score and possibly some data about play on left screen
-      // display list of high scores on right screen
+      // display player score on left screen
+      // display details about play on right screen
       // long press either button to move into SONGSELECT state
       display_player_score(game->get_score());
-//      char high_scores[4][2][10];
-//      get_high_scores(high_scores);
-//      display_high_scores(high_scores);
+      // TODO qq right display
       while (true) {
         int flag1 = button1->update();
         int flag2 = button2->update();
@@ -182,10 +180,11 @@ void Interface::select_username() {
 }
 
 /**
-   Read button inputs, update song_index if needed
+   Given button inputs, update song_index if needed
    return true iff an update occurred. In particular, if the up button is pressed but we were already at the first song
    and can't move up further, don't return true.
-   Also returns true if the song index is invalid (aka, just entered SONGSELECT state) and makes song index valid
+   Also returns true if the song index is invalid (aka, just entered SONGSELECT state) and makes song index valid (change 
+   to first song)
 */
 boolean Interface::update_song_index(int flag1, int flag2) {
   if (song_index == -1) {
@@ -232,41 +231,55 @@ void Interface::update_song_display() {
 }
 
 /**
-   char*** high_scores is of the form char[4][2][10]
+   Read data stored in high_scores
+   Display high scores for song song_index
 */
-void Interface::display_high_scores(char*** high_scores) {
-  // display on right screen
-  // TODO @matt
+void Interface::display_high_scores() {
   digitalWrite(cs_pin_right, LOW);
-  // do stuff
+  const int horizontal_offset = 5;
+  const int vertical_offset = 30; // where the score display starts
+  const int vertical_buffer = 7; // additional distance between top line ("username   score") and next line of actual data
+  const int line_height = 20; // distance between consecutive displays
   screen->fillScreen(BACKGROUND);
+  screen->setCursor(horizontal_offset, vertical_offset, 1);
+  screen->println("username");
+  screen->setCursor(MIDDLE_WIDTH + horizontal_offset, vertical_offset, 1);
+  screen->println("score");
+  for (int player_num = 0; player_num < NUM_PLAYER_SCORES_TO_PULL; player_num++) {
+    screen->setCursor(horizontal_offset, vertical_offset + vertical_buffer + (player_num+1)*line_height, 1);
+    screen->println(high_scores[song_index][player_num][0]);
+    screen->setCursor(MIDDLE_WIDTH + horizontal_offset, vertical_offset + vertical_buffer + (player_num+1)*line_height, 1);
+    screen->println(high_scores[song_index][player_num][1]);
+  }
   digitalWrite(cs_pin_right, HIGH);
 }
 
 /**
-   Read data stored in recent_scores
+   Pull all high scores into high_scores
 */
-void Interface::display_recent_scores(int index) {
-  // display on right screen
+void Interface::get_all_high_scores() {
+  for (int song_num = 1; song_num < NUM_SONGS; song_num++) {
+    Serial.println("setting high scores for song");
+    Serial.println(song_num);
+    get_high_scores(song_num);
+  }
+}
+
+/**
+   Pull high scores of song index into the corresponding high_scores[index]
+   Use both as a helper for get_all_high_scores() and separately after a player finishes a song (to update our stored scores)
+*/
+void Interface::get_high_scores(int index) {
   // TODO @matt
-  digitalWrite(cs_pin_right, LOW);
-  // do stuff
-  screen->fillScreen(BACKGROUND);
-  digitalWrite(cs_pin_right, HIGH);
-}
-
-/**
-   Pull all recent scores into recent_scores
-*/
-void Interface::get_all_recent_scores() {
-
-}
-
-/**
-   Pull high scores of song song_index into the temporary char[4][2][10] of high_scores
-*/
-void Interface::get_high_scores(char*** high_scores) {
-
+  // below is example version
+  for (int player_num = 0; player_num < NUM_PLAYER_SCORES_TO_PULL; player_num++) {
+    Serial.println("setting high scores for player");
+    Serial.println(player_num);
+    char* test_user = "user";
+    char* test_score = "10000";
+    strcpy(high_scores[index][player_num][0], test_user);
+    strcpy(high_scores[index][player_num][1], test_score);
+  }
 }
 
 /**
@@ -276,6 +289,7 @@ void Interface::display_player_score(uint16_t score) {
   digitalWrite(cs_pin_left, LOW);
   screen->setCursor(0, MIDDLE_HEIGHT - 20, 1);
   screen->println("You earned:");
+  screen->println();
   screen->setTextSize(2);
   screen->print(score);
   screen->setTextSize(1);

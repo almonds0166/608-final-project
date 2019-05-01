@@ -1,5 +1,6 @@
 offset 1889
 bpm 125
+duration 127000
 
 R 5760 d
 L 6720 l

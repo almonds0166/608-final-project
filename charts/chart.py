@@ -3,8 +3,8 @@
 almonds@mit.edu for help
 
 Example usage: /br/chart.py?song=1&side=0
-Example response: 1486,138:0,d;869,d;...
-            (AKA) offset,bpm:timestamp,direction;timestamp,direction;...
+Example response: 123000,1486,138:0,d;869,d;...
+            (AKA) duration,offset,bpm:timestamp,direction;timestamp,direction;...
 """
 
 import os
@@ -36,9 +36,10 @@ def request_handler(request):
    # Which *side* the client asked for
    letter = "L" if request["values"]["side"] == "0" else "R"
 
-   offset = 0
-   bpm    = 0
-   out    = ""
+   duration = 0
+   offset   = 0
+   bpm      = 0
+   out      = ""
    with open(fname, "r") as f:
       for line in f:
          line = line.strip("\n ").split(" ")
@@ -49,6 +50,9 @@ def request_handler(request):
          elif line[0] == "bpm":
             if not line[1].isdigit(): return "500 - Could not parse bpm."
             bpm = int(line[1])
+         elif line[0] == "duration":
+            if not line[1].isdigit(): return "500 - Could not parse duration."
+            duration = int(line[1])
          elif line[0] == letter:
             out += "{},{};".format(line[1], line[2])
    out = "{},{}:".format(offset, bpm) + out[:-1]

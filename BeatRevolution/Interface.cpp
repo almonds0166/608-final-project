@@ -1,6 +1,9 @@
 #include "Interface.h"
 
 #define SCORES_ENDPOINT "http://608dev.net/sandbox/sc/almonds/br/scoreboard"
+#ifndef MAX_BODY_LENGTH
+#define MAX_BODY_LENGTH 3000
+#endif
 
 Interface::Interface(Game* game_pointer, TFT_eSPI* tft, int tft_pin_left, int tft_pin_right, Button* button1_pointer, Button* button2_pointer, char** songs) {
   game = game_pointer;
@@ -272,15 +275,52 @@ void Interface::get_all_high_scores() {
    Use both as a helper for get_all_high_scores() and separately after a player finishes a song (to update our stored scores)
 */
 void Interface::get_high_scores(int index) {
-  // TODO @matt
-  // below is example version
+  // Get ready to download the scores
+  HTTPClient http;
+  char url[200]; char temp[MAX_BODY_LENGTH];
+  char* ptr;
+  String response;
+  strcpy(url, SCORES_ENDPOINT);
+  sprintf(temp, "?sortby=top&song=%i&esp32", index);
+  strcat(url, temp);
+  
+  // GET
+  http.begin(url);
+  int http_code = http.GET();
+  Serial.println("____");
+  if (http_code > 0) {
+    response = http.getString(); // offset,bpm:ts,dir;ts,dir;ts,dir;...
+    int i = 0;
+    while (i < MAX_BODY_LENGTH) {
+      temp[i] = response[i];
+      if(response[i++] == '\0') break;
+    }
+    Serial.printf("GET %s\n", url);
+    Serial.printf("Response:\n%s\n", body);
+  } else {
+    Serial.println("Something went wrong with the GET request!");
+    Serial.println(url);
+    Serial.println("...");
+  }
+  Serial.println("%%%%");
+  
   for (int player_num = 0; player_num < NUM_PLAYER_SCORES_TO_PULL; player_num++) {
-    Serial.println("setting high scores for player");
-    Serial.println(player_num);
-    char* test_user = "user";
-    char* test_score = "10000";
-    strcpy(high_scores[index][player_num][0], test_user);
-    strcpy(high_scores[index][player_num][1], test_score);
+    Serial.printf("Setting high scores for player #%d\n", player_num);
+    
+    if (player_num == 0) {
+      ptr = strtok(temp, ",");
+    } else {
+      ptr = strtok(NULL, ",");
+    }
+    
+    if (ptr) {
+      strcpy(high_scores[index][player_num][0], ptr);
+      ptr = strtok(NULL, ";");
+      strcpy(high_scores[index][player_num][1], ptr);
+    } else {
+      strcpy(high_scores[index][player_num][0], "");
+      strcpy(high_scores[index][player_num][1], "");
+    }
   }
 }
 

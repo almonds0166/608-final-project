@@ -4,6 +4,9 @@
 #include "Button.h"
 
 #define USERNAME_LENGTH_LIMIT 10
+// NOTE: NUM_SONGS includes the initial null song, so it's actually equal to the number of real songs plus 1
+#define NUM_SONGS 5
+#define NUM_PLAYER_SCORES_TO_PULL 4
 
 #define USERNAME_STATE 0
 #define SONGSELECT_STATE 1
@@ -29,9 +32,10 @@ class Interface
 
   // set display size
   const int LEFT_EDGE = 0; //left side of screen limit
-  const int RIGHT_EDGE = 12; //right side of screen limit
+  const int RIGHT_EDGE = 127; //right side of screen limit
   const int TOP_EDGE = 0; //top of screen limit
   const int BOTTOM_EDGE = 159; //bottom of screen limit
+  const int MIDDLE_WIDTH = RIGHT_EDGE/2;
   const int MIDDLE_HEIGHT = BOTTOM_EDGE/2;
 
   int state; // state of the interface (username, song selection, score display)
@@ -43,15 +47,18 @@ class Interface
   char** song_list;
   int song_index;
 
-  char recent_scores[5][4][2][10]; // pull recent scores at the beginning of game
+  char high_scores[NUM_SONGS][NUM_PLAYER_SCORES_TO_PULL][2][10]; 
+  // pull high scores at the beginning of game
+  // pull 5 songs (NULL first song, plus 4 real songs)
+  // pull up to 4 player scores
+  // 2 fields, username and score
+  // up to 10 characters for each field
 
   void select_username(); // handles selecting a username
   boolean update_song_index(int flag1, int flag2);
   void update_song_display();
-  void get_all_recent_scores();
-  void display_high_scores(char*** high_scores);
-  void display_recent_scores(int index);
-  void get_high_scores(char*** high_scores);
+  void display_high_scores();
+  void get_high_scores(int index);
   void display_player_score(uint16_t score);
   void upload_score(uint16_t score); // upload score, probably want to take score and maybe song name or username as params
   void clear_screens();
@@ -60,6 +67,7 @@ class Interface
 
   Interface(Game* game_pointer, TFT_eSPI* tft, int tft_pin_left, int tft_pin_right, Button* button1_pointer, Button* button2_pointer, char** songs);
   void process(); // handles state changes
+  void get_all_high_scores();
 };
 
 #endif

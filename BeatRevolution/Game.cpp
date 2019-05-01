@@ -58,8 +58,9 @@ boolean Game::load(int song_index) {
     }
     Serial.println("%%%%");
     
-    ptr = strtok(body, ","); offset = atoi(ptr); // first number returned is the offset
-    ptr = strtok(NULL, ":"); bpm    = atoi(ptr); // second number returned is the BPM
+    ptr = strtok(body, ","); song_duration = atoi(ptr); // first number returned is the duration
+    ptr = strtok(NULL, ","); offset = atoi(ptr); // second number returned is the offset
+    ptr = strtok(NULL, ":"); bpm    = atoi(ptr); // third number returned is the BPM
     // the remaining numbers are timestamp,direction pairs
     ptr = strtok(NULL, ",");
     while (ptr != NULL) {
@@ -76,8 +77,6 @@ boolean Game::load(int song_index) {
     displays[side]->load(bpm, offset, note_times[side], note_dirs[side], note_hit[side], total_num_notes[side], &score);
   }
   
-  // TODO: include song_duration into the song's text file (similar to bpm and offset) and load that
-  song_duration = 123000;
   return true;
 }
 

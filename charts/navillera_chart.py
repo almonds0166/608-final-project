@@ -14,7 +14,7 @@ chart[0] = "r12d l14l r15u r16r l17.5l r20d l21d r21.75d r23u l24l r26r l28d r28
 beat_offsets[0]=0
 
 # singing part 1
-chart[1] = "r0.5d l1d r1.5d l2d r3r r4r l4.75d r5.5l l7u r8d l10r r12d r13d r14d r15d l16d r18l l20r r22u r23d l24u r26r l28d l29d l30d l31d"
+chart[1] = "r0.5d l1d r1.5d l2d r3r r4r l4.75d r5.5l l7u r8d l10r r12d r13d r14d l15u r15d l16d r18l l20r r22u r23d l24u r26r l28d l29d l30d l31d"
 beat_offsets[1] = 32
 
 # singing part 2
@@ -22,11 +22,11 @@ chart[2] = "l0.5u r1u l1.5d r2d r3d l4l r6r l8d r10u r11u l12d r12.75d l13.5d r1
 beat_offsets[2] = 64
 
 # singing part 3
-chart[3] = "l0d r2d l4r r4l l5l r5r l6d r6d l8u r10u l12d r12u l13u r13d l14l r14r r16d l18r l20d r21r l22u r24.5d l25d r25.5d l26d r28r l28.75l r29.5d"
+chart[3] = "l0d r0d l2d r2d l4r r4l l5l r5r l6d r6d l8u r10u l12d r12u l13u r13d l14l r14r r16d l18r l20d r21r l22u r24.5d l25d r25.5d l26d r28r l28.75l r29.5d"
 beat_offsets[3] = 96
 
 # interlude
-chart[4] = "l0d r2u l4u r6d l8l r10r l12r r12.75l l13.5d r13.5d"
+chart[4] = "l0d r1u l2d r3u l4d r6u l8d r8d l10u r10u l12l r12r l12.75r r12.75l l13.5d r13.5d"
 beat_offsets[4] = 128
 
 # singing
@@ -34,15 +34,15 @@ chart[5] = "l0.5d r1d l1.5d r2r l3l r4d l8u r10l l12d l16l l17r l18d r20d r22r l
 beat_offsets[5] = 144
 
 # singing
-chart[6] = "r0.5u l1u r1.5d l2d r3d l4.5u r5u l5.5d r6d l7d r8r l10l l12d r12d l12.75l r12.75r l13.5d r13.5d l16l l17r l18d r20r r21l r22d l24d r25u r26u r27u l28d l29d l30d"
+chart[6] = "r0.5u l1u r1.5d l2d r3d l4.5u r5u l5.5d r6d l7d r8r l10l l12d r12d l12.75l r12.75r l13.5d r13.5d l16l l17r l18d r20r r21l r22d l24d r25u r26u l27u r27u l28d l29d l30d"
 beat_offsets[6] = 176
 
 # singing
-chart[7] = "r0d l2d r4r r5l r6d l8u l9l l11r l12d r13d l13.5d r13.75d l16l r18r l20d r20d l21r r21l l22d r22d r24.5d l25d r25.5d l26d r27r l28d r28d l28.75r r28.75l l29.5d r29.5d"
+chart[7] = "l0d r0d l2u r2u r4r r5l r6d l8u l9l l11r l12d r13d l13.5d r13.75d l16l r18r l20d r20d l21r r21l l22d r22d r24.5d l25d r25.5d l26d r27r l28d r28d l28.75r r28.75l l29.5d r29.5d"
 beat_offsets[7] = 208
 
 # coda
-chart[8] = "l0d r2u l4u r6d l8l r10r l12d r12d l12.75d r12.75d l13.5d r13.5d"
+chart[8] = "l0d r0.5r l1u r1.5l l2d r2.75r l3u r3.5l l4d r6u l8u r8d l10d r10u l12l r12r l12.75r r12.75l l13.5d r13.5d"
 beat_offsets[8] = 240
 
 # I don't know what these are

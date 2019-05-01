@@ -9,7 +9,8 @@ beat_offsets = [0]*20
 # there's some measure before this but it doesn't quite feel like a full measure
 
 # intro
-chart[0] = "l0d r3u l4d r6r r7u l8d r10.5d l11d r12d l14l r15u r16r l17.5l r20d l21d r21.75d r23u l24l r26r l28d r28.75d l29.5d"
+#chart[0] = "l0d r3u l4d r6r r7u l8d r10.5d l11d r12d l14l r15u r16r l17.5l r20d l21d r21.75d r23u l24l r26r l28d r28.75d l29.5d"
+chart[0] = "r12d l14l r15u r16r l17.5l r20d l21d r21.75d r23u l24l r26r l28d r28.75d l29.5d"
 beat_offsets[0]=0
 
 # singing part 1
@@ -45,8 +46,8 @@ chart[8] = "l0d r2u l4u r6d l8l r10r l12d r12d l12.75d r12.75d l13.5d r13.5d"
 beat_offsets[8] = 240
 
 # I don't know what these are
-offset = 8442
-bpm = 138
+offset = 1889
+bpm = 125
 
 print("offset " + str(offset))
 print("bpm " + str(bpm))

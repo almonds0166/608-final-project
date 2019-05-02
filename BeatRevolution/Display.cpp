@@ -138,7 +138,7 @@ void Display::process() {
           // this will be updated by saber and taken out later
           // difference between when hit is detected and when hit should be
           int32_t time_off= recent_hits[cur_dir[i]] - start_time - cur_times[i];
-          if (time_off < 100)
+          if (time_off < 50)
           {
             accuracies[cur_dir[i]] = 2; // flash white
           } else {
@@ -317,19 +317,19 @@ uint16_t Display::find_color(uint32_t beat) {
   uint32_t floor_beat_time = (uint32_t)(((uint32_t)((beat-offset)/mspb))*mspb);
   // relative location of note wrt beat
   float placement = (beat-offset-floor_beat_time)/mspb;
-  int subdivision = (int)(round(8*placement))%8;
+  int subdivision = (int)(round(12*placement))%12;
   switch(subdivision) 
   {
     case 0:
       return TFT_ORANGE;
     break;
-    case 4:
+    case 6:
       return TFT_BLUE;
     break;
-    case 2:
+    case 3:
       return TFT_GREEN;
     break;
-    case 6:
+    case 9:
       return TFT_GREEN;
     break;
     default:

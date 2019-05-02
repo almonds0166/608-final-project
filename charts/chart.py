@@ -55,6 +55,6 @@ def request_handler(request):
             duration = int(line[1])
          elif line[0] == letter:
             out += "{},{};".format(line[1], line[2])
-   out = "{},{}:".format(offset, bpm) + out[:-1]
+   out = "{},{},{}:".format(duration, offset, bpm) + out[:-1]
 
    return out

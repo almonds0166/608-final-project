@@ -14,9 +14,10 @@ class Button {
   uint8_t flag;
   bool button_pressed;
 
-  public:
-  uint8_t state; // This is public for the sake of convenience
+  int state; 
 
+  public:
+  
   Button(int p);
   void read();
   int update();

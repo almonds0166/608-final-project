@@ -23,6 +23,7 @@ void Button::read() {
  */
 int Button::update() {
   read();
+
   flag = 0;
 
   if (millis() - last_updated_time > update_timeout) {
@@ -38,7 +39,6 @@ int Button::update() {
       state = 1;
       t_of_button_change = millis();
     }
-
   } else if (state == 1) { //Tentative pressed
     if (!button_pressed) {
       state = 0;

@@ -25,6 +25,7 @@ void Saber::load(uint32_t* time_list, char* dir_list, boolean* hit_list, uint8_t
 
 void Saber::start() {
   start_time = millis();
+  last_acce_time = millis();
 }
 
 /**
@@ -201,5 +202,4 @@ int8_t Saber::match(uint32_t expected_time, char expected_dir) {
     }
   }
   return 0; // beat not too early or too late, but correct motion not detected
-  
 }

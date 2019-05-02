@@ -1,6 +1,7 @@
 #include "Interface.h"
 
 #define SCORES_ENDPOINT "http://608dev.net/sandbox/sc/almonds/br/scoreboard"
+//#define SCORES_ENDPOINT_TEST "http://608dev.net/sandbox/sc/almonds/testdir2/testo.py"
 #ifndef MAX_BODY_LENGTH
 #define MAX_BODY_LENGTH 3000
 #endif
@@ -52,6 +53,7 @@ void Interface::process() {
             digitalWrite(cs_pin_left, HIGH);
             load_success = game->load(song_index);
         }
+        clear_screens();
         game->start(song_index);
         state = GAMEPLAY_STATE;
         break;
@@ -71,7 +73,6 @@ void Interface::process() {
       }
       uint16_t score = game->get_score();
       upload_score(score);
-      get_high_scores(song_index); // incorporate the new score just created by the last play
       clear_screens();
       state = SCORE_STATE;
       break;
@@ -88,11 +89,11 @@ void Interface::process() {
         
         if (flag1 == 2 || flag2 == 2) {
           clear_screens();
+          get_high_scores(song_index); // incorporate the new score just created by the last play
           song_index = -1; // hacky method to get screen to display, will improve later
           state = SONGSELECT_STATE;
           break;
         }
-        
       }
       break;
     }
@@ -103,10 +104,10 @@ void Interface::select_username() {
   // display instructions for selecting user name on right screen (what buttons do what, username length restriction)
   digitalWrite(cs_pin_right, LOW);
   screen->setCursor(0, 0, 1);
-  screen->println("Select your username (<= 8 characters)\n");
-  screen->println("Press left to go to the previous letter\n");
-  screen->println("Press right to go to the next letter\n");
-  screen->println("Hold left to go to the next letter\n");
+  screen->println("Select your username (up to 8 characters)\n");
+  screen->println("Press left to go to the previous letter in the alphabet\n");
+  screen->println("Press right to go to the next letter in the alphabet\n");
+  screen->println("Hold left to confirm the current letter\n");
   screen->println("Hold right to save your username\n");
   digitalWrite(cs_pin_right, HIGH);
 
@@ -116,8 +117,6 @@ void Interface::select_username() {
   // if long press up button, move onto next letter
   // if long press down button, save username into field, move to SONGSELECT state
   // flag is 0 for nothing detected, 1 for short press, 2 for long press
-  uint8_t flag1 = 0; // output of button 1
-  uint8_t flag2 = 0; // output of button 2
   int char_index = 0; // which char we're at in the alphabet
   int username_index = 0; // which username character we're working on
   char username_display[USERNAME_LENGTH_LIMIT + 1];
@@ -125,8 +124,8 @@ void Interface::select_username() {
   memset(username_display, 0, sizeof(username_display));
   memset(prev_username_display, 0, sizeof(prev_username_display));
   while (true) { //
-    flag1 = button1->update();
-    flag2 = button2->update();
+    int flag1 = button1->update();
+    int flag2 = button2->update();
     if (flag1 == 1) { // button 1 short press
       Serial.println("buttons 1 short press");
       if (username_index == 8) { // can't add anymore characters
@@ -296,7 +295,7 @@ void Interface::get_high_scores(int index) {
       if(response[i++] == '\0') break;
     }
     Serial.printf("GET %s\n", url);
-    Serial.printf("Response:\n%s\n", body);
+    Serial.printf("Response:\n%s\n", temp);
   } else {
     Serial.println("Something went wrong with the GET request!");
     Serial.println(url);
@@ -348,10 +347,12 @@ void Interface::upload_score(uint16_t score) {
   strcpy(url, SCORES_ENDPOINT);
   String response;
   char payload[40];
-  sprintf(payload, "?user=%s&song=%i&score=%i", username, song_index, score);
+  sprintf(payload, "user=%s&song=%i&score=%i", username, song_index, score);
 
   http.begin(url);
+  http.addHeader("Content-Type", "application/x-www-form-urlencoded");
   int http_code = http.POST(payload);
+  Serial.printf("POST %s\n", payload);
   Serial.println("____");
   if (http_code > 0) {
     Serial.println(http.getString());

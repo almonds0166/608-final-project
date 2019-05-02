@@ -4,6 +4,7 @@
 #include "Display.h"
 #include "Saber.h"
 #include <DFRobotDFPlayerMini.h>
+#include <HTTPClient.h>
 
 #define MAX_NOTES 500 // possibly bad practice, oops
 
@@ -45,7 +46,6 @@ class Game
   boolean load(int song_index); 
   void start(int song_index);
   boolean process();
-  void reset();
   uint16_t get_score();
 };
 

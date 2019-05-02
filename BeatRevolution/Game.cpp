@@ -1,5 +1,4 @@
 #include "Game.h"
-#include <HTTPClient.h>
 #include <string.h>
 #include <stdlib.h> // atoi
 
@@ -36,6 +35,7 @@ boolean Game::load(int song_index) {
 
   // get charts for and initialize both the left & right sides!
   for (uint8_t side = 0; side < 2; side++) {
+    total_num_notes[side] = 0;
     strcpy(body, "");
     sprintf(url, CHARTS_ENDPOINT, song_index, side);
     http.begin(url);
@@ -111,12 +111,6 @@ boolean Game::process() {
     displays[1]->update_score();
     return false;
   }
-}
-
-void Game::reset() {
-  // TODO 
-  // clear all arrays, reset all values to defaults, etc, to be ready for next song/game
-  // might not actually need this function
 }
 
 uint16_t Game::get_score() {

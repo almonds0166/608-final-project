@@ -20,14 +20,6 @@ Display::Display(TFT_eSPI* tft, float rate, int cs) {
   int_to_char[3] = 'r';
   ind = 0;
   screen = tft;
-//  pinMode(cs_pin, OUTPUT);
-//  digitalWrite(cs_pin, LOW);
-//  screen->init();
-//  screen->setRotation(2);
-//  screen->setTextSize(1); // default font size
-//  screen->setTextColor(TFT_WHITE, BACKGROUND);
-//  screen->fillScreen(BACKGROUND);
-//  digitalWrite(cs_pin, HIGH);
 
   // initialize past_ycoors
   for (int i = 0; i < 10; i++)
@@ -55,6 +47,11 @@ void Display::load(uint32_t beats_per_minute, uint32_t off, uint32_t* time_list,
   for (int i = 0; i < 10; i++)
   {
     past_ycoors[i] = -4;
+  }
+  // initialize glows
+  for (int i = 0; i < 4; i++)
+  {
+    make_glow[i] = false;
   }
   start_time = millis();
 }
@@ -322,6 +319,9 @@ uint16_t Display::find_color(uint32_t beat) {
       return TFT_BLUE;
     break;
     case 2:
+      return TFT_GREEN;
+    break;
+    case 6:
       return TFT_GREEN;
     break;
     default:

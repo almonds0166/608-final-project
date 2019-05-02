@@ -135,15 +135,7 @@ void Display::process() {
         { 
           make_glow[cur_dir[i]] = true;
           recent_hits[cur_dir[i]] = millis();
-          // this will be updated by saber and taken out later
-          // difference between when hit is detected and when hit should be
-          int32_t time_off= recent_hits[cur_dir[i]] - start_time - cur_times[i];
-          if (time_off < 50)
-          {
-            accuracies[cur_dir[i]] = 2; // flash white
-          } else {
-            accuracies[cur_dir[i]] = 1; // flash green
-          }
+          accuracies[cur_dir[i]] = 2; //flash white
         } else { // note missed, show purple for now; this will be taken out later
           make_glow[cur_dir[i]] = true;
           recent_hits[cur_dir[i]] = millis();
@@ -331,6 +323,12 @@ uint16_t Display::find_color(uint32_t beat) {
     break;
     case 9:
       return TFT_GREEN;
+    break;
+    case 4:
+      return TFT_PURPLE;
+    break;
+    case 8:
+      return TFT_PURPLE;
     break;
     default:
       return TFT_RED;

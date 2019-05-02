@@ -135,7 +135,15 @@ void Display::process() {
         { 
           make_glow[cur_dir[i]] = true;
           recent_hits[cur_dir[i]] = millis();
-          accuracies[cur_dir[i]] = 2;
+          // this will be updated by saber and taken out later
+          // difference between when hit is detected and when hit should be
+          int32_t time_off= recent_hits[cur_dir[i]] - start_time - cur_times[i];
+          if (time_off < 100)
+          {
+            accuracies[cur_dir[i]] = 2; // flash white
+          } else {
+            accuracies[cur_dir[i]] = 1; // flash green
+          }
         } else { // note missed, show purple for now; this will be taken out later
           make_glow[cur_dir[i]] = true;
           recent_hits[cur_dir[i]] = millis();

@@ -6,8 +6,7 @@
    cs is the pin number of the chip select correponding to tft -- changes to the display will be reflected
    iff the cs pin is set to low
 */
-Display::Display(TFT_eSPI* tft, float rate, int cs) {
-  ppm = rate;
+Display::Display(TFT_eSPI* tft, int cs) {
   cs_pin = cs;
   //initialize map
   char_to_int['l'] = 0;
@@ -33,7 +32,8 @@ Display::Display(TFT_eSPI* tft, float rate, int cs) {
   }
 }
 
-void Display::load(uint32_t beats_per_minute, uint32_t off, uint32_t* time_list, char* dir_list, boolean* hit_list, int num_notes, uint16_t* score_loc) {
+void Display::load(uint32_t beats_per_minute, uint32_t off, float rate, uint32_t* time_list, char* dir_list, boolean* hit_list, int num_notes, uint16_t* score_loc) {
+  ppm = rate;
   mspb = 60000.0/beats_per_minute;
   offset = off;
   note_times = time_list;

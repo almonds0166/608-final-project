@@ -3,7 +3,7 @@
 #include <stdlib.h> // atoi
 
 #define CHARTS_ENDPOINT "http://608dev.net/sandbox/sc/almonds/br/chart.py?song=%d&side=%d"
-#define MAX_BODY_LENGTH 3000 /* don't set this too high, we only have so much memory */
+#define MAX_BODY_LENGTH 4000 /* don't set this too high, we only have so much memory */
 
 /**
  * The same Game object will be used the entire time, with the methods of reset and load to set the game up for different new songs. 
@@ -73,8 +73,9 @@ boolean Game::load(int song_index) {
       note_hit[side][i] = false;
 
     // Load sabers and displays
+    float rate = 0.07;
     sabers[side]->load(note_times[side], note_dirs[side], note_hit[side], total_num_notes[side], &score);
-    displays[side]->load(bpm, offset, note_times[side], note_dirs[side], note_hit[side], total_num_notes[side], &score);
+    displays[side]->load(bpm, offset, rate, note_times[side], note_dirs[side], note_hit[side], total_num_notes[side], &score);
   }
   
   return true;

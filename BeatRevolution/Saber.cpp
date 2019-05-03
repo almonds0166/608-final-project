@@ -3,8 +3,6 @@
 Saber::Saber(MPU9250* imu_pointer, int cs) {
   imu = imu_pointer;
   cs_pin = cs;
-//  pinMode(cs_pin, OUTPUT);
-//  digitalWrite(cs_pin, HIGH);
 }
 
 /**
@@ -54,7 +52,7 @@ void Saber::process() {
 //    char output[40];
 //    sprintf(output,"%d,%4.2f,%4.2f",cs_pin,x,z); //render numbers with %4.2 float formatting
 //    Serial.println(output); //print to serial for plotting
-    delay(0); // NOTE: don't take this line out, it fixes a bug for some reason
+    delay(0); 
     
     // update acce_index, so that it now points to the oldest acceleration
     acce_index++; 

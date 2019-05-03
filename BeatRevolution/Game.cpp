@@ -73,7 +73,7 @@ boolean Game::load(int song_index) {
       note_hit[side][i] = false;
 
     // Load sabers and displays
-    float rate = 0.07;
+    float rate = 0.12;
     sabers[side]->load(note_times[side], note_dirs[side], note_hit[side], total_num_notes[side], &score);
     displays[side]->load(bpm, offset, rate, note_times[side], note_dirs[side], note_hit[side], total_num_notes[side], &score);
   }

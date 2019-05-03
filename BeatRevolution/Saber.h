@@ -3,7 +3,7 @@
 #include "Arduino.h"
 #include "MPU9250.h"
 
-#define ACCE_HISTORY_SIZE 20
+#define ACCE_HISTORY_SIZE 25
 #define ACCE_RECORD_PERIOD 3 // ms
 
 class Saber

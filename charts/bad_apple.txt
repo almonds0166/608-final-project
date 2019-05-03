@@ -1,4 +1,4 @@
-offset 8442
+offset 8450
 bpm 138
 duration 123000
 

@@ -12,7 +12,7 @@ class Saber
 
   uint32_t* note_times;
   char* note_dirs;
-  boolean* note_hit;
+  int8_t* note_hit;
   uint8_t total_num_notes;
   uint8_t note_index;
 
@@ -37,7 +37,7 @@ class Saber
   public:
   
   Saber(MPU9250* imu_pointer, int cs); 
-  void load(uint32_t* time_list, char* dir_list, boolean* hit_list, uint8_t num_notes, uint16_t* score_pointer, uint16_t* combo_pointer); 
+  void load(uint32_t* time_list, char* dir_list, int8_t* hit_list, uint8_t num_notes, uint16_t* score_pointer, uint16_t* combo_pointer); 
   void start();
   void process(); 
 };

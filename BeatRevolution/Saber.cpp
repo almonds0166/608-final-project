@@ -8,7 +8,7 @@ Saber::Saber(MPU9250* imu_pointer, int cs) {
 /**
  * num_notes is the total number of notes in the chart for this hand (to prevent oob errors)
  */
-void Saber::load(uint32_t* time_list, char* dir_list, boolean* hit_list, uint8_t num_notes, uint16_t* score_pointer, uint16_t* combo_pointer) {
+void Saber::load(uint32_t* time_list, char* dir_list, int8_t* hit_list, uint8_t num_notes, uint16_t* score_pointer, uint16_t* combo_pointer) {
   note_times = time_list;
   note_dirs = dir_list;
   note_hit = hit_list;
@@ -65,13 +65,12 @@ void Saber::process() {
   
   int8_t outcome = match(note_times[note_index], note_dirs[note_index]);
 
+  note_hit[note_index] = outcome;
   if (outcome == 1) { // perfect hit
-    note_hit[note_index] = true;
     note_index++;
     *score = *score + 100;
     *combo = *combo + 1;
   } else if (outcome == 2) { // decent hit
-    note_hit[note_index] = true;
     note_index++;
     *score = *score + 70;
     *combo = *combo + 1;

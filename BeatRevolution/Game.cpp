@@ -72,7 +72,7 @@ boolean Game::load(int song_index) {
     }
   
     for (int i = 0; i < total_num_notes[side]; i++)
-      note_hit[side][i] = false;
+      note_hit[side][i] = 0;
 
     // Load sabers and displays
     float rate = 0.12;

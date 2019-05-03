@@ -47,12 +47,11 @@ void Saber::process() {
 
     last_acce_time = millis();
 
-    if (cs_pin == 17) {
-      char output[40];
-      sprintf(output,"%d,%4.2f,%4.2f",last_acce_time,x,z); //render numbers with %4.2 float formatting
-      Serial.println(output); //print to serial for plotting
-    }
-   
+//    if (cs_pin == 17) {
+//      char output[40];
+//      sprintf(output,"%d,%4.2f,%4.2f",last_acce_time,x,z); //render numbers with %4.2 float formatting
+//      Serial.println(output); //print to serial for plotting
+//    }
     
     // update acce_index, so that it now points to the oldest acceleration
     acce_index++; 

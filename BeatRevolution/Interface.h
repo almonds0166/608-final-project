@@ -49,8 +49,6 @@ class Interface
 
   char high_scores[NUM_SONGS][NUM_PLAYER_SCORES_TO_PULL][2][10]; 
   // pull high scores at the beginning of game
-  // pull 5 songs (NULL first song, plus 4 real songs)
-  // pull up to 4 player scores
   // 2 fields, username and score
   // up to 10 characters for each field
 

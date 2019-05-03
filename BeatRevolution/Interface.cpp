@@ -201,7 +201,7 @@ boolean Interface::update_song_index(int flag1, int flag2) {
     song_index--;
     return true;
   } 
-  if (flag2 == 1 && song_index < 4) { // go down the list
+  if (flag2 == 1 && song_index < NUM_SONGS - 1) { // go down the list
     Serial.println("increment song_index");
     song_index++;
     return true;
@@ -226,7 +226,7 @@ void Interface::update_song_display() {
       screen->setTextColor(TEXT);
       screen->setTextSize(1);
     } else {
-      if (song_index + i >= 1 && song_index + i <= 4) { // replace 4 by number of songs
+      if (song_index + i >= 1 && song_index + i < NUM_SONGS) { 
         screen->println(song_list[song_index + i]);
       }
     }

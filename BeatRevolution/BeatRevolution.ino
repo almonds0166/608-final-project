@@ -49,13 +49,12 @@ DFRobotDFPlayerMini mp3;
 
 const int cs_pin_left = 12;
 const int cs_pin_right = 0;
-float rate = 0.07;
 
 Saber saber_left(&imu_left, imu_cs_pin_left);
 Saber saber_right(&imu_right, imu_cs_pin_right);
 
-Display display_left(&tft, rate, cs_pin_left);
-Display display_right(&tft, rate, cs_pin_right);
+Display display_left(&tft, cs_pin_left);
+Display display_right(&tft, cs_pin_right);
 
 Saber*   sabers[2]   = {&saber_left, &saber_right};
 Display* displays[2] = {&display_left, &display_right};

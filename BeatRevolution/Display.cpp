@@ -121,7 +121,7 @@ void Display::process() {
     if (past_ycoors[i] > -2) // valid upcoming note, possibly displayed
     {
       int y_coor = calc_center(cur_dir[i], cur_times[i], cur_timer); // new center
-      if (y_coor > -2 and (not note_hit[cur_ind[i]])) // note not missed or hit
+      if (y_coor > -2 and (note_hit[cur_ind[i]] == 0)) // note not missed or hit
       {
         if (y_coor > -1 and past_ycoors[i] == -1) //first time arrow appears on screen
         {
@@ -138,16 +138,9 @@ void Display::process() {
         //blank previous arrow
         draw_arrow(int_to_char[cur_dir[i]], arr_x[cur_dir[i]], past_ycoors[i], BACKGROUND);
         // note hit, tell bottom white arrow to do stuff
-        if (note_hit[cur_ind[i]])
-        { 
-          make_glow[cur_dir[i]] = true;
-          recent_hits[cur_dir[i]] = millis();
-          accuracies[cur_dir[i]] = 2; //flash white
-        } else { // note missed, show purple for now; this will be taken out later
-          make_glow[cur_dir[i]] = true;
-          recent_hits[cur_dir[i]] = millis();
-          accuracies[cur_dir[i]] = 0;
-        }
+        recent_hits[cur_dir[i]] = millis();
+        make_glow[cur_dir[i]] = true;
+        accuracies[cur_dir[i]] = note_hit[cur_ind[i]]; // flash appropriate color
         if (ind < buff_size)
         {
           cur_dir[i] = char_to_int[note_dirs[ind]];
@@ -346,19 +339,21 @@ uint16_t Display::find_color(uint32_t beat) {
 //color of glow and fade arrow when note is hit with some accuracy at time full_bright
 // eventually change this to early, late, on time?
 // red is also a color option but it doesn't look as nice
-uint16_t Display::glow_arrow(uint32_t full_bright, uint8_t accuracy) {
+uint16_t Display::glow_arrow(uint32_t full_bright, int8_t accuracy) {
   uint32_t diff = millis() - full_bright;
   diff = diff/30;
   if(diff < 21) {
     uint16_t color;
     switch(accuracy) {
-      case 0: // note missed
+      /*
+      case -1: // note missed
         color = (31-diff) + (33-diff/2)*32 + (31-diff)*2048; // purple
       break;
-      case 1: // good
+      */
+      case 2: // good
         color = 11 + (63-2*diff)*32 + 11*2048; // bright green
       break;
-      case 2: // perfect
+      case 1: // perfect
         color = (31-diff) * 2113 + 32; //white
       break;
     }

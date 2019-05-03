@@ -62,7 +62,7 @@ class Display
   int calc_center(int dir, uint32_t beat, uint32_t timer);
   uint16_t find_color(uint32_t beat);
   void translate_arrow(char dir, int x, int y, uint16_t color);
-  uint16_t glow_arrow(uint32_t full_bright, uint8_t accuracy);
+  uint16_t glow_arrow(uint32_t full_bright, int8_t accuracy);
 
   public:
   

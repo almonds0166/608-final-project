@@ -3,8 +3,8 @@
 #include "Arduino.h"
 #include "MPU9250.h"
 
-#define ACCE_HISTORY_SIZE 25
-#define ACCE_RECORD_PERIOD 3 // ms
+#define ACCE_HISTORY_SIZE 35
+#define ACCE_RECORD_PERIOD 4 // in ms, IMUs can only sample around 250Hz 
 
 class Saber
 {

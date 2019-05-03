@@ -37,22 +37,22 @@ void Saber::process() {
 
   // read new acceleration data if needed
   if (millis() - last_acce_time >= ACCE_RECORD_PERIOD) { // works best if function called at least once per ms
-//    digitalWrite(cs_pin, LOW); // it's unclear to me why this line breaks things
+    // the imu library already handles writing LOW/HIGH to the CS select pin
     imu->readSensor();
     float x = imu->getAccelY_mss(); // what was previous the x direction on the imu is now the y direction in the new library
                                     // a motion to the right starts positive and ends negative
     float z = -(imu->getAccelZ_mss() + 9.8); // a motion up starts positive and ends negative
-    digitalWrite(cs_pin, HIGH);
-    
     x_acce[acce_index] = x;
     z_acce[acce_index] = z;
 
     last_acce_time = millis();
 
-//    char output[40];
-//    sprintf(output,"%d,%4.2f,%4.2f",cs_pin,x,z); //render numbers with %4.2 float formatting
-//    Serial.println(output); //print to serial for plotting
-    delay(0); 
+    if (cs_pin == 17) {
+      char output[40];
+      sprintf(output,"%d,%4.2f,%4.2f",last_acce_time,x,z); //render numbers with %4.2 float formatting
+      Serial.println(output); //print to serial for plotting
+    }
+   
     
     // update acce_index, so that it now points to the oldest acceleration
     acce_index++; 
@@ -79,17 +79,18 @@ void Saber::process() {
 // time of 0
 int8_t Saber::match(uint32_t expected_time, char expected_dir) {
   const int beat_earliness_limit = 0;
-  // a beat can be matched as early as beat_earliness_limit ms before the expected time
+  // a beat can be matched as early as beat_earliness_limit ms after the expected time (since a movement takes time, it's detected after it's made
   const int beat_lateness_limit = 100;
   // if a beat is not detected for beat_lateness_limit ms after the expected timestamp, mark as missed
-  const int measurements_above_limit_count = 5; 
-  const double first_acce_limit = 20; // in m/s/s
-  const double second_acce_limit = 15;
+  const int first_measurements_above_limit_count = 12; 
+  const int second_measurements_above_limit_count = 5; 
+  const double first_acce_limit = 15; // in m/s/s
+  const double second_acce_limit = 12;
   // must spend this many measurements above limit, aka measurements_above_limit_count*ACCE_RECORD_PERIOD ms,
   // above the 1st/2nd threshold to count as 1st(0->1)/2nd(2->3) state transitions
 
   // don't rearrange to have minuses in the inequality, all numbers involves are unsigned
-  if (start_time + expected_time > millis() + beat_lateness_limit) { 
+  if (start_time + expected_time + beat_earliness_limit > millis() ) { 
     return 0; // beat too far in the future
   }
 
@@ -145,14 +146,14 @@ int8_t Saber::match(uint32_t expected_time, char expected_dir) {
       if (expected_dir == 'u' || expected_dir == 'r') {
         if (cur_acce < first_acce_limit) { // dropped too soon
           state = 0;
-        } else if (i - entered_correct_dir_index >= measurements_above_limit_count) {
+        } else if (i - entered_correct_dir_index >= first_measurements_above_limit_count) {
           // enough time passed with high acce
           state = 2;
         }
       } else {
         if (cur_acce > -first_acce_limit) {
           state = 0;
-        } else if (i - entered_correct_dir_index >= measurements_above_limit_count) {
+        } else if (i - entered_correct_dir_index >= first_measurements_above_limit_count) {
           // enough time passed with high acce
           state = 2;
         }
@@ -178,7 +179,7 @@ int8_t Saber::match(uint32_t expected_time, char expected_dir) {
       if (expected_dir == 'u' || expected_dir == 'r') {
         if (cur_acce > -second_acce_limit) { // dropped too soon
           state = 2;
-        } else if (i - entered_reverse_dir_index >= measurements_above_limit_count) {
+        } else if (i - entered_reverse_dir_index >= second_measurements_above_limit_count) {
           // enough time passed with high acce
           Serial.println("correct motion detected");
           Serial.println(expected_dir);
@@ -188,7 +189,7 @@ int8_t Saber::match(uint32_t expected_time, char expected_dir) {
       } else {
         if (cur_acce < second_acce_limit) {
           state = 2;
-        } else if (i - entered_reverse_dir_index >= measurements_above_limit_count) {
+        } else if (i - entered_reverse_dir_index >= second_measurements_above_limit_count) {
           // enough time passed with high acce
           Serial.println("correct motion detected");
           Serial.println(expected_dir);

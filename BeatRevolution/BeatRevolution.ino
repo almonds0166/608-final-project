@@ -121,44 +121,43 @@ void setup(void) {
 
   int status;
 
-  Serial.println("Attempting to connect to IMU right");
-  status = imu_right.begin();
-  if (status < 0) {
-    Serial.println("IMU initialization unsuccessful");
-    Serial.println("Check IMU wiring or try cycling power");
-    Serial.print("Status: ");
-    Serial.println(status);
-    while(true) {}
-  }
-  status = imu_right.setAccelRange(MPU9250::ACCEL_RANGE_8G);
-  if (status < 0) {
-    Serial.println("IMU right setting acce range unsuccessful");
-    Serial.print("Status: ");
-    Serial.println(status);
-    while(true) {}
-  }
-  Serial.println("IMU right connected and set up!");
-  digitalWrite(imu_cs_pin_right, HIGH);
-  
-  // start communication with IMU 
   Serial.println("Attempting to connect to IMU left");
   status = imu_left.begin();
   if (status < 0) {
     Serial.println("IMU initialization unsuccessful");
-    Serial.println("Check IMU wiring or try cycling power");
-    Serial.print("Status: ");
-    Serial.println(status);
     while(true) {}
   }
   status = imu_left.setAccelRange(MPU9250::ACCEL_RANGE_8G);
   if (status < 0) {
-    Serial.println("IMU left setting acce range unsuccessful");
-    Serial.print("Status: ");
-    Serial.println(status);
+    Serial.println("IMU setting acce range unsuccessful");
     while(true) {}
   }
-  Serial.println("IMU left connected and set up!");
+  status = imu_left.setSrd(3); // cap sample rate at 250Hz
+  if (status < 0) {
+    Serial.println("IMU setting sample rate unsuccessful");
+    while(true) {}
+  }
+  Serial.println("IMU connected and set up!");
   digitalWrite(imu_cs_pin_left, HIGH);
+  
+  Serial.println("Attempting to connect to IMU right");
+  status = imu_right.begin();
+  if (status < 0) {
+    Serial.println("IMU initialization unsuccessful");
+    while(true) {}
+  }
+  status = imu_right.setAccelRange(MPU9250::ACCEL_RANGE_8G);
+  if (status < 0) {
+    Serial.println("IMU setting acce range unsuccessful");
+    while(true) {}
+  }
+  status = imu_right.setSrd(3); // cap sample rate at 250Hz
+  if (status < 0) {
+    Serial.println("IMU setting sample rate unsuccessful");
+    while(true) {}
+  }
+  Serial.println("IMU connected and set up!");
+  digitalWrite(imu_cs_pin_right, HIGH);
   
   mySoftwareSerial.begin(9600, SERIAL_8N1, 32, 33);  // speed, type, RX, TX
   Serial.println(F("Initializing DFPlayer ... (May take 3~5 seconds)"));

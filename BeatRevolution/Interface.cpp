@@ -81,7 +81,7 @@ void Interface::process() {
       // display player score on left screen
       // display details about play on right screen
       // long press either button to move into SONGSELECT state
-      display_player_score(game->get_score());
+      display_play_data();
       // TODO qq right display
       while (true) {
         int flag1 = button1->update();
@@ -325,16 +325,26 @@ void Interface::get_high_scores(int index) {
 
 /**
    Display score of the game just played on the left screen
+   Display combo and other details on the right screen
 */
-void Interface::display_player_score(uint16_t score) {
+void Interface::display_play_data() {
   digitalWrite(cs_pin_left, LOW);
   screen->setCursor(0, MIDDLE_HEIGHT - 20, 1);
   screen->println("You earned:");
   screen->println();
   screen->setTextSize(2);
-  screen->print(score);
+  screen->print(game->get_score());
   screen->setTextSize(1);
   digitalWrite(cs_pin_left, HIGH);
+  
+  digitalWrite(cs_pin_right, LOW);
+  screen->setCursor(0, MIDDLE_HEIGHT - 20, 1);
+  screen->print("Max combo:");
+  screen->setTextSize(2);
+  screen->setCursor(30, MIDDLE_HEIGHT, 1);
+  screen->print(game->get_max_combo());
+  screen->setTextSize(1);
+  digitalWrite(cs_pin_right, HIGH);
 }
 
 /**

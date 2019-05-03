@@ -20,6 +20,7 @@ class Saber
   int cs_pin;
   
   uint16_t* score;
+  uint16_t* combo;
 
   uint32_t start_time;
   uint32_t last_acce_time; // last time that acceleration was recorded
@@ -29,12 +30,14 @@ class Saber
   double z_acce[ACCE_HISTORY_SIZE]; // content shifted by 1g to account for gravity
   int acce_index;
 
-  int8_t match(uint32_t expected_time, char expected_dir); // return 0 for inconclusive, 1 for hit, -1 for missed
+  int8_t match(uint32_t expected_time, char expected_dir); // return 0 for inconclusive, 1 for perfect, 2 for decent, -1 for missed
+  uint32_t get_movement_start_time(int entered_correct_dir_index);
+  int8_t hit_type(uint32_t expected_time, uint32_t hit_time);
   
   public:
   
   Saber(MPU9250* imu_pointer, int cs); 
-  void load(uint32_t* time_list, char* dir_list, boolean* hit_list, uint8_t num_notes, uint16_t* score_pointer); 
+  void load(uint32_t* time_list, char* dir_list, boolean* hit_list, uint8_t num_notes, uint16_t* score_pointer, uint16_t* combo_pointer); 
   void start();
   void process(); 
 };

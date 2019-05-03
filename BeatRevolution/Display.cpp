@@ -32,7 +32,7 @@ Display::Display(TFT_eSPI* tft, int cs) {
   }
 }
 
-void Display::load(uint32_t beats_per_minute, uint32_t off, float rate, uint32_t* time_list, char* dir_list, boolean* hit_list, int num_notes, uint16_t* score_loc) {
+void Display::load(uint32_t beats_per_minute, uint32_t off, float rate, uint32_t* time_list, char* dir_list, boolean* hit_list, int num_notes, uint16_t* score_loc, uint16_t* combo_loc) {
   ppm = rate;
   mspb = 60000.0/beats_per_minute;
   offset = off;
@@ -41,7 +41,9 @@ void Display::load(uint32_t beats_per_minute, uint32_t off, float rate, uint32_t
   note_hit = hit_list;
   buff_size = num_notes;
   score_ptr = score_loc;
+  combo_ptr = combo_loc;
   prev_score = -1; // so that 0 will be displayed initially
+  prev_combo = -1;
 
   ind = 0;
   for (int i = 0; i < 10; i++)
@@ -69,19 +71,24 @@ void Display::print_song(char* song_name) {
   digitalWrite(cs_pin, HIGH);
 }
 
-// display current score
+// display current score and combo
 void Display::update_score() {
   uint16_t cur_score = *score_ptr;
-  // rewrite display only if score changed
-  if(cur_score != prev_score)
+  uint16_t cur_combo = *combo_ptr;
+  // rewrite display only if score or combo changed
+  if(cur_score != prev_score || cur_combo != prev_combo)
   {
     digitalWrite(cs_pin, LOW);
     screen->fillRect(0,pixel_thresh+28,120,10,BACKGROUND);
     screen->setCursor(0,pixel_thresh+28,1);
-    screen->print("Score: ");
-    screen->println(cur_score);
+    screen->print("Score ");
+    screen->print(cur_score);
+    screen->setCursor(65,pixel_thresh+28,1);
+    screen->print("Combo ");
+    screen->print(cur_combo);
     digitalWrite(cs_pin, HIGH);
     prev_score = cur_score;
+    prev_combo = cur_combo;
   }
 }
 

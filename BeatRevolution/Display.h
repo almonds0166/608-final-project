@@ -14,6 +14,8 @@ class Display
   boolean* note_hit;
   uint16_t* score_ptr;
   uint16_t prev_score;
+  uint16_t* combo_ptr;
+  uint16_t prev_combo;
   float mspb; //ms per beat
   uint32_t offset;
   uint32_t recent_hits[4]; // time of most recent hits in each direction
@@ -66,7 +68,7 @@ class Display
   
   Display(TFT_eSPI* tft, int cs); 
   //rate is pixels per ms
-  void load(uint32_t beats_per_minute, uint32_t off, float rate, uint32_t* time_list, char* dir_list, boolean* hit_list, int num_notes, uint16_t* score_loc); 
+  void load(uint32_t beats_per_minute, uint32_t off, float rate, uint32_t* time_list, char* dir_list, boolean* hit_list, int num_notes, uint16_t* score_loc, uint16_t* combo_loc); 
   void start(); // start timer
   void print_song(char* song_name);
   void update_score();

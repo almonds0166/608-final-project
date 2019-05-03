@@ -36,6 +36,8 @@ class Game
   uint32_t offset;
 
   uint16_t score;
+  uint16_t cur_combo;
+  uint16_t max_combo;
 
   uint32_t song_duration;
   uint32_t start_time;
@@ -47,6 +49,7 @@ class Game
   void start(int song_index);
   boolean process();
   uint16_t get_score();
+  uint16_t get_max_combo();
 };
 
 #endif

@@ -57,7 +57,7 @@ class Interface
   void update_song_display();
   void display_high_scores();
   void get_high_scores(int index);
-  void display_player_score(uint16_t score);
+  void display_play_data();
   void upload_score(uint16_t score); // upload score, probably want to take score and maybe song name or username as params
   void clear_screens();
 

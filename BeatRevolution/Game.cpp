@@ -23,8 +23,10 @@ Game::Game(Saber** saber_pointers, Display** display_pointers, DFRobotDFPlayerMi
  * otherwise, return true
  */
 boolean Game::load(int song_index) {
-  // initialize the player's score to zero, happens before loading sabers and displays with score's address
+  // initialize these values before loading sabers and displays with their addresses
   score = 0;
+  cur_combo = 0;
+  max_combo = 0;
   
   // Get ready to download chart list
   HTTPClient http;
@@ -74,8 +76,8 @@ boolean Game::load(int song_index) {
 
     // Load sabers and displays
     float rate = 0.12;
-    sabers[side]->load(note_times[side], note_dirs[side], note_hit[side], total_num_notes[side], &score);
-    displays[side]->load(bpm, offset, rate, note_times[side], note_dirs[side], note_hit[side], total_num_notes[side], &score);
+    sabers[side]->load(note_times[side], note_dirs[side], note_hit[side], total_num_notes[side], &score, &cur_combo);
+    displays[side]->load(bpm, offset, rate, note_times[side], note_dirs[side], note_hit[side], total_num_notes[side], &score, &cur_combo);
   }
   
   return true;
@@ -110,11 +112,18 @@ boolean Game::process() {
     displays[0]->process();
     displays[1]->process();
     displays[1]->update_score();
+    if (cur_combo > max_combo) {
+      max_combo = cur_combo;
+    }
     return false;
   }
 }
 
 uint16_t Game::get_score() {
   return score;
+}
+
+uint16_t Game::get_max_combo() {
+  return max_combo;
 }
  

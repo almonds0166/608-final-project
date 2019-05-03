@@ -8,12 +8,14 @@ Saber::Saber(MPU9250* imu_pointer, int cs) {
 /**
  * num_notes is the total number of notes in the chart for this hand (to prevent oob errors)
  */
-void Saber::load(uint32_t* time_list, char* dir_list, boolean* hit_list, uint8_t num_notes, uint16_t* score_pointer) {
+void Saber::load(uint32_t* time_list, char* dir_list, boolean* hit_list, uint8_t num_notes, uint16_t* score_pointer, uint16_t* combo_pointer) {
   note_times = time_list;
   note_dirs = dir_list;
   note_hit = hit_list;
   total_num_notes = num_notes;
   score = score_pointer;
+  combo = combo_pointer;
+  
   note_index = 0;
   
   memset(x_acce, 0, ACCE_HISTORY_SIZE); 
@@ -44,6 +46,7 @@ void Saber::process() {
     float z = -(imu->getAccelZ_mss() + 9.8); // a motion up starts positive and ends negative
     x_acce[acce_index] = x;
     z_acce[acce_index] = z;
+    digitalWrite(cs_pin, HIGH);
 
     last_acce_time = millis();
 
@@ -62,24 +65,30 @@ void Saber::process() {
   
   int8_t outcome = match(note_times[note_index], note_dirs[note_index]);
 
-  if (outcome == 1) { // note hit
+  if (outcome == 1) { // perfect hit
     note_hit[note_index] = true;
     note_index++;
-    // TODO: better way of updating score?
     *score = *score + 100;
+    *combo = *combo + 1;
+  } else if (outcome == 2) { // decent hit
+    note_hit[note_index] = true;
+    note_index++;
+    *score = *score + 70;
+    *combo = *combo + 1;
   } else if (outcome == -1) { // note missed
     note_index++; // no need to change note_hit, as all contents are initialized to 0
+    *combo = 0;
   }
 }
 
-// Read stored acceleration data to match against expected movement, return 0 if inconclusive, 1 if hit,
+// Read stored acceleration data to match against expected movement, return 0 if inconclusive, 1 if perfect, 2 if decent
 // -1 if missed
 // expected time is relative to the start time, so a note at the beginning of the song should have expected
 // time of 0
 int8_t Saber::match(uint32_t expected_time, char expected_dir) {
   const int beat_earliness_limit = 0;
   // a beat can be matched as early as beat_earliness_limit ms after the expected time (since a movement takes time, it's detected after it's made
-  const int beat_lateness_limit = 100;
+  const int beat_lateness_limit = 160;
   // if a beat is not detected for beat_lateness_limit ms after the expected timestamp, mark as missed
   const int first_measurements_above_limit_count = 12; 
   const int second_measurements_above_limit_count = 5; 
@@ -180,24 +189,50 @@ int8_t Saber::match(uint32_t expected_time, char expected_dir) {
           state = 2;
         } else if (i - entered_reverse_dir_index >= second_measurements_above_limit_count) {
           // enough time passed with high acce
-          Serial.println("correct motion detected");
-          Serial.println(expected_dir);
-          Serial.println();
-          return 1;
+          uint32_t entered_correct_dir_time = get_movement_start_time(entered_correct_dir_index);
+          return hit_type(expected_time, entered_correct_dir_time);
         }
       } else {
         if (cur_acce < second_acce_limit) {
           state = 2;
         } else if (i - entered_reverse_dir_index >= second_measurements_above_limit_count) {
           // enough time passed with high acce
-          Serial.println("correct motion detected");
-          Serial.println(expected_dir);
-          Serial.println();
-          return 1;
+          uint32_t entered_correct_dir_time = get_movement_start_time(entered_correct_dir_index);
+          return hit_type(expected_time, entered_correct_dir_time);
         }
       }
       break;
     }
   }
   return 0; // beat not too early or too late, but correct motion not detected
+}
+
+/**
+ * Given the index in the acceleration array of where a movement was first detected, return when the movement started 
+ * (offset by some amount, since detection is earlier than actual movement)
+ */
+uint32_t Saber::get_movement_start_time(int entered_correct_dir_index) {
+  return millis() - ACCE_RECORD_PERIOD * (ACCE_HISTORY_SIZE + acce_index - entered_correct_dir_index - 1) + 80; // 80 is offset
+}
+
+/**
+ * Return -1 for missed (too far), 1 for perfect (within 60 ms in either direction), 2 for decent (within 100 ms in either direction)
+ * expected_time is relative to start time
+ */
+int8_t Saber::hit_type(uint32_t expected_time, uint32_t hit_time) {
+  uint32_t absolute_expected_time = expected_time + start_time;
+  uint32_t later_time = absolute_expected_time >= hit_time ? absolute_expected_time : hit_time;
+  uint32_t earlier_time = absolute_expected_time < hit_time ? absolute_expected_time : hit_time;
+  uint32_t diff = later_time - earlier_time;
+  Serial.println("expected and actual hit times, diff");
+  Serial.println(absolute_expected_time);
+  Serial.println(hit_time);
+  Serial.println(diff);
+  if (diff <= 60) {
+    return 1;
+  } else if (diff <= 100) {
+    return 2;
+  } else {
+    return -1;
+  }
 }

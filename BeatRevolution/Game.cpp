@@ -119,6 +119,10 @@ boolean Game::process() {
   }
 }
 
+void Game::stop() {
+  mp3->pause();
+}
+
 uint16_t Game::get_score() {
   return score;
 }

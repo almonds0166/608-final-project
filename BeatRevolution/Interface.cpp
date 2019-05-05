@@ -36,14 +36,22 @@ void Interface::process() {
       // display recent scores of currently selected song on right screen (lower priority)
       // if short press left button, move up in song list (unless on first song, in which case do nothing)
       // if short press right button, move down in song list (unless on last song, in which case do nothing)
+      // if long press left button, go back to username selection
       // if long press right button, do game->load() and game->start(), then move into GAMEPLAY state
 
       // NOTE: do button readings here so that we avoid reading it twice and missing signals in our second reading, which was a bug previously
       int flag1 = button1->update();
       int flag2 = button2->update();
+
+      if (flag1 == 2) {
+        Serial.println("long press left, back to username");
+        clear_screens();
+        memset(username, 0, sizeof(username));
+        state = USERNAME_STATE;
+      }
       
       if (flag2 == 2) {
-        Serial.println("long press, enter gameplay state");
+        Serial.println("long press right, enter gameplay state");
         clear_screens();
         boolean load_success = game->load(song_index);
         while (!load_success) { // if can't load, retry until we load
@@ -66,15 +74,26 @@ void Interface::process() {
       }
       break;
     }
-    case GAMEPLAY_STATE: {
+    case GAMEPLAY_STATE: {   
       boolean complete = false;
       while (!complete) {
+        int flag1 = button1->update();
+        if (flag1 == 2) { break; } // long press left, go back to song selection
+
         complete = game->process(); // game.process will do things such as update display, detect motion, play music, etc
       }
-      uint16_t score = game->get_score();
-      upload_score(score);
       clear_screens();
-      state = SCORE_STATE;
+
+      if (complete) { // finished game
+        uint16_t score = game->get_score();
+        upload_score(score);
+        state = SCORE_STATE;
+      } else { // ended game early
+        game->stop();
+        uint16_t score = game->get_score();
+        upload_score(score);
+        state = USERNAME_STATE;
+      }
       break;
     }
     case SCORE_STATE: {
@@ -121,13 +140,18 @@ void Interface::select_username() {
   int username_index = 0; // which username character we're working on
   char username_display[USERNAME_LENGTH_LIMIT + 1];
   char prev_username_display[USERNAME_LENGTH_LIMIT + 1];
+
+  bool warning_displayed = false; // display warning message
+  uint32_t warning_timer; // timer for warning message
+  uint32_t warning_timeout = 2000; // timeout for warning message
+
   memset(username_display, 0, sizeof(username_display));
   memset(prev_username_display, 0, sizeof(prev_username_display));
-  while (true) { //
+  while (true) {
     int flag1 = button1->update();
     int flag2 = button2->update();
     if (flag1 == 1) { // button 1 short press
-      Serial.println("buttons 1 short press");
+      Serial.println("button 1 short press");
       if (username_index == 8) { // can't add anymore characters
         // ignore input
       } else {
@@ -137,7 +161,7 @@ void Interface::select_username() {
         }
       }
     } else if (flag1 == 2) { // button 1 long press
-      Serial.println("buttons 1 long press");
+      Serial.println("button 1 long press");
       if (username_index == 8) { // can't add anymore characters
         // ignore input
       } else {
@@ -152,17 +176,41 @@ void Interface::select_username() {
     }
 
     if (flag2 == 1) { // button 2 short press
-      Serial.println("buttons 2 short press");
+      Serial.println("button 2 short press");
       if (username_index == 8) { // can't add anymore characters
-        // ignore input
+        warning_displayed = true;
+        warning_timer = millis();
+
+        digitalWrite(cs_pin_left, LOW);
+        screen->fillRect(0, MIDDLE_HEIGHT, RIGHT_EDGE, 20, BACKGROUND);
+        screen->setCursor(0, MIDDLE_HEIGHT, 1);
+        screen->println("Maximum character limit!");
+        digitalWrite(cs_pin_left, HIGH);
       } else {
         char_index = (char_index + 1) % 27;
       }
     } else if (flag2 == 2) { // button 2 long press
-      Serial.println("buttons 2 long press");
+      Serial.println("button 2 long press");
       
-      state = SONGSELECT_STATE;
+      if (username_index == 0) { // empty username
+        warning_displayed = true;
+        warning_timer = millis();
+
+        digitalWrite(cs_pin_left, LOW);
+        screen->fillRect(0, MIDDLE_HEIGHT, RIGHT_EDGE, 20, BACKGROUND);
+        screen->setCursor(0, MIDDLE_HEIGHT, 1);
+        screen->println("Can't have an empty username!");
+        digitalWrite(cs_pin_left, HIGH);
+      } else {
+        state = SONGSELECT_STATE;
+      }
       break;
+    }
+
+    if (warning_displayed && millis() - warning_timer >= warning_timeout) { // clear warning message
+      digitalWrite(cs_pin_left, LOW);
+      screen->fillRect(0, MIDDLE_HEIGHT, RIGHT_EDGE, 20, BACKGROUND);
+      digitalWrite(cs_pin_left, HIGH);
     }
 
     username_display[username_index] = alphabet[char_index];
@@ -172,7 +220,7 @@ void Interface::select_username() {
       Serial.println("display changed");
       Serial.println(username_display);
       digitalWrite(cs_pin_left, LOW);
-      screen->fillScreen(BACKGROUND);
+      screen->fillRect(0, 0, RIGHT_EDGE, 20, BACKGROUND);
       screen->setCursor(0, 0, 1);
       screen->println(username_display);
       digitalWrite(cs_pin_left, HIGH);

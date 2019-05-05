@@ -338,11 +338,25 @@ void Interface::display_play_data() {
   digitalWrite(cs_pin_left, HIGH);
   
   digitalWrite(cs_pin_right, LOW);
-  screen->setCursor(0, MIDDLE_HEIGHT - 20, 1);
-  screen->print("Max combo:");
+  screen->setCursor(0, MIDDLE_HEIGHT - 60, 1);
+  screen->println("Max combo:");
   screen->setTextSize(2);
-  screen->setCursor(30, MIDDLE_HEIGHT, 1);
   screen->print(game->get_max_combo());
+  screen->setTextSize(1);
+  screen->setCursor(0, MIDDLE_HEIGHT - 30, 1);
+  screen->println("Perfects:");
+  screen->setTextSize(2);
+  screen->print(game->get_num_perfect());
+  screen->setTextSize(1);
+  screen->setCursor(0, MIDDLE_HEIGHT, 1);
+  screen->println("Decents:");
+  screen->setTextSize(2);
+  screen->print(game->get_num_decent());
+  screen->setTextSize(1);
+  screen->setCursor(0, MIDDLE_HEIGHT + 30, 1);
+  screen->println("Misses:");
+  screen->setTextSize(2);
+  screen->print(game->get_num_missed());
   screen->setTextSize(1);
   digitalWrite(cs_pin_right, HIGH);
 }

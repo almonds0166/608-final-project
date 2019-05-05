@@ -27,6 +27,9 @@ boolean Game::load(int song_index) {
   score = 0;
   cur_combo = 0;
   max_combo = 0;
+  num_notes_perfect = 0;
+  num_notes_decent = 0;
+  num_notes_missed = 0;
   
   // Get ready to download chart list
   HTTPClient http;
@@ -76,7 +79,8 @@ boolean Game::load(int song_index) {
 
     // Load sabers and displays
     float rate = 0.12;
-    sabers[side]->load(note_times[side], note_dirs[side], note_hit[side], total_num_notes[side], &score, &cur_combo);
+    sabers[side]->load(note_times[side], note_dirs[side], note_hit[side], total_num_notes[side], &score, &cur_combo, 
+        &num_notes_perfect, &num_notes_decent, &num_notes_missed);
     displays[side]->load(bpm, offset, rate, note_times[side], note_dirs[side], note_hit[side], total_num_notes[side], &score, &cur_combo);
   }
   
@@ -126,4 +130,15 @@ uint16_t Game::get_score() {
 uint16_t Game::get_max_combo() {
   return max_combo;
 }
- 
+
+uint16_t Game::get_num_perfect() {
+  return num_notes_perfect;
+}
+
+uint16_t Game::get_num_decent() {
+  return num_notes_decent;
+}
+
+uint16_t Game::get_num_missed() {
+  return num_notes_missed;
+}

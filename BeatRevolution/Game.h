@@ -38,6 +38,9 @@ class Game
   uint16_t score;
   uint16_t cur_combo;
   uint16_t max_combo;
+  uint16_t num_notes_perfect;
+  uint16_t num_notes_decent;
+  uint16_t num_notes_missed;
 
   uint32_t song_duration;
   uint32_t start_time;
@@ -50,6 +53,9 @@ class Game
   boolean process();
   uint16_t get_score();
   uint16_t get_max_combo();
+  uint16_t get_num_perfect();
+  uint16_t get_num_decent();
+  uint16_t get_num_missed();
 };
 
 #endif

@@ -83,8 +83,7 @@ void Display::update_score() {
     screen->setCursor(0,pixel_thresh+28,1);
     screen->print("Score ");
     screen->print(cur_score);
-    screen->setCursor(65,pixel_thresh+28,1);
-    screen->print("Combo ");
+    screen->setCursor(95,pixel_thresh+28,1);
     screen->print(cur_combo);
     digitalWrite(cs_pin, HIGH);
     prev_score = cur_score;

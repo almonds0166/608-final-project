@@ -8,13 +8,17 @@ Saber::Saber(MPU9250* imu_pointer, int cs) {
 /**
  * num_notes is the total number of notes in the chart for this hand (to prevent oob errors)
  */
-void Saber::load(uint32_t* time_list, char* dir_list, int8_t* hit_list, uint8_t num_notes, uint16_t* score_pointer, uint16_t* combo_pointer) {
+void Saber::load(uint32_t* time_list, char* dir_list, int8_t* hit_list, uint8_t num_notes, uint16_t* score_pointer, uint16_t* combo_pointer, 
+    uint16_t* num_notes_perfect_pointer, uint16_t* num_notes_decent_pointer, uint16_t* num_notes_missed_pointer) {
   note_times = time_list;
   note_dirs = dir_list;
   note_hit = hit_list;
   total_num_notes = num_notes;
   score = score_pointer;
   combo = combo_pointer;
+  num_notes_perfect = num_notes_perfect_pointer;
+  num_notes_decent = num_notes_decent_pointer;
+  num_notes_missed = num_notes_missed_pointer;
   
   note_index = 0;
   
@@ -70,13 +74,16 @@ void Saber::process() {
     note_index++;
     *score = *score + 100;
     *combo = *combo + 1;
+    *num_notes_perfect = *num_notes_perfect + 1;
   } else if (outcome == 2) { // decent hit
     note_index++;
     *score = *score + 70;
     *combo = *combo + 1;
+    *num_notes_decent = *num_notes_decent + 1;
   } else if (outcome == -1) { // note missed
     note_index++; // no need to change note_hit, as all contents are initialized to 0
     *combo = 0;
+    *num_notes_missed = *num_notes_missed + 1;
   }
 }
 
@@ -89,7 +96,7 @@ int8_t Saber::match(uint32_t expected_time, char expected_dir) {
   // a beat can be matched as early as beat_earliness_limit ms after the expected time (since a movement takes time, it's detected after it's made
   const int beat_lateness_limit = 160;
   // if a beat is not detected for beat_lateness_limit ms after the expected timestamp, mark as missed
-  const int first_measurements_above_limit_count = 12; 
+  const int first_measurements_above_limit_count = 10; 
   const int second_measurements_above_limit_count = 5; 
   const double first_acce_limit = 15; // in m/s/s
   const double second_acce_limit = 12;
@@ -229,7 +236,7 @@ int8_t Saber::hit_type(uint32_t expected_time, uint32_t hit_time) {
   Serial.println(diff);
   if (diff <= 60) {
     return 1;
-  } else if (diff <= 100) {
+  } else if (diff <= 120) {
     return 2;
   } else {
     return -1;

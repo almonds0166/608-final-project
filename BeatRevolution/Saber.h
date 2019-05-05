@@ -21,6 +21,9 @@ class Saber
   
   uint16_t* score;
   uint16_t* combo;
+  uint16_t* num_notes_perfect;
+  uint16_t* num_notes_decent;
+  uint16_t* num_notes_missed;
 
   uint32_t start_time;
   uint32_t last_acce_time; // last time that acceleration was recorded
@@ -37,7 +40,8 @@ class Saber
   public:
   
   Saber(MPU9250* imu_pointer, int cs); 
-  void load(uint32_t* time_list, char* dir_list, int8_t* hit_list, uint8_t num_notes, uint16_t* score_pointer, uint16_t* combo_pointer); 
+  void load(uint32_t* time_list, char* dir_list, int8_t* hit_list, uint8_t num_notes, uint16_t* score_pointer, uint16_t* combo_pointer, 
+    uint16_t* num_notes_perfect_pointer, uint16_t* num_notes_decent_pointer, uint16_t* num_notes_missed_pointer);
   void start();
   void process(); 
 };

@@ -53,6 +53,8 @@ class Interface
   // up to 10 characters for each field
 
   void select_username(); // handles selecting a username
+  void display_warning(char* warning_message);
+  void clear_warning();
   boolean update_song_index(int flag1, int flag2);
   void update_song_display();
   void display_high_scores();

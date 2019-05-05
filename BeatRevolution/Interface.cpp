@@ -88,11 +88,10 @@ void Interface::process() {
         uint16_t score = game->get_score();
         upload_score(score);
         state = SCORE_STATE;
-      } else { // ended game early
+      } else { // ended game early, don't upload score
         game->stop();
-        uint16_t score = game->get_score();
-        upload_score(score);
-        state = USERNAME_STATE;
+        state = SONGSELECT_STATE;
+        song_index = -1; // hacky method to get screen to display
       }
       break;
     }
@@ -101,7 +100,7 @@ void Interface::process() {
       // display details about play on right screen
       // long press either button to move into SONGSELECT state
       display_play_data();
-      // TODO qq right display
+      
       while (true) {
         int flag1 = button1->update();
         int flag2 = button2->update();
@@ -109,7 +108,7 @@ void Interface::process() {
         if (flag1 == 2 || flag2 == 2) {
           clear_screens();
           get_high_scores(song_index); // incorporate the new score just created by the last play
-          song_index = -1; // hacky method to get screen to display, will improve later
+          song_index = -1; // hacky method to get screen to display, will (maybe) improve later
           state = SONGSELECT_STATE;
           break;
         }
@@ -141,8 +140,8 @@ void Interface::select_username() {
   char username_display[USERNAME_LENGTH_LIMIT + 1];
   char prev_username_display[USERNAME_LENGTH_LIMIT + 1];
 
-  bool warning_displayed = false; // display warning message
-  uint32_t warning_timer; // timer for warning message
+  boolean warning_displayed = false;
+  uint32_t warning_timer = 0; // timer for warning message
   uint32_t warning_timeout = 2000; // timeout for warning message
 
   memset(username_display, 0, sizeof(username_display));
@@ -153,7 +152,9 @@ void Interface::select_username() {
     if (flag1 == 1) { // button 1 short press
       Serial.println("button 1 short press");
       if (username_index == 8) { // can't add anymore characters
-        // ignore input
+        warning_timer = millis();
+        warning_displayed = true;
+        display_warning("Maximum character limit!");
       } else {
         char_index--;
         if (char_index < 0) {
@@ -163,7 +164,9 @@ void Interface::select_username() {
     } else if (flag1 == 2) { // button 1 long press
       Serial.println("button 1 long press");
       if (username_index == 8) { // can't add anymore characters
-        // ignore input
+        warning_timer = millis();
+        warning_displayed = true;
+        display_warning("Maximum character limit!");
       } else {
         username_display[username_index] = alphabet[char_index];
         username_display[username_index + 1] = ' ';
@@ -178,14 +181,9 @@ void Interface::select_username() {
     if (flag2 == 1) { // button 2 short press
       Serial.println("button 2 short press");
       if (username_index == 8) { // can't add anymore characters
-        warning_displayed = true;
         warning_timer = millis();
-
-        digitalWrite(cs_pin_left, LOW);
-        screen->fillRect(0, MIDDLE_HEIGHT, RIGHT_EDGE, 20, BACKGROUND);
-        screen->setCursor(0, MIDDLE_HEIGHT, 1);
-        screen->println("Maximum character limit!");
-        digitalWrite(cs_pin_left, HIGH);
+        warning_displayed = true;
+        display_warning("Maximum character limit!");
       } else {
         char_index = (char_index + 1) % 27;
       }
@@ -193,24 +191,19 @@ void Interface::select_username() {
       Serial.println("button 2 long press");
       
       if (username_index == 0) { // empty username
-        warning_displayed = true;
         warning_timer = millis();
-
-        digitalWrite(cs_pin_left, LOW);
-        screen->fillRect(0, MIDDLE_HEIGHT, RIGHT_EDGE, 20, BACKGROUND);
-        screen->setCursor(0, MIDDLE_HEIGHT, 1);
-        screen->println("Can't have an empty username!");
-        digitalWrite(cs_pin_left, HIGH);
+        warning_displayed = true;
+        display_warning("Can't have an empty username!");
       } else {
         state = SONGSELECT_STATE;
+        song_index = -1; 
+        break;
       }
-      break;
     }
 
-    if (warning_displayed && millis() - warning_timer >= warning_timeout) { // clear warning message
-      digitalWrite(cs_pin_left, LOW);
-      screen->fillRect(0, MIDDLE_HEIGHT, RIGHT_EDGE, 20, BACKGROUND);
-      digitalWrite(cs_pin_left, HIGH);
+    if (warning_displayed && millis() >= warning_timeout + warning_timer) { // clear warning message
+      clear_warning();
+      warning_displayed = false;
     }
 
     username_display[username_index] = alphabet[char_index];
@@ -229,6 +222,21 @@ void Interface::select_username() {
     memset(prev_username_display, 0, sizeof(prev_username_display));
     strcat(prev_username_display, username_display);
   }
+}
+
+void Interface::display_warning(char* warning_message) {
+  digitalWrite(cs_pin_left, LOW);
+  screen->fillRect(0, MIDDLE_HEIGHT, RIGHT_EDGE, 20, BACKGROUND);
+  screen->setCursor(0, MIDDLE_HEIGHT, 1);
+  screen->println(warning_message);
+  digitalWrite(cs_pin_left, HIGH);
+}
+
+void Interface::clear_warning() {
+  Serial.println("Clear warning message");
+  digitalWrite(cs_pin_left, LOW);
+  screen->fillRect(0, MIDDLE_HEIGHT, RIGHT_EDGE, 20, BACKGROUND);
+  digitalWrite(cs_pin_left, HIGH);
 }
 
 /**

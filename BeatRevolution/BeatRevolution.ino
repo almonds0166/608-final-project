@@ -47,7 +47,7 @@ MPU9250 imu_right(SPI, imu_cs_pin_right);
 HardwareSerial mySoftwareSerial(2); // handles communication with mp3
 DFRobotDFPlayerMini mp3;
 
-const int cs_pin_left = 12;
+const int cs_pin_left = 22;
 const int cs_pin_right = 0;
 
 Saber saber_left(&imu_left, imu_cs_pin_left);

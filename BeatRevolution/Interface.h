@@ -5,7 +5,7 @@
 
 #define USERNAME_LENGTH_LIMIT 10
 // NOTE: NUM_SONGS includes the initial null song, so it's actually equal to the number of real songs plus 1
-#define NUM_SONGS 5
+#define NUM_SONGS 9
 #define NUM_PLAYER_SCORES_TO_PULL 4
 
 #define USERNAME_STATE 0

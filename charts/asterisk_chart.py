@@ -85,7 +85,7 @@ beat_offsets[18] = beat_offsets[17] + 10
 
 
 offset = 0 # 4 beats? accounted for at intro offset
-bpm = 83
+bpm = 85
 
 print("offset " + str(offset))
 print("bpm " + str(bpm))

@@ -213,9 +213,27 @@ void Interface::select_username() {
       Serial.println("display changed");
       Serial.println(username_display);
       digitalWrite(cs_pin_left, LOW);
-      screen->fillRect(0, 0, RIGHT_EDGE, 20, BACKGROUND);
-      screen->setCursor(0, 0, 1);
-      screen->println(username_display);
+      screen->setTextSize(2);
+      screen->setTextDatum(MC_DATUM);
+      screen->fillRect(
+        0, MIDDLE_HEIGHT - 20,
+        RIGHT_EDGE, MIDDLE_HEIGHT + 20,
+        BACKGROUND);
+      screen->setTextColor(TEXT);
+      screen->drawString(
+         username_display,
+         MIDDLE_WIDTH,
+         MIDDLE_HEIGHT);
+      screen->setTextColor(FADE[1]);
+      screen->drawString(
+        &username_display[username_index],
+        MIDDLE_WIDTH + CHAR_WIDTH*strlen(username_display) - CHAR_WIDTH,
+        MIDDLE_HEIGHT);
+      screen->setTextColor(TEXT);
+      screen->setTextSize(1);
+      screen->setTextDatum(BL_DATUM);
+      screen->drawString(username, 0, BOTTOM_EDGE);
+      screen->setTextDatum(TL_DATUM);
       digitalWrite(cs_pin_left, HIGH);
     }
 

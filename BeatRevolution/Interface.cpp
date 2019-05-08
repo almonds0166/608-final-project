@@ -283,12 +283,21 @@ void Interface::update_song_display() {
     }
   }
   // middle
-  screen->setCursor(
-    max(0, (int)(RIGHT_EDGE / 2 - strlen(song_list[song_index]) * CHAR_WIDTH)),
-    MIDDLE_HEIGHT - ((strlen(song_list[song_index]) >= 10) ? 14 : 7), 1);
   screen->setTextColor(TFT_WHITE);
   screen->setTextSize(2);
-  screen->println(song_list[song_index]);
+  if(strcmp("Bloody Purity", song_list[song_index]) == 0) {
+     // Hacky fix for Bloody Purity song title, which takes
+     // up two lines (and looks ugly) without this fix.
+     screen->setTextDatum(MC_DATUM);
+     screen->drawString("Bloody", MIDDLE_WIDTH, MIDDLE_HEIGHT - 8);
+     screen->drawString("Purity", MIDDLE_WIDTH, MIDDLE_HEIGHT + 8);
+     screen->setTextDatum(ML_DATUM);
+  } else {
+     screen->setCursor(
+       max(0, (int)(RIGHT_EDGE / 2 - strlen(song_list[song_index]) * CHAR_WIDTH)),
+       MIDDLE_HEIGHT - ((strlen(song_list[song_index]) >= 10) ? 14 : 7), 1);
+     screen->println(song_list[song_index]);
+  }
   screen->setTextColor(TEXT);
   screen->setTextSize(1);
   // after

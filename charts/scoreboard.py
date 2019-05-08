@@ -31,7 +31,11 @@ SONGS = [ \
    "Asterisk",
    "Bad Apple",
    "Navillera",
-   "The Blocks We Loved" ]
+   "The Blocks We Loved",
+   "Monody",
+   "Bloody Purity",
+   "Ververg",
+   "Masquerade" ]
 
 HTML_KWs = {
    "title":  "BeatRevolution!",
@@ -138,7 +142,7 @@ def request_handler(request):
             ''' ORDER BY t DESC LIMIT 100;''', tuple(filters.values())).fetchall()
       if "esp32" in request["args"]:
          rows = ["{},{}".format(*row[1:]) for row in rows] if rows else []
-         return ";".join(rows)
+         return ";".join(rows[:5])
       if rows:
          # convert song indices to actual song names
          rows = [[SONGS[row[0]], *row[1:]] for row in rows]

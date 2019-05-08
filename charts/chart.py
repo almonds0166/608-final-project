@@ -13,7 +13,11 @@ SONGS = [ None, \
    "asterisk",
    "bad_apple",
    "navillera",
-   "the_blocks_we_loved" ]
+   "the_blocks_we_loved",
+   "monody",
+   "bloody_purity",
+   "ververg",
+   "masquerade" ]
 
 def request_handler(request):
    if request["method"] != "GET" \

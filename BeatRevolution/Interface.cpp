@@ -424,36 +424,32 @@ void Interface::get_high_scores(int index) {
    Display combo and other details on the right screen
 */
 void Interface::display_play_data() {
+  char temp[10];
   digitalWrite(cs_pin_left, LOW);
-  screen->setCursor(0, MIDDLE_HEIGHT - 20, 1);
-  screen->println("You earned:");
-  screen->println();
+  screen->setTextDatum(MC_DATUM);
+  screen->drawString("Your score", MIDDLE_WIDTH, MIDDLE_HEIGHT - 20);
   screen->setTextSize(2);
-  screen->print(game->get_score());
+  sprintf(temp, "%d", game->get_score());
+  screen->drawString(temp, MIDDLE_WIDTH, MIDDLE_HEIGHT + 10);
   screen->setTextSize(1);
   digitalWrite(cs_pin_left, HIGH);
   
   digitalWrite(cs_pin_right, LOW);
-  screen->setCursor(0, MIDDLE_HEIGHT - 60, 1);
-  screen->println("Max combo:");
+  screen->drawString("Max combo:", MIDDLE_WIDTH, MIDDLE_HEIGHT - 60);
+  screen->drawString("Perfects:",  MIDDLE_WIDTH, MIDDLE_HEIGHT - 25);
+  screen->drawString("Decents:",   MIDDLE_WIDTH, MIDDLE_HEIGHT + 10);
+  screen->drawString("Misses:",    MIDDLE_WIDTH, MIDDLE_HEIGHT + 45);
   screen->setTextSize(2);
-  screen->print(game->get_max_combo());
+  sprintf(temp, "%d", game->get_max_combo());
+  screen->drawString(temp, MIDDLE_WIDTH, MIDDLE_HEIGHT - 47);
+  sprintf(temp, "%d", game->get_num_perfect());
+  screen->drawString(temp, MIDDLE_WIDTH, MIDDLE_HEIGHT - 12);
+  sprintf(temp, "%d", game->get_num_decent());
+  screen->drawString(temp, MIDDLE_WIDTH, MIDDLE_HEIGHT + 23);
+  sprintf(temp, "%d", game->get_num_missed());
+  screen->drawString(temp, MIDDLE_WIDTH, MIDDLE_HEIGHT + 58);
   screen->setTextSize(1);
-  screen->setCursor(0, MIDDLE_HEIGHT - 30, 1);
-  screen->println("Perfects:");
-  screen->setTextSize(2);
-  screen->print(game->get_num_perfect());
-  screen->setTextSize(1);
-  screen->setCursor(0, MIDDLE_HEIGHT, 1);
-  screen->println("Decents:");
-  screen->setTextSize(2);
-  screen->print(game->get_num_decent());
-  screen->setTextSize(1);
-  screen->setCursor(0, MIDDLE_HEIGHT + 30, 1);
-  screen->println("Misses:");
-  screen->setTextSize(2);
-  screen->print(game->get_num_missed());
-  screen->setTextSize(1);
+  screen->setTextDatum(TL_DATUM);
   digitalWrite(cs_pin_right, HIGH);
 }
 

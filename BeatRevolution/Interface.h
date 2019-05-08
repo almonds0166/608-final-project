@@ -37,6 +37,9 @@ class Interface
   const int BOTTOM_EDGE = 159; //bottom of screen limit
   const int MIDDLE_WIDTH = RIGHT_EDGE/2;
   const int MIDDLE_HEIGHT = BOTTOM_EDGE/2;
+  
+  // For the finer details
+  const uint8_t CHAR_HALFWIDTH = 3;
 
   int state; // state of the interface (username, song selection, score display)
 

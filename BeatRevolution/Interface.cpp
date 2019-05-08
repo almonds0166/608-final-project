@@ -311,21 +311,19 @@ void Interface::update_song_display() {
 */
 void Interface::display_high_scores() {
   digitalWrite(cs_pin_right, LOW);
-  const int horizontal_offset = 5;
-  const int vertical_offset = 30; // where the score display starts
-  const int vertical_buffer = 7; // additional distance between top line ("username   score") and next line of actual data
-  const int line_height = 20; // distance between consecutive displays
+  const uint8_t VERTICAL_OFFSET = 30; // where the score display starts
+  const uint8_t LINE_HEIGHT     = 23; // distance between consecutive strings drawn
   screen->fillScreen(BACKGROUND);
-  screen->setCursor(horizontal_offset, vertical_offset, 1);
-  screen->println("username");
-  screen->setCursor(MIDDLE_WIDTH + horizontal_offset, vertical_offset, 1);
-  screen->println("score");
+  screen->setTextDatum(MC_DATUM); // Middle center text datum, makes things easier
+  uint8_t y = VERTICAL_OFFSET;
+  screen->drawString("Player", FIRST_QTR, y);
+  screen->drawString("Score",  LAST_QTR,  y);
   for (int player_num = 0; player_num < NUM_PLAYER_SCORES_TO_PULL; player_num++) {
-    screen->setCursor(horizontal_offset, vertical_offset + vertical_buffer + (player_num+1)*line_height, 1);
-    screen->println(high_scores[song_index][player_num][0]);
-    screen->setCursor(MIDDLE_WIDTH + horizontal_offset, vertical_offset + vertical_buffer + (player_num+1)*line_height, 1);
-    screen->println(high_scores[song_index][player_num][1]);
+    y += LINE_HEIGHT;
+    screen->drawString(high_scores[song_index][player_num][0], FIRST_QTR, y);
+    screen->drawString(high_scores[song_index][player_num][1], LAST_QTR,  y);
   }
+  screen->setTextDatum(TL_DATUM); // set datum back to the default
   digitalWrite(cs_pin_right, HIGH);
 }
 

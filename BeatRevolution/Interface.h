@@ -38,8 +38,16 @@ class Interface
   const int MIDDLE_WIDTH = RIGHT_EDGE/2;
   const int MIDDLE_HEIGHT = BOTTOM_EDGE/2;
   
-  // For the finer details
-  const uint8_t CHAR_HALFWIDTH = 3;
+  // Used for the finer details
+  const uint8_t CHAR_WIDTH  = 6;
+  const uint16_t FADE[7] = {
+    0x4208,
+    0x6B4D,
+    0xC618,
+    TFT_WHITE,
+    0xC618,
+    0x6B4D,
+    0x4208 }; // http://www.barth-dev.de/online/rgb565-color-picker/
 
   int state; // state of the interface (username, song selection, score display)
 

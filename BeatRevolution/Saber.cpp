@@ -54,11 +54,9 @@ void Saber::process() {
 
     last_acce_time = millis();
 
-//    if (cs_pin == 17) {
-//      char output[40];
-//      sprintf(output,"%d,%4.2f,%4.2f",last_acce_time,x,z); //render numbers with %4.2 float formatting
-//      Serial.println(output); //print to serial for plotting
-//    }
+    char output[40];
+    sprintf(output,"%d,%4.2f,%4.2f",cs_pin,x,z); //render numbers with %4.2 float formatting
+    Serial.println(output); //print to serial for plotting
     
     // update acce_index, so that it now points to the oldest acceleration
     acce_index++; 
@@ -72,16 +70,16 @@ void Saber::process() {
   note_hit[note_index] = outcome;
   if (outcome == 1) { // perfect hit
     note_index++;
-    *score = *score + 100;
+    *score = *score + 100 + *combo;
     *combo = *combo + 1;
     *num_notes_perfect = *num_notes_perfect + 1;
   } else if (outcome == 2) { // decent hit
     note_index++;
-    *score = *score + 70;
+    *score = *score + 70 + *combo;
     *combo = *combo + 1;
     *num_notes_decent = *num_notes_decent + 1;
   } else if (outcome == -1) { // note missed
-    note_index++; // no need to change note_hit, as all contents are initialized to 0
+    note_index++; 
     *combo = 0;
     *num_notes_missed = *num_notes_missed + 1;
   }
@@ -96,7 +94,7 @@ int8_t Saber::match(uint32_t expected_time, char expected_dir) {
   // a beat can be matched as early as beat_earliness_limit ms after the expected time (since a movement takes time, it's detected after it's made
   const int beat_lateness_limit = 160;
   // if a beat is not detected for beat_lateness_limit ms after the expected timestamp, mark as missed
-  const int first_measurements_above_limit_count = 10; 
+  const int first_measurements_above_limit_count = 7; 
   const int second_measurements_above_limit_count = 5; 
   const double first_acce_limit = 15; // in m/s/s
   const double second_acce_limit = 12;
@@ -234,7 +232,7 @@ int8_t Saber::hit_type(uint32_t expected_time, uint32_t hit_time) {
   Serial.println(absolute_expected_time);
   Serial.println(hit_time);
   Serial.println(diff);
-  if (diff <= 60) {
+  if (diff <= 70) {
     return 1;
   } else if (diff <= 120) {
     return 2;

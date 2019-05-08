@@ -271,20 +271,26 @@ void Interface::update_song_display() {
   // selected song are also displayed
 
   digitalWrite(cs_pin_left, LOW);
-
   screen->fillScreen(BACKGROUND);
-  screen->setCursor(0, MIDDLE_HEIGHT - 35, 1);
-  for (int i = -3; i < 4; i++) {
-    if (i == 0) { // currently selected "middle"
-      screen->setTextColor(TFT_BLUE);
-      screen->setTextSize(2);
-      screen->println(song_list[song_index]);
-      screen->setTextColor(TEXT);
-      screen->setTextSize(1);
-    } else {
-      if (song_index + i >= 1 && song_index + i < NUM_SONGS) { 
-        screen->println(song_list[song_index + i]);
-      }
+  // before
+  for (int i = -3; i < 0; i++) {
+    screen->setCursor(0, MIDDLE_HEIGHT - 15 + i * 15, 1);
+    if (song_index + i >= 1 && song_index + i < NUM_SONGS) { 
+      screen->println(song_list[song_index + i]);
+    }
+  }
+  // middle
+  screen->setCursor(0, MIDDLE_HEIGHT - 12, 1);
+  screen->setTextColor(TFT_BLUE);
+  screen->setTextSize(2);
+  screen->println(song_list[song_index]);
+  screen->setTextColor(TEXT);
+  screen->setTextSize(1);
+  // after
+  for (int i = 1; i < 4; i++) {
+    screen->setCursor(0, MIDDLE_HEIGHT + 10 + i * 15, 1);
+    if (song_index + i >= 1 && song_index + i < NUM_SONGS) { 
+      screen->println(song_list[song_index + i]);
     }
   }
   digitalWrite(cs_pin_left, HIGH);

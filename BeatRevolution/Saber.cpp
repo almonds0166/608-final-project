@@ -192,7 +192,7 @@ int8_t Saber::match(uint32_t expected_time, char expected_dir) {
           state = 2;
         } else if (i - entered_reverse_dir_index >= second_measurements_above_limit_count) {
           // enough time passed with high acce
-          uint32_t entered_correct_dir_time = get_movement_start_time(entered_correct_dir_index);
+          uint32_t entered_correct_dir_time = get_movement_start_time(entered_reverse_dir_index);
           return hit_type(expected_time, entered_correct_dir_time);
         }
       } else {
@@ -200,7 +200,7 @@ int8_t Saber::match(uint32_t expected_time, char expected_dir) {
           state = 2;
         } else if (i - entered_reverse_dir_index >= second_measurements_above_limit_count) {
           // enough time passed with high acce
-          uint32_t entered_correct_dir_time = get_movement_start_time(entered_correct_dir_index);
+          uint32_t entered_correct_dir_time = get_movement_start_time(entered_reverse_dir_index);
           return hit_type(expected_time, entered_correct_dir_time);
         }
       }
@@ -214,8 +214,8 @@ int8_t Saber::match(uint32_t expected_time, char expected_dir) {
  * Given the index in the acceleration array of where a movement was first detected, return when the movement started 
  * (offset by some amount, since detection is earlier than actual movement)
  */
-uint32_t Saber::get_movement_start_time(int entered_correct_dir_index) {
-  return millis() - ACCE_RECORD_PERIOD * (ACCE_HISTORY_SIZE + acce_index - entered_correct_dir_index - 1) + 80; // 80 is offset
+uint32_t Saber::get_movement_start_time(int correct_hit_index) {
+  return millis() - ACCE_RECORD_PERIOD * (ACCE_HISTORY_SIZE + acce_index - correct_hit_index - 1); // plus offset if needed
 }
 
 /**

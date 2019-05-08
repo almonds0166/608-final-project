@@ -244,8 +244,8 @@ void Interface::select_username() {
 
 void Interface::display_warning(char* warning_message) {
   digitalWrite(cs_pin_left, LOW);
-  screen->fillRect(0, MIDDLE_HEIGHT, RIGHT_EDGE, 20, BACKGROUND);
-  screen->setCursor(0, MIDDLE_HEIGHT, 1);
+  screen->fillRect(0, MIDDLE_HEIGHT + 20, RIGHT_EDGE, 20, BACKGROUND);
+  screen->setCursor(0, MIDDLE_HEIGHT + 20, 1);
   screen->println(warning_message);
   digitalWrite(cs_pin_left, HIGH);
 }
@@ -253,7 +253,7 @@ void Interface::display_warning(char* warning_message) {
 void Interface::clear_warning() {
   Serial.println("Clear warning message");
   digitalWrite(cs_pin_left, LOW);
-  screen->fillRect(0, MIDDLE_HEIGHT, RIGHT_EDGE, 20, BACKGROUND);
+  screen->fillRect(0, MIDDLE_HEIGHT + 20, RIGHT_EDGE, 20, BACKGROUND);
   digitalWrite(cs_pin_left, HIGH);
 }
 

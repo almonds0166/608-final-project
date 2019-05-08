@@ -324,10 +324,12 @@ uint16_t Display::find_color(uint32_t beat) {
       return TFT_GREEN;
     break;
     case 4:
-      return TFT_PURPLE;
+      return 31 + 33*32 + 31*2048;
+      //return TFT_PURPLE;
     break;
     case 8:
-      return TFT_PURPLE;
+      return 31 + 33*32 + 31*2048;
+      //return TFT_PURPLE;
     break;
     default:
       return TFT_RED;

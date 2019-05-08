@@ -50,7 +50,6 @@ void Saber::process() {
     float z = -(imu->getAccelZ_mss() + 9.8); // a motion up starts positive and ends negative
     x_acce[acce_index] = x;
     z_acce[acce_index] = z;
-    digitalWrite(cs_pin, HIGH);
 
     last_acce_time = millis();
 

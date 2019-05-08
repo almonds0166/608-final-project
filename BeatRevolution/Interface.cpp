@@ -329,6 +329,9 @@ void Interface::update_song_display() {
     }
   }
   screen->setTextColor(TEXT);
+  screen->setTextDatum(BL_DATUM);
+  screen->drawString(username, LEFT_EDGE, BOTTOM_EDGE);
+  screen->setTextDatum(TL_DATUM);
   digitalWrite(cs_pin_left, HIGH);
 }
 

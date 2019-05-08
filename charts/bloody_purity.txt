@@ -1,5 +1,5 @@
-offset 1518
-bpm 154
+offset 1478
+bpm 155
 duration 147000
 
 L 6233 d

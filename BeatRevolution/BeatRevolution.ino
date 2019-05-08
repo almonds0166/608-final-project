@@ -63,7 +63,11 @@ char song1[] = "Asterisk";
 char song2[] = "Bad Apple";
 char song3[] = "Navillera";
 char song4[] = "The Blocks We Loved";
-char* song_names[5] = {NULL, song1, song2, song3, song4};
+char song5[] = "Monody";
+char song6[] = "Bloody Purity";
+char song7[] = "Ververg";
+char song8[] = "Masquerade";
+char* song_names[9] = {NULL, song1, song2, song3, song4, song5, song6, song7, song8};
 
 Game game(sabers, displays, &mp3, song_names);
 

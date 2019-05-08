@@ -1,4 +1,4 @@
-offset 6480
+offset 6600
 bpm 107
 duration 126000
 

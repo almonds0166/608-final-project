@@ -31,7 +31,11 @@ SONGS = [ \
    "Asterisk",
    "Bad Apple",
    "Navillera",
-   "The Blocks We Loved" ]
+   "The Blocks We Loved",
+   "Monody",
+   "Bloody Purity",
+   "Ververg",
+   "Masquerade" ]
 
 HTML_KWs = {
    "title":  "BeatRevolution!",

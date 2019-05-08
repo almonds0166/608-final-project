@@ -32,7 +32,7 @@ def request_handler(request):
    song = int(song)
    if song < 1 or song >= len(SONGS):
       return "400 - \"{}\" is not an appropriate song index. Expected: [1,{}]".format(song, len(SONGS)-1)
-   fname = "__HOME__/br/{}.txt".format(SONGS[song])
+   fname = "__HOME__/br/charts/{}.txt".format(SONGS[song])
 
    if not os.path.exists(fname):
       return "500 - No file found at: " + fname

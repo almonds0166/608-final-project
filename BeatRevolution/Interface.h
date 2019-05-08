@@ -31,12 +31,25 @@ class Interface
   const uint16_t TEXT = TFT_WHITE;
 
   // set display size
-  const int LEFT_EDGE = 0; //left side of screen limit
-  const int RIGHT_EDGE = 127; //right side of screen limit
-  const int TOP_EDGE = 0; //top of screen limit
-  const int BOTTOM_EDGE = 159; //bottom of screen limit
-  const int MIDDLE_WIDTH = RIGHT_EDGE/2;
-  const int MIDDLE_HEIGHT = BOTTOM_EDGE/2;
+  const uint8_t LEFT_EDGE = 0; //left side of screen limit
+  const uint8_t RIGHT_EDGE = 127; //right side of screen limit
+  const uint8_t TOP_EDGE = 0; //top of screen limit
+  const uint8_t BOTTOM_EDGE = 159; //bottom of screen limit
+  const uint8_t MIDDLE_WIDTH = RIGHT_EDGE/2;
+  const uint8_t MIDDLE_HEIGHT = BOTTOM_EDGE/2;
+
+  // Used for the finer details
+  const uint8_t CHAR_WIDTH  = 6;
+  const uint8_t FIRST_QTR = MIDDLE_WIDTH / 2;
+  const uint8_t LAST_QTR = MIDDLE_WIDTH + FIRST_QTR;
+  const uint16_t FADE[7] = {
+    0x4208,
+    0x6B4D,
+    0xC618,
+    TFT_WHITE,
+    0xC618,
+    0x6B4D,
+    0x4208 }; // http://www.barth-dev.de/online/rgb565-color-picker/
 
   int state; // state of the interface (username, song selection, score display)
 

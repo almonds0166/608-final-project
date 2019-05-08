@@ -213,9 +213,27 @@ void Interface::select_username() {
       Serial.println("display changed");
       Serial.println(username_display);
       digitalWrite(cs_pin_left, LOW);
-      screen->fillRect(0, 0, RIGHT_EDGE, 20, BACKGROUND);
-      screen->setCursor(0, 0, 1);
-      screen->println(username_display);
+      screen->setTextSize(2);
+      screen->setTextDatum(MC_DATUM);
+      screen->fillRect(
+        0, MIDDLE_HEIGHT - 20,
+        RIGHT_EDGE, MIDDLE_HEIGHT + 20,
+        BACKGROUND);
+      screen->setTextColor(TEXT);
+      screen->drawString(
+         username_display,
+         MIDDLE_WIDTH,
+         MIDDLE_HEIGHT);
+      screen->setTextColor(FADE[1]);
+      screen->drawString(
+        &username_display[username_index],
+        MIDDLE_WIDTH + CHAR_WIDTH*strlen(username_display) - CHAR_WIDTH,
+        MIDDLE_HEIGHT);
+      screen->setTextColor(TEXT);
+      screen->setTextSize(1);
+      screen->setTextDatum(BL_DATUM);
+      screen->drawString(username, 0, BOTTOM_EDGE);
+      screen->setTextDatum(TL_DATUM);
       digitalWrite(cs_pin_left, HIGH);
     }
 
@@ -226,8 +244,8 @@ void Interface::select_username() {
 
 void Interface::display_warning(char* warning_message) {
   digitalWrite(cs_pin_left, LOW);
-  screen->fillRect(0, MIDDLE_HEIGHT, RIGHT_EDGE, 20, BACKGROUND);
-  screen->setCursor(0, MIDDLE_HEIGHT, 1);
+  screen->fillRect(0, MIDDLE_HEIGHT + 20, RIGHT_EDGE, 20, BACKGROUND);
+  screen->setCursor(0, MIDDLE_HEIGHT + 20, 1);
   screen->println(warning_message);
   digitalWrite(cs_pin_left, HIGH);
 }
@@ -235,7 +253,7 @@ void Interface::display_warning(char* warning_message) {
 void Interface::clear_warning() {
   Serial.println("Clear warning message");
   digitalWrite(cs_pin_left, LOW);
-  screen->fillRect(0, MIDDLE_HEIGHT, RIGHT_EDGE, 20, BACKGROUND);
+  screen->fillRect(0, MIDDLE_HEIGHT + 20, RIGHT_EDGE, 20, BACKGROUND);
   digitalWrite(cs_pin_left, HIGH);
 }
 
@@ -274,25 +292,46 @@ void Interface::update_song_display() {
   screen->fillScreen(BACKGROUND);
   // before
   for (int i = -3; i < 0; i++) {
-    screen->setCursor(0, MIDDLE_HEIGHT - 15 + i * 15, 1);
-    if (song_index + i >= 1 && song_index + i < NUM_SONGS) { 
+    if (song_index + i >= 1 && song_index + i < NUM_SONGS) {
+      screen->setTextColor(FADE[i+3]);
+      screen->setCursor(
+        max(0, (int)(RIGHT_EDGE - strlen(song_list[song_index+i]) * CHAR_WIDTH) / 2),
+        MIDDLE_HEIGHT - 15 + i * 15, 1);
       screen->println(song_list[song_index + i]);
     }
   }
   // middle
-  screen->setCursor(0, MIDDLE_HEIGHT - 12, 1);
-  screen->setTextColor(TFT_BLUE);
+  screen->setTextColor(TFT_WHITE);
   screen->setTextSize(2);
-  screen->println(song_list[song_index]);
+  if(strcmp("Bloody Purity", song_list[song_index]) == 0) {
+     // Hacky fix for Bloody Purity song title, which takes
+     // up two lines (and looks ugly) without this fix.
+     screen->setTextDatum(MC_DATUM);
+     screen->drawString("Bloody", MIDDLE_WIDTH, MIDDLE_HEIGHT - 8);
+     screen->drawString("Purity", MIDDLE_WIDTH, MIDDLE_HEIGHT + 8);
+     screen->setTextDatum(ML_DATUM);
+  } else {
+     screen->setCursor(
+       max(0, (int)(RIGHT_EDGE / 2 - strlen(song_list[song_index]) * CHAR_WIDTH)),
+       MIDDLE_HEIGHT - ((strlen(song_list[song_index]) >= 10) ? 14 : 7), 1);
+     screen->println(song_list[song_index]);
+  }
   screen->setTextColor(TEXT);
   screen->setTextSize(1);
   // after
   for (int i = 1; i < 4; i++) {
-    screen->setCursor(0, MIDDLE_HEIGHT + 10 + i * 15, 1);
     if (song_index + i >= 1 && song_index + i < NUM_SONGS) { 
+      screen->setTextColor(FADE[i+3]);
+      screen->setCursor(
+        max(0, (int)(RIGHT_EDGE - strlen(song_list[song_index+i]) * CHAR_WIDTH) / 2),
+        MIDDLE_HEIGHT + 10 + i * 15, 1);
       screen->println(song_list[song_index + i]);
     }
   }
+  screen->setTextColor(TEXT);
+  screen->setTextDatum(BL_DATUM);
+  screen->drawString(username, LEFT_EDGE, BOTTOM_EDGE);
+  screen->setTextDatum(TL_DATUM);
   digitalWrite(cs_pin_left, HIGH);
 }
 
@@ -302,21 +341,19 @@ void Interface::update_song_display() {
 */
 void Interface::display_high_scores() {
   digitalWrite(cs_pin_right, LOW);
-  const int horizontal_offset = 5;
-  const int vertical_offset = 30; // where the score display starts
-  const int vertical_buffer = 7; // additional distance between top line ("username   score") and next line of actual data
-  const int line_height = 20; // distance between consecutive displays
+  const uint8_t VERTICAL_OFFSET = 30; // where the score display starts
+  const uint8_t LINE_HEIGHT     = 23; // distance between consecutive strings drawn
   screen->fillScreen(BACKGROUND);
-  screen->setCursor(horizontal_offset, vertical_offset, 1);
-  screen->println("username");
-  screen->setCursor(MIDDLE_WIDTH + horizontal_offset, vertical_offset, 1);
-  screen->println("score");
+  screen->setTextDatum(MC_DATUM); // Middle center text datum, makes things easier
+  uint8_t y = VERTICAL_OFFSET;
+  screen->drawString("Player", FIRST_QTR, y);
+  screen->drawString("Score",  LAST_QTR,  y);
   for (int player_num = 0; player_num < NUM_PLAYER_SCORES_TO_PULL; player_num++) {
-    screen->setCursor(horizontal_offset, vertical_offset + vertical_buffer + (player_num+1)*line_height, 1);
-    screen->println(high_scores[song_index][player_num][0]);
-    screen->setCursor(MIDDLE_WIDTH + horizontal_offset, vertical_offset + vertical_buffer + (player_num+1)*line_height, 1);
-    screen->println(high_scores[song_index][player_num][1]);
+    y += LINE_HEIGHT;
+    screen->drawString(high_scores[song_index][player_num][0], FIRST_QTR, y);
+    screen->drawString(high_scores[song_index][player_num][1], LAST_QTR,  y);
   }
+  screen->setTextDatum(TL_DATUM); // set datum back to the default
   digitalWrite(cs_pin_right, HIGH);
 }
 
@@ -390,36 +427,32 @@ void Interface::get_high_scores(int index) {
    Display combo and other details on the right screen
 */
 void Interface::display_play_data() {
+  char temp[10];
   digitalWrite(cs_pin_left, LOW);
-  screen->setCursor(0, MIDDLE_HEIGHT - 20, 1);
-  screen->println("You earned:");
-  screen->println();
+  screen->setTextDatum(MC_DATUM);
+  screen->drawString("Your score", MIDDLE_WIDTH, MIDDLE_HEIGHT - 20);
   screen->setTextSize(2);
-  screen->print(game->get_score());
+  sprintf(temp, "%d", game->get_score());
+  screen->drawString(temp, MIDDLE_WIDTH, MIDDLE_HEIGHT + 10);
   screen->setTextSize(1);
   digitalWrite(cs_pin_left, HIGH);
   
   digitalWrite(cs_pin_right, LOW);
-  screen->setCursor(0, MIDDLE_HEIGHT - 60, 1);
-  screen->println("Max combo:");
+  screen->drawString("Max combo:", MIDDLE_WIDTH, MIDDLE_HEIGHT - 60);
+  screen->drawString("Perfects:",  MIDDLE_WIDTH, MIDDLE_HEIGHT - 25);
+  screen->drawString("Decents:",   MIDDLE_WIDTH, MIDDLE_HEIGHT + 10);
+  screen->drawString("Misses:",    MIDDLE_WIDTH, MIDDLE_HEIGHT + 45);
   screen->setTextSize(2);
-  screen->print(game->get_max_combo());
+  sprintf(temp, "%d", game->get_max_combo());
+  screen->drawString(temp, MIDDLE_WIDTH, MIDDLE_HEIGHT - 47);
+  sprintf(temp, "%d", game->get_num_perfect());
+  screen->drawString(temp, MIDDLE_WIDTH, MIDDLE_HEIGHT - 12);
+  sprintf(temp, "%d", game->get_num_decent());
+  screen->drawString(temp, MIDDLE_WIDTH, MIDDLE_HEIGHT + 23);
+  sprintf(temp, "%d", game->get_num_missed());
+  screen->drawString(temp, MIDDLE_WIDTH, MIDDLE_HEIGHT + 58);
   screen->setTextSize(1);
-  screen->setCursor(0, MIDDLE_HEIGHT - 30, 1);
-  screen->println("Perfects:");
-  screen->setTextSize(2);
-  screen->print(game->get_num_perfect());
-  screen->setTextSize(1);
-  screen->setCursor(0, MIDDLE_HEIGHT, 1);
-  screen->println("Decents:");
-  screen->setTextSize(2);
-  screen->print(game->get_num_decent());
-  screen->setTextSize(1);
-  screen->setCursor(0, MIDDLE_HEIGHT + 30, 1);
-  screen->println("Misses:");
-  screen->setTextSize(2);
-  screen->print(game->get_num_missed());
-  screen->setTextSize(1);
+  screen->setTextDatum(TL_DATUM);
   digitalWrite(cs_pin_right, HIGH);
 }
 

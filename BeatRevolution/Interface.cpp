@@ -274,25 +274,34 @@ void Interface::update_song_display() {
   screen->fillScreen(BACKGROUND);
   // before
   for (int i = -3; i < 0; i++) {
-    screen->setCursor(0, MIDDLE_HEIGHT - 15 + i * 15, 1);
-    if (song_index + i >= 1 && song_index + i < NUM_SONGS) { 
+    if (song_index + i >= 1 && song_index + i < NUM_SONGS) {
+      screen->setTextColor(FADE[i+3]);
+      screen->setCursor(
+        max(0, (int)(RIGHT_EDGE - strlen(song_list[song_index+i]) * CHAR_WIDTH) / 2),
+        MIDDLE_HEIGHT - 15 + i * 15, 1);
       screen->println(song_list[song_index + i]);
     }
   }
   // middle
-  screen->setCursor(0, MIDDLE_HEIGHT - 12, 1);
-  screen->setTextColor(TFT_BLUE);
+  screen->setCursor(
+    max(0, (int)(RIGHT_EDGE / 2 - strlen(song_list[song_index]) * CHAR_WIDTH)),
+    MIDDLE_HEIGHT - ((strlen(song_list[song_index]) >= 10) ? 14 : 7), 1);
+  screen->setTextColor(TFT_WHITE);
   screen->setTextSize(2);
   screen->println(song_list[song_index]);
   screen->setTextColor(TEXT);
   screen->setTextSize(1);
   // after
   for (int i = 1; i < 4; i++) {
-    screen->setCursor(0, MIDDLE_HEIGHT + 10 + i * 15, 1);
     if (song_index + i >= 1 && song_index + i < NUM_SONGS) { 
+      screen->setTextColor(FADE[i+3]);
+      screen->setCursor(
+        max(0, (int)(RIGHT_EDGE - strlen(song_list[song_index+i]) * CHAR_WIDTH) / 2),
+        MIDDLE_HEIGHT + 10 + i * 15, 1);
       screen->println(song_list[song_index + i]);
     }
   }
+  screen->setTextColor(TEXT);
   digitalWrite(cs_pin_left, HIGH);
 }
 

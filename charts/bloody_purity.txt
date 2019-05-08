@@ -1,4 +1,4 @@
-offset 1518
+offset 1503
 bpm 155
 duration 147000
 

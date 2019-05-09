@@ -89,9 +89,9 @@ void Saber::process() {
 // expected time is relative to the start time, so a note at the beginning of the song should have expected
 // time of 0
 int8_t Saber::match(uint32_t expected_time, char expected_dir) {
-  const int beat_earliness_limit = 0;
-  // a beat can be matched as early as beat_earliness_limit ms after the expected time (since a movement takes time, it's detected after it's made
-  const int beat_lateness_limit = 160;
+  const int beat_earliness_limit = 100;
+  // a beat can be matched as early as beat_earliness_limit ms before the expected time (since a movement takes time, it's detected after it's made
+  const int beat_lateness_limit = 140;
   // if a beat is not detected for beat_lateness_limit ms after the expected timestamp, mark as missed
   const int first_measurements_above_limit_count = 7; 
   const int second_measurements_above_limit_count = 5; 
@@ -101,7 +101,7 @@ int8_t Saber::match(uint32_t expected_time, char expected_dir) {
   // above the 1st/2nd threshold to count as 1st(0->1)/2nd(2->3) state transitions
 
   // don't rearrange to have minuses in the inequality, all numbers involves are unsigned
-  if (start_time + expected_time + beat_earliness_limit > millis() ) { 
+  if (start_time + expected_time > millis() + beat_earliness_limit) { 
     return 0; // beat too far in the future
   }
 
@@ -224,18 +224,28 @@ uint32_t Saber::get_movement_start_time(int correct_hit_index) {
  */
 int8_t Saber::hit_type(uint32_t expected_time, uint32_t hit_time) {
   uint32_t absolute_expected_time = expected_time + start_time;
-  uint32_t later_time = absolute_expected_time >= hit_time ? absolute_expected_time : hit_time;
-  uint32_t earlier_time = absolute_expected_time < hit_time ? absolute_expected_time : hit_time;
-  uint32_t diff = later_time - earlier_time;
-  Serial.println("expected and actual hit times, diff");
+
+  Serial.println("detecting hit type with expected time, hit time, and diff:");
   Serial.println(absolute_expected_time);
   Serial.println(hit_time);
-  Serial.println(diff);
-  if (diff <= 70) {
-    return 1;
-  } else if (diff <= 120) {
-    return 2;
+  
+  if (absolute_expected_time >= hit_time) {
+    uint32_t diff = absolute_expected_time - hit_time;
+    Serial.println(diff);
+    if (diff <= 70) {
+      return 1;
+    } else {
+      return 0;
+    }
   } else {
-    return -1;
+    uint32_t diff = hit_time - absolute_expected_time;
+    Serial.println(diff);
+    if (diff <= 70) {
+      return 1;
+    } else if (diff <= 120) {
+      return 2;
+    } else {
+      return -1;
+    }
   }
 }

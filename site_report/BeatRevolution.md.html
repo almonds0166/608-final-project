@@ -23,8 +23,19 @@ todo
 
 Gameplay
 -------------------------------------------------------------------------------
-todo
+Once the user enters the gameplay state, the device pulls the arrow chart for the corresponding song from the server.
+The song is played from the SD card, and the user is given a few seconds to prepare before arrows start moving from the bottom of the screens.
+When the colored arrows reach the row of dark gray arrows at the top of the screen, the user is to wave the sabers in the direction corresponding to the arrow head.
+An arrow on the left display is to be hit by the left (red) saber, and an arrow on the right display is to be hit by the right (blue) saber.
 
+If a perfect hit is detected, the arrow flashes white, and if the user is only slightly off, the arrow flashes green.
+When the song is over, the user's score is displayed along with stats on the user's longest combo, number of perfect hits, number of decent hits, and number of misses.
+The user can then long-press either button to return to the song selection stage.
+
+Scoring
+-------------------------------------------------------------------------------
+The base scores for perfect and decent hits are 100 and 70, respectively.
+The combo number is the number of consecutive hits at that point in time, and on each perfect hit the user also earns a score bonus equal to the current combo.
 
 
 
@@ -48,11 +59,6 @@ State Machine Diagram
 todo
 
 
-Code Layout
--------------------------------------------------------------------------------
-todo
-
-
 Parts List
 -------------------------------------------------------------------------------
 todo
@@ -62,6 +68,30 @@ Design Challenges
 -------------------------------------------------------------------------------
 2 IMUs, 2 screens
 
+
+
+Detailed Code Layout
+===============================================================================
+
+
+Server Side
+-------------------------------------------------------------------------------
+todo
+
+
+Display
+-------------------------------------------------------------------------------
+todo
+
+
+Motion Detection
+-------------------------------------------------------------------------------
+todo
+
+
+UI
+-------------------------------------------------------------------------------
+todo
 
 
 <!-- Markdeep: --><style class="fallback">body{visibility:hidden;white-space:pre;font-family:monospace}</style><script src="markdeep.min.js" charset="utf-8"></script><script src="https://casual-effects.com/markdeep/latest/markdeep.min.js?" charset="utf-8"></script><script>window.alreadyProcessedMarkdeep||(document.body.style.visibility="visible")</script>

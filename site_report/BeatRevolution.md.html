@@ -73,6 +73,10 @@ Design Challenges
 Detailed Code Layout
 ===============================================================================
 
+The Game Class
+-------------------------------------------------------------------------------
+todo
+
 
 Server Side
 -------------------------------------------------------------------------------
@@ -81,7 +85,50 @@ todo
 
 Display
 -------------------------------------------------------------------------------
-todo
+The `Display` class handles the arrow display during the gameplay state.
+Each LCD screen is associated with its own `Display` object to separate the charts
+for the left and right hands.
+On initialization, a `Display` object is passed a pointer to a tft object along
+with a chip select pin indicating the screen corresponding to that object.
+For convenience, each `Display` object also contains a bijective map between
+directions stored in `char` form and their corresponding `int` forms for easy indexing.
+
+The `Display::load` function passes all the information specific to a song.
+This includes the following:
+* tempo, in beats per minute
+* offset, indicating the time at which the first note of the song occurs relative to the beginning of the track
+* rate of arrow movement, in pixels per ms
+* a pointer to the list storing the correct times of all arrow hits for that song
+* a pointer to the list containing the correct directions of all arrow hits for that song
+* a pointer to the list where index $i$ indicates whether note $i$ was hit along with whether it was a perfect or decent hit
+* a pointer to the variable storing the current score
+* a pointer to the variable storing the current combo length
+
+Subsequent display changes during the gameplay state require all of this information.
+
+When the song starts, `Display::start` is called to set the start time of the song
+to the device's internal `millis()` clock. This allows the device
+to make calculations relative to the starting time of a particular game.
+`Display::print_song` is called to print the name of the song on the bottom of the left screen,
+and `Display::update_score` is called to print updated scores and combo lengths
+on the bottom of the right screen.
+There are two `Display` objects within the `Game` class, and
+exactly one of the above functions is called on each `Display`
+to distinguish between the left and right screens.
+
+Helper functions for `Display::process` are as follows:
+* `Display::draw_arrow(char dir, int x, int y, uint16_t color)` draws an arrow centered at pixel $(x,y)$ pointing in the direction indicated by `dir` and in color `color`
+* `Display::calc_center(int dir, uint32_t beat, uint32_t timer)` calculates the current $y$ coordinate of an arrow given its time (`beat`) in the chart and the current time `timer`. If the note corresponding to this arrow is too far in the future to be displayed, or if the note has already passed and was marked as a missed note, this function returns negative values to indicated that behavior.
+* `Display::translate_arrow(char dir, int x, int y, uint16_t color)` translates the arrow of direction `dir` centered at $(x,y)$ one pixel up the screen. It blanks the lower one-pixel-thick boundary of the arrow and draws the one-pixel-thick upper boundary of the arrow shifted one unit up, minimizing the number of pixels changed at each step. This eliminates the flicker seen when calling `Display::draw_arrow` to blank out the previous arrow location and completely redraw the arrow in its new location.
+* `Display::find_color(uint32_t beat)` returns the color of a note occurring at time `beat` according to the DDR color scheme. It uses the bpm (tempo) of the song along with the offset time to determine whether `beat` falls on the beat, the half-beat, the quarter-beat, or the triplet subdivision in the song. These have specific corresponding colors in DDR for the player's ease in anticipating the note, and the same system is used here.
+* `Display::glow_arrow(uint32_t full_bright, int8_t accuracy)` is used to create the white or green glow-fade arrow when a note is hit. `full_bright` indicates the time at which the hit was detected, or the starting time of the glow-fade. `accuracy` indicates the accuracy of the hit (perfect, decent, miss). The function returns the current color of the glow-fade arrow based on a linear scale with endpoints at pure white/green and the default dark gray. If too much time has elapsed and the arrow has completely faded to gray, the function returns $0.$
+
+`Display::process` runs through the list of notes in the chart and displays up to $10$ corresponding arrows on the screen at a time.
+The arrow disappears from the screen if it has been hit,
+and a glow-fade arrow flashes on the screen to give visual indication on the quality of the hit.
+To ensure that the left screen displays only the information for the left saber (and same for the right side),
+this function first writes the chip select output pin to low before making any changes to the display, and it sets the pin back to high after making all the necessary changes.
+
 
 
 Motion Detection

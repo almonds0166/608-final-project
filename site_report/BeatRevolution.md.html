@@ -8,17 +8,26 @@ Our project Beat Revolution is a mix between the games Beat Saber and Dance Danc
 
 Game Functionality
 ===============================================================================
-todo
+The game allows users to play arbitrarily many songs in one sitting
+as well as store scores across multiple systems or system restarts.
 
 
 Username Selection
 -------------------------------------------------------------------------------
-todo
+When the system starts up, the player is prompted to enter a username.
+Short-pressing the left and right buttons scrolls through the letters of the alphabet,
+and long-pressing the left button confirms the current character.
+Long-pressing the right button confirms the selected username and moves the user to the song selection stage.
 
 
 Song Selection
 -------------------------------------------------------------------------------
-todo
+Again, the left and right buttons are used to scroll through the list of songs.
+A list of high scores for the currently selected song is shown on the right display,
+and long-pressing the right button confirms the song and enters the gameplay state.
+
+During song selection, a user can quit the game by long-pressing the left button.
+This returns the player to the username selection stage.
 
 
 Gameplay
@@ -74,10 +83,42 @@ along with the tempo to determine the time, in ms, of each note relative to the 
 
 
 
-Design Challenges
+Design Challenges and Decisions
 -------------------------------------------------------------------------------
-2 IMUs, 2 screens
+A major challenge in this project was figuring out how to use two completely independent IMUs and LCD screens.
 
+Aside from the technical challenges, the components necessary for this project were all relatively clear.
+The arrow display, motion detection, and sound system are important parts of any rhythm game,
+and connecting to the internet was needed for persistence of high scores
+across multiple resets of the system.
+Storing and pulling information from the server also helped overcome the problem
+of limited space on the ESP32.
+
+### Displays
+
+The independent displays problem was solved by digging into the TFT library and commenting out the line fixing the chip select pin.
+The chip select for each display was then wired to a different output pin on the ESP32;
+when the output pin for a display is written to low, that display receives
+the incoming information, and otherwise does not change.
+
+There were multiple options for giving visual feedback on the accuracy of note
+hits during gameplay.
+All of these involved an indicator object (e.g. a score) appearing on the display and then disappearing after some amount of time.
+To avoid the issue of having moving arrows prematurely erase the object,
+the top row of stationary arrows was chosen as an indicator since these were constantly
+redrawn over the moving arrows.
+The fade-out effect was added for a smoother visual transition, and coincidentally
+the sudden change from darkly colored arrows to brightly colored arrows
+followed by an immediate color fade produced the desired "glowing" effect.
+
+### IMUs
+todo
+
+### Audio
+todo
+
+### Server
+todo?
 
 
 Detailed Code Layout
@@ -148,6 +189,11 @@ todo
 
 UI
 -------------------------------------------------------------------------------
+todo
+
+
+Videos
+===============================================================================
 todo
 
 

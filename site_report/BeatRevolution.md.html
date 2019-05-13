@@ -220,7 +220,7 @@ After the player finishes the song, `Interface::upload_score(uint16_t score)` se
 The helper functions in the `Interface` class are as follows:
 * `Interface::select_username` uses two helper functions. `Interface::display_warning(char* warning_message)` displays a warning to the player if they don't adhere to the username selection rules. It contains two warnings: "Maximum character limit!" and "Can't have an empty username!". `Interface::clear_warning` overwrites the warning message with a background colored rectangle to remove it.
 
-* `Interface::update_song_index(int flag1, int flag2) handles button presses changing the selected song for `Interface::update_song_display`. It doesn't allow the player to go past the first or last songs.
+* `Interface::update_song_index(int flag1, int flag2)` handles button presses changing the selected song for `Interface::update_song_display`. It doesn't allow the player to go past the first or last songs.
 
 * `Interface::get_all_high_scores` calls `Interface::get_high_scores(int index)` for all song indexes and stores them into a high scores variable. 
 
@@ -235,7 +235,7 @@ The `Button` class was adapted from the classy button exercise in 6.08. It handl
 
 The two functions within `Button` are as follows:
 * `Button::read` reads the highs and lows of the pin, then indicates whether or not the button is currently being pressed.
-* `Button::update` has 5 states: resting, starting debounce, short press, long press, and ending debounce. We first `Button::read` the current press state of the button (whether or not it's being pressed). We then determine if the button state has recently been updated, and if not, reset its state. In the rest state, if the button is pressed, then we go to the starting debounce or tentative press state. If the button is held for long enough, we move to the short press state. If the button is let go in this state, we move to the ending debounce state. In this state, if the button is let go for long enough, we return a short press, otherwise, return to the short press state. If the button is held for long enough in the short press state, we move into the long press state. If the button is let go for long enough afterwards, we return a long press, otherwise we return to the long press state. 
+* `Button::update` has 5 states: resting, starting debounce, short press, long press, and ending debounce. We first `Button::read` the current press state of the button (whether or not it's being pressed). We then determine if the button state has recently been updated, and if not, reset its state to resting. The reason for this timeout is that we're not necessarily reading the buttons all the time, and we want to prevent strange behavior if a button enters non-resting state and then isn't read again for several seconds. In the rest state, if the button is pressed, then we go to the starting debounce or tentative press state. If the button is held for long enough, we move to the short press state. If the button is let go in this state, we move to the ending debounce state. In this state, if the button is let go for long enough, we return a short press, otherwise, return to the short press state. If the button is held for long enough in the short press state, we move into the long press state. If the button is let go for long enough afterwards, we return a long press, otherwise we return to the long press state. 
 
 
 Videos

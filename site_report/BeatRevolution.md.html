@@ -187,9 +187,39 @@ Motion Detection
 todo
 
 
-UI
+User Interface
 -------------------------------------------------------------------------------
-todo
+The `Interface` class handles interaction with the entire game, such as username selection, song selection, gameplay, high score display, and moving between those states.
+
+The main state machine is handled by `Interface::process`. It begins with the username state. When the username selection is finished, it moves into the song select state. From the song selection, the player can choose to go back to the username selection or forward to playing the song they had selected. In the middle of gameplay, players can choose to return to song selection, voiding their score. When they finish the song, players can see a breakdown of their score, include number of perfects, decents, misses, and max combo. From there, they return to the song seelction screen upon a button press.
+
+The username selection is handled by `Interface::select_username`, based off of the Wikipedia search interface. Username selection occurs on the left display, whereas instructions for selection is displayed on the right. Short button presses indicate moving from character to character based on indexing through a char array of potential characters. A long left press locks in the currently selected button, and increases the username character index. We continue to fill the username character slots up to a maximum of 8 characters. A long right press indicates that the player is finished selecting their username. The username is stored in a private variable to be displayed on other screens.
+
+Song selection is handled by `Interface::update_song_display` on the left display. It handles how the song list is displayed as the player scrolls through the list. Our implementation displays the selected song in a bright white color in the middle of the display and in size 2 font, whereas other songs above and below are displayed in a faded color (hand-picked grays) and in size 1 font. 
+
+On the right display of song selection, `Interface::display_high_scores` shows a list of high scores for the selected song. It pulls the list of high scores, then separates it into players and scores, displaying them side by side.
+
+After the player finishes the song, `Interface::upload_score(uint16_t score)` sends a post request to our server to send the score. Then, `Interface::display_play_data` handles how the player's score and score details are displayed. On the left display, it shows the player's score. On the right display, it shows a score breakdown of the max combo, the number of perfects, decents, and misses.
+
+The helper functions in the `Interface` class are as follows:
+* `Interface::select_username` uses two helper functions. `Interface::display_warning(char* warning_message)` displays a warning to the player if they don't adhere to the username selection rules. It contains two warnings: "Maximum character limit!" and "Can't have an empty username!". `Interface::clear_warning` overwrites the warning message with a background colored rectangle to remove it.
+
+* `Interface::update_song_index(int flag1, int flag2) handles button presses changing the selected song for `Interface::update_song_display`. It doesn't allow the player to go past the first or last songs.
+
+* `Interface::get_all_high_scores` calls `Interface::get_high_scores(int index)` for all song indexes and stores them into a high scores variable. 
+
+* `Interface::get_high_scores(int index)` is a helper for `Interface::get_all_high_scores` and is used separately after a player finishes a song to update the new high scores of that song.
+
+* `Interface::clear_screens` paints fills both screens with the background color to easy switch from state to state.
+
+
+Button
+-------------------------------------------------------------------------------
+The `Button` class was adapted from the classy button exercise in 6.08. It handles the state machine of how the button operates and accounts for debounce. Button operations consist of either no press, a short press, or a long press. We use two buttons in our game to handle username selection, song selection, and moving between states of the game.
+
+The two functions within `Button` are as follows:
+* `Button::read` reads the highs and lows of the pin, then indicates whether or not the button is currently being pressed.
+* `Button::update` has 5 states: resting, starting debounce, short press, long press, and ending debounce. We first `Button::read` the current press state of the button (whether or not it's being pressed). We then determine if the button state has recently been updated, and if not, reset its state. In the rest state, if the button is pressed, then we go to the starting debounce or tentative press state. If the button is held for long enough, we move to the short press state. If the button is let go in this state, we move to the ending debounce state. In this state, if the button is let go for long enough, we return a short press, otherwise, return to the short press state. If the button is held for long enough in the short press state, we move into the long press state. If the button is let go for long enough afterwards, we return a long press, otherwise we return to the long press state. 
 
 
 Videos

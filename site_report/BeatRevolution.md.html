@@ -138,7 +138,10 @@ the sudden change from darkly colored arrows to brightly colored arrows
 followed by an immediate color fade produced the desired "glowing" effect.
 
 ### IMUs
-todo
+
+The IMUs continuously gave us problems throughout the project. We started by using I2C communication with the IMUs, using the default 6.08 IMU library. We made several changes to the library, such as increasing the acceleration range, to suit our purpose, and we also struggled with mysterious memory problems with the library (fixed by enabling PSRAM, still don't know why). When we put in a second saber, we realized that I2C commucation did not support fast enough switching between two IMUs, which we needed since we were reading from each IMU every several milliseconds. Therefore, we switched to the new MPU9250 library and switched from I2C to SPI communication, choosing between our devices using the chip select pin. 
+
+We ended up digging quite deep into the MPU9250 library, writing our own functions to better suit our needs (in fact, we noticed and fixed a bug in calibrateAccel() that would reset the acceleration range to 2G). As the IMUs would randomly crash for unknown reasons during gameplay and start giving readings of zero, we wrote a fastBegin function that takes a fraction of a second (as opposed to several seconds), so we can reconnect the IMUs periodically. The solution isn't perfect and required players to hold the sticks still and horizontal while a game is loading, but unfortunately we couldn't figure out why the IMUs would crash, and didn't know how to solve this problem at its root. 
 
 ### Audio
 todo
@@ -210,7 +213,8 @@ this function first writes the chip select output pin to low before making any c
 
 Motion Detection
 -------------------------------------------------------------------------------
-todo
+Motion detection in game is handled by the `Saber` class, which reads in and processes IMU acceleration data. 
+
 
 
 User Interface

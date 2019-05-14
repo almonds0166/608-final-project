@@ -71,7 +71,7 @@ State Machine Diagram
 -------------------------------------------------------------------------------
 ![](./images/statemachine.jpg)
 
-**State Alpha**: During this state, we will connect to WIFI, initialize our IMUs, MP3 player, and displays. This also acts as a calibration state where the IMU gets the normal values for acceleration and force. These will be the new “zero”. Then, it enters state 0.
+**State Alpha**: During this state, the device connects to WIFI and initializes the IMUs, MP3 player, and displays. This also acts as a calibration state where the IMU gets the normal values for acceleration and force. These will be the new “zero”. Then, it enters state 0.
 
 **State 0**: This is the state for username selection. Short presses left and right scroll through the potential username characters. A long left press locks in the selected character and moves to the next character in the username. A long right press moves us into the state 1.
 
@@ -142,7 +142,10 @@ the sudden change from darkly colored arrows to brightly colored arrows
 followed by an immediate color fade produced the desired "glowing" effect.
 
 ### IMUs
-todo
+
+The IMUs continuously gave us problems throughout the project. We started by using I2C communication with the IMUs, using the default 6.08 IMU library. We made several changes to the library, such as increasing the acceleration range, to suit our purpose, and we also struggled with mysterious memory problems with the library (fixed by enabling PSRAM, still don't know why). When we put in a second saber, we realized that I2C commucation did not support fast enough switching between two IMUs, which we needed since we were reading from each IMU every several milliseconds. Therefore, we switched to the new MPU9250 library and switched from I2C to SPI communication, choosing between our devices using the chip select pin. 
+
+We ended up digging quite deep into the MPU9250 library, writing our own functions to better suit our needs (in fact, we noticed and fixed a bug in calibrateAccel() that would reset the acceleration range to 2G). As the IMUs would randomly crash for unknown reasons during gameplay and start giving readings of zero, we wrote a fastBegin function that takes a fraction of a second (as opposed to several seconds), so we can reconnect the IMUs periodically. The solution isn't perfect and required players to hold the sticks still and horizontal while a game is loading, but unfortunately we couldn't figure out why the IMUs would crash, and didn't know how to solve this problem at its root. 
 
 ### Server
 todo?
@@ -153,7 +156,16 @@ Detailed Code Layout
 
 The Game Class
 -------------------------------------------------------------------------------
-todo
+The `Game` class handles the entire gameplay state.
+It is initialized with pointers to its `Display` and `Saber` objects along with
+pointers to the mp3 player and a list of the song names.
+This class mostly serves as a wrapper to combine `Display` and `Saber`.
+
+Important functions:
+* `Game::load(int song_index)` initializes all the score information (score, combo, number of perfect/decent/missed notes) to $0.$ It then downloads the note chart from the server and parses it, splitting times, directions, and handedness into the appropriate locations in storage. The function then loads both the `Display`s and the `Saber`s.
+* `Game::start(int song_index)` tells the mp3 to begin playing song number `song_index` and calls the `start` functions for `Display` and `Saber`. This also sets the starting time of the song to the current elapsed `millis()` timer of the ESP32.
+* `Game::process` checks for completion of the song and otherwise calls the `process` functions for `Display` and `Saber`. It also computes the new maximum combo and calls `update_score` on the right `Display` to visually indicate changes in score.
+* `Game::stop` pauses the mp3 player.
 
 
 Server Side
@@ -211,7 +223,8 @@ this function first writes the chip select output pin to low before making any c
 
 Motion Detection
 -------------------------------------------------------------------------------
-todo
+Motion detection in game is handled by the `Saber` class, which reads in and processes IMU acceleration data. 
+
 
 
 User Interface

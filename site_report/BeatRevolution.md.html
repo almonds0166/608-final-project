@@ -65,12 +65,22 @@ todo (how we wired things up maybe?)
 
 State Machine Diagram
 -------------------------------------------------------------------------------
-todo
+![](./images/statemachine.jpg)
+
+**State Alpha**: During this state, we will connect to WIFI, initialize our IMUs, MP3 player, and displays. This also acts as a calibration state where the IMU gets the normal values for acceleration and force. These will be the new “zero”. Then, it enters state 0.
+
+**State 0**: This is the state for username selection. Short presses left and right scroll through the potential username characters. A long left press locks in the selected character and moves to the next character in the username. A long right press moves us into the state 1.
+
+**State 1**: This state allows the player to select the song that they want to play. The list of available songs are on the left display, and high scores for that song are on the right display. A long left press brings you back to state 0 for username selection. A long right press selects the current song and brings you to state 2.
+
+**State 2**: State for the actual game play. During the game, we handle updating the saber movements, displays, and score as the song progresses. Players can stop the game at any point by long pressing the left button. When the song is complete, we move to state 3. 
+
+**State 3**: State to display the user’s score breakdown and update the scores database. The user can see how they performed on the song. Press any of the buttons to move onto the song selection screen in state 1.
 
 
 Parts List
 -------------------------------------------------------------------------------
-[Longruner Dfplayer Mini MP3 Player Module for Arduino LK01 (1)](https://www.amazon.com/dp/B01MXOFAE4)
+[Longruner Dfplayer Mini MP3 Player Module for Arduino LK01 (1)](https://www.amazon.com/dp/B01MXOFAE4)   
 
 * Total price: $5.52
 * Description: Outputs audio from ESP32 together with speakers.

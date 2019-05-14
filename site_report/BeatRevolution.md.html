@@ -60,7 +60,11 @@ todo
 
 System Layout
 -------------------------------------------------------------------------------
-todo (how we wired things up maybe?)
+![](./images/systemdiagram.jpg)
+
+In the system diagram, the two IMUs and two displays are simplified to a single block, as most pins are the same on both left and right versions of each. 
+The distinguishing pins are labeled NCS left and NCS right for the IMU, and CS left and CS right for the display.
+The different pins allow us to use our "chip select" method of reading/writing to both left and right IMUs and displays.
 
 
 State Machine Diagram
@@ -138,9 +142,6 @@ the sudden change from darkly colored arrows to brightly colored arrows
 followed by an immediate color fade produced the desired "glowing" effect.
 
 ### IMUs
-todo
-
-### Audio
 todo
 
 ### Server

@@ -21,9 +21,6 @@ void Saber::load(uint32_t* time_list, char* dir_list, int8_t* hit_list, uint8_t 
   num_notes_missed = num_notes_missed_pointer;
   
   note_index = 0;
-  
-  memset(x_acce, 0, ACCE_HISTORY_SIZE); 
-  memset(z_acce, 0, ACCE_HISTORY_SIZE);
   acce_index=0;
 }
 
@@ -63,6 +60,22 @@ void Saber::process() {
     if (acce_index >= ACCE_HISTORY_SIZE) {
       acce_index=0; // acceleration arrays are cyclic
     }
+  }
+
+  boolean disconnected = true;
+  // check whether the saber has disconnected, reconnect if so 
+  // not really a good solution, but at least startup only takes less than 0.1 seconds now
+  for (int i = 0; i < ACCE_HISTORY_SIZE - 1; i++) {
+    if (x_acce[i] != x_acce[i+1] || z_acce[i] != z_acce[i+1]) {
+      // readings not broken
+      disconnected = false;
+      break;
+    }
+  }
+  if (disconnected) { 
+    Serial.println("Reconnecting saber with cs pin");
+    Serial.println(cs_pin);
+    calibrate();
   }
   
   int8_t outcome = match(note_times[note_index], note_dirs[note_index]);
@@ -252,7 +265,9 @@ int8_t Saber::hit_type(uint32_t expected_time, uint32_t hit_time) {
 }
 
 void Saber::calibrate() {
-  int status = imu->fastBegin(3);
+  Serial.println("Start up time");
+  Serial.println(millis());
+  int status = imu->fastBegin(0); // setting srd to 0 now actually works in the custom begin function i think? no longer get defaulted to 19
 //  int status = imu->begin();
   if (status < 0) {
     Serial.println("IMU initialization unsuccessful");
@@ -260,13 +275,21 @@ void Saber::calibrate() {
     Serial.println(status);
     while(true) {}
   }
-  imu->fastCalibrateAccel();
-//  imu->defaultCalibrateAccel();
+//  imu->fastCalibrateAccel();
+  imu->defaultCalibrateAccel();
+  
   Serial.println("IMU connected and set up!");
-  float x_bias = imu->getAccelBiasX_mss();
+  float x_bias = imu->getAccelBiasY_mss();
   float z_bias = imu->getAccelBiasZ_mss();
   Serial.println("x bias:");
   Serial.println(x_bias);
   Serial.println("z bias:");
   Serial.println(z_bias);
+
+  memset(x_acce, 0, ACCE_HISTORY_SIZE); 
+  x_acce[0] = 0.01; // very hacky sorry, this is to avoid the IMUs being reset due to acceleration history being all the same
+  memset(z_acce, 0, ACCE_HISTORY_SIZE);
+
+  Serial.println("End time");
+  Serial.println(millis());
 }

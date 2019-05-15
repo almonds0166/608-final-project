@@ -127,6 +127,11 @@ void Game::stop() {
   mp3->pause();
 }
 
+void Game::calibrateSabers() {
+  sabers[0]->calibrate();
+  sabers[1]->calibrate();
+}
+
 uint16_t Game::get_score() {
   return score;
 }

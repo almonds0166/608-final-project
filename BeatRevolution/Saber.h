@@ -44,6 +44,7 @@ class Saber
     uint16_t* num_notes_perfect_pointer, uint16_t* num_notes_decent_pointer, uint16_t* num_notes_missed_pointer);
   void start();
   void process(); 
+  void calibrate();
 };
 
 #endif

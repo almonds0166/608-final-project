@@ -51,6 +51,7 @@ class Game
   boolean load(int song_index); 
   void start(int song_index);
   boolean process();
+  void calibrateSabers();
   void stop();
   uint16_t get_score();
   uint16_t get_max_combo();

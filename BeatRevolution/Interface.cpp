@@ -62,6 +62,7 @@ void Interface::process() {
             load_success = game->load(song_index);
         }
         clear_screens();
+        game->calibrateSabers();
         game->start(song_index);
         state = GAMEPLAY_STATE;
         break;

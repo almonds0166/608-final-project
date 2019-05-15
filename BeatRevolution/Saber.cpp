@@ -44,10 +44,11 @@ void Saber::process() {
   // read new acceleration data if needed
   if (millis() - last_acce_time >= ACCE_RECORD_PERIOD) { // works best if function called at least once per ms
     // the imu library already handles writing LOW/HIGH to the CS select pin
-    imu->readSensor();
+    imu->fastReadSensor();
+//    imu->readSensor();
     float x = imu->getAccelY_mss(); // what was previous the x direction on the imu is now the y direction in the new library
                                     // a motion to the right starts positive and ends negative
-    float z = -(imu->getAccelZ_mss() + 9.8); // a motion up starts positive and ends negative
+    float z = -(imu->getAccelZ_mss() /*+ 9.8*/); // a motion up starts positive and ends negative
     x_acce[acce_index] = x;
     z_acce[acce_index] = z;
 
@@ -248,4 +249,24 @@ int8_t Saber::hit_type(uint32_t expected_time, uint32_t hit_time) {
       return -1;
     }
   }
+}
+
+void Saber::calibrate() {
+  int status = imu->fastBegin(3);
+//  int status = imu->begin();
+  if (status < 0) {
+    Serial.println("IMU initialization unsuccessful");
+    Serial.println("Status");
+    Serial.println(status);
+    while(true) {}
+  }
+  imu->fastCalibrateAccel();
+//  imu->defaultCalibrateAccel();
+  Serial.println("IMU connected and set up!");
+  float x_bias = imu->getAccelBiasX_mss();
+  float z_bias = imu->getAccelBiasZ_mss();
+  Serial.println("x bias:");
+  Serial.println(x_bias);
+  Serial.println("z bias:");
+  Serial.println(z_bias);
 }

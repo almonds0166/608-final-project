@@ -123,44 +123,12 @@ void setup(void) {
   }
   Serial.println(" CONNECTED!");
 
-  int status;
-
   Serial.println("Attempting to connect to IMU left");
-  status = imu_left.begin();
-  if (status < 0) {
-    Serial.println("IMU initialization unsuccessful");
-    while(true) {}
-  }
-  status = imu_left.setAccelRange(MPU9250::ACCEL_RANGE_8G);
-  if (status < 0) {
-    Serial.println("IMU setting acce range unsuccessful");
-    while(true) {}
-  }
-  status = imu_left.setSrd(3); // cap sample rate at 250Hz
-  if (status < 0) {
-    Serial.println("IMU setting sample rate unsuccessful");
-    while(true) {}
-  }
-  Serial.println("IMU connected and set up!");
+  saber_left.calibrate();
   digitalWrite(imu_cs_pin_left, HIGH);
   
   Serial.println("Attempting to connect to IMU right");
-  status = imu_right.begin();
-  if (status < 0) {
-    Serial.println("IMU initialization unsuccessful");
-    while(true) {}
-  }
-  status = imu_right.setAccelRange(MPU9250::ACCEL_RANGE_8G);
-  if (status < 0) {
-    Serial.println("IMU setting acce range unsuccessful");
-    while(true) {}
-  }
-  status = imu_right.setSrd(3); // cap sample rate at 250Hz
-  if (status < 0) {
-    Serial.println("IMU setting sample rate unsuccessful");
-    while(true) {}
-  }
-  Serial.println("IMU connected and set up!");
+  saber_right.calibrate();
   digitalWrite(imu_cs_pin_right, HIGH);
   
   mySoftwareSerial.begin(9600, SERIAL_8N1, 32, 33);  // speed, type, RX, TX

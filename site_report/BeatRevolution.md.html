@@ -35,10 +35,12 @@ Gameplay
 Once the user enters the gameplay state, the device pulls the arrow chart for the corresponding song from the server.
 The song is played from the SD card, and the user is given a few seconds to prepare before arrows start moving from the bottom of the screens.
 When the colored arrows reach the row of dark gray arrows at the top of the screen, the user is to wave the sabers in the direction corresponding to the arrow head.
-An arrow on the left display is to be hit by the left (red) saber, and an arrow on the right display is to be hit by the right (blue) saber.
-
+An arrow on the left display is to be hit by the left (red) saber, and an arrow on the right display is to be hit by the right (blue) saber. 
 If a perfect hit is detected, the arrow flashes white, and if the user is only slightly off, the arrow flashes green.
+The player can quit in the middle of a game by long-pressing the left button, which returns them to the song selection stage.
+
 When the song is over, the user's score is displayed along with stats on the user's longest combo, number of perfect hits, number of decent hits, and number of misses.
+The user's score is uploaded to our server. 
 The user can then long-press either button to return to the song selection stage.
 
 Scoring
@@ -273,7 +275,7 @@ The helper functions in the `Interface` class are as follows:
 
 Button
 -------------------------------------------------------------------------------
-The `Button` class was adapted from the classy button exercise in 6.08. It handles the state machine of how the button operates and accounts for debounce. Button operations consist of either no press, a short press, or a long press. We use two buttons in our game to handle username selection, song selection, and moving between states of the game.
+The `Button` class was adapted from the classy button exercise in 6.08, with some edits made to include a "timeout". It handles the state machine of how the button operates and accounts for debounce. Button operations consist of either no press, a short press, or a long press. We use two buttons in our game to handle username selection, song selection, and moving between states of the game.
 
 The two functions within `Button` are as follows:
 * `Button::read` reads the highs and lows of the pin, then indicates whether or not the button is currently being pressed.

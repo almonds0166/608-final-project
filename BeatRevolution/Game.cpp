@@ -132,7 +132,7 @@ void Game::calibrateSabers() {
   sabers[1]->calibrate();
 }
 
-uint16_t Game::get_score() {
+uint32_t Game::get_score() {
   return score;
 }
 

@@ -19,7 +19,7 @@ class Saber
   MPU9250* imu;
   int cs_pin;
   
-  uint16_t* score;
+  uint32_t* score;
   uint16_t* combo;
   uint16_t* num_notes_perfect;
   uint16_t* num_notes_decent;
@@ -40,7 +40,7 @@ class Saber
   public:
   
   Saber(MPU9250* imu_pointer, int cs); 
-  void load(uint32_t* time_list, char* dir_list, int8_t* hit_list, uint8_t num_notes, uint16_t* score_pointer, uint16_t* combo_pointer, 
+  void load(uint32_t* time_list, char* dir_list, int8_t* hit_list, uint8_t num_notes, uint32_t* score_pointer, uint16_t* combo_pointer, 
     uint16_t* num_notes_perfect_pointer, uint16_t* num_notes_decent_pointer, uint16_t* num_notes_missed_pointer);
   void start();
   void process(); 

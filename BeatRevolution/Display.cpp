@@ -32,7 +32,7 @@ Display::Display(TFT_eSPI* tft, int cs) {
   }
 }
 
-void Display::load(uint32_t beats_per_minute, uint32_t off, float rate, uint32_t* time_list, char* dir_list, int8_t* hit_list, int num_notes, uint16_t* score_loc, uint16_t* combo_loc) {
+void Display::load(uint32_t beats_per_minute, uint32_t off, float rate, uint32_t* time_list, char* dir_list, int8_t* hit_list, int num_notes, uint32_t* score_loc, uint16_t* combo_loc) {
   ppm = rate;
   mspb = 60000.0/beats_per_minute;
   offset = off;
@@ -73,7 +73,7 @@ void Display::print_song(char* song_name) {
 
 // display current score and combo
 void Display::update_score() {
-  uint16_t cur_score = *score_ptr;
+  uint32_t cur_score = *score_ptr;
   uint16_t cur_combo = *combo_ptr;
   // rewrite display only if score or combo changed
   if(cur_score != prev_score || cur_combo != prev_combo)

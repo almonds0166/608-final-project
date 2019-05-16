@@ -35,7 +35,7 @@ class Game
   uint8_t bpm;
   uint32_t offset;
 
-  uint16_t score;
+  uint32_t score;
   uint16_t cur_combo;
   uint16_t max_combo;
   uint16_t num_notes_perfect;
@@ -53,7 +53,7 @@ class Game
   boolean process();
   void calibrateSabers();
   void stop();
-  uint16_t get_score();
+  uint32_t get_score();
   uint16_t get_max_combo();
   uint16_t get_num_perfect();
   uint16_t get_num_decent();

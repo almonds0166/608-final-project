@@ -8,7 +8,7 @@ Saber::Saber(MPU9250* imu_pointer, int cs) {
 /**
  * num_notes is the total number of notes in the chart for this hand (to prevent oob errors)
  */
-void Saber::load(uint32_t* time_list, char* dir_list, int8_t* hit_list, uint8_t num_notes, uint16_t* score_pointer, uint16_t* combo_pointer, 
+void Saber::load(uint32_t* time_list, char* dir_list, int8_t* hit_list, uint8_t num_notes, uint32_t* score_pointer, uint16_t* combo_pointer, 
     uint16_t* num_notes_perfect_pointer, uint16_t* num_notes_decent_pointer, uint16_t* num_notes_missed_pointer) {
   note_times = time_list;
   note_dirs = dir_list;

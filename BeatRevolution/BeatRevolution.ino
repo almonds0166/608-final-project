@@ -30,11 +30,11 @@
 #include <WiFi.h>
 
 // WiFi
-char NETWORK[] = "MIT"; // ssid
-char PW[]      = "";    // p/w
+//char NETWORK[] = "MIT"; // ssid
+//char PW[]      = "";    // p/w
 
-//char NETWORK[] = "6s08"; 
-//char PW[]      = "iesc6s08";
+char NETWORK[] = "6s08"; 
+char PW[]      = "iesc6s08";
 
 TFT_eSPI tft = TFT_eSPI(); 
 

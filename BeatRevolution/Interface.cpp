@@ -460,7 +460,7 @@ void Interface::display_play_data() {
 /**
    Upload score of score for user username for song song_index
 */
-void Interface::upload_score(uint16_t score) {
+void Interface::upload_score(uint32_t score) {
   // Get ready to upload your score
   HTTPClient http;
   char url[200];

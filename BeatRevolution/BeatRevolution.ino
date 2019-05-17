@@ -143,7 +143,7 @@ void setup(void) {
   }
   Serial.println(F("DFPlayer Mini online."));
   mp3.setTimeOut(500); //Set serial communictaion time out 500ms
-  mp3.volume(15); // set volume (0~30)
+  mp3.volume(8); // set volume (0~30)
   mp3.EQ(DFPLAYER_EQ_NORMAL); // set EQ
   mp3.outputDevice(DFPLAYER_DEVICE_SD); // set to read from SD
 

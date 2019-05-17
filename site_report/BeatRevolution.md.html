@@ -174,11 +174,6 @@ The IMUs continuously caused problems throughout the project. We started by usin
 
 We ended up digging quite deep into the MPU9250 library because the IMUs were giving us trouble again. First, we noticed that we would randomly get readings of 0. This was resolved after noticing that the library took care of writing HIGH/LOW to the chip select pins, and removing `digitalWrite` statements before and after reading sensor data. Second, we noticed that the IMU was giving repeat readings -- we would get the same values in four or five consecutive `readSensor` calls. This was resolved after setting the sampling rate from a supposed default 1000Hz (the actual default appeared to be 50Hz despite what the docs claimed) to 250Hz using `setSrd(3)`. Third, we noticed that the IMUs would randomly break in the middle of games, by apparently disconnecting and giving readings of all 0. Looking further, we found that before the IMUs completely disconnected, they would return strange readings far from what we expect (for instance, reporting horizontal acceleration of 3m/s/s when an IMU is placed, unmoving, on a table). To try and resolve this problem, we dug into the source code of the MPU9250 library. In the process, we discovered and fixed a bug in `calibrateAccel()` that would reset the acceleration range to 2G. However, we could not spot the source of our problem. To try and put a bandaid over the bullet hole, we wrote our own versions of `begin`, `calibrateAccel`, and `readSensor`, which ignore the magnetometer and gyroscope. These functions are much faster than their original versions, which allowed us to reconnect and recalibrate the IMUs in around 60ms as opposed to several seconds. With this tool, we now: 1. reconnect the IMUs before every game, and 2. reconnect the IMUs during a game if we notice that the past 35 readings on the IMU have been identical, indicating that the IMU is dead. This solution isn't perfect. Readings are still often off during the game, sometimes reporting accelerations as high as 30m/s/s for an unmoving IMU. Unfortunately we can't do much more. 
 
-
-### Server
-todo?
-
-
 Detailed Code Layout
 ===============================================================================
 

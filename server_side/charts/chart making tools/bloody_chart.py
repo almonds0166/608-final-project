@@ -32,7 +32,7 @@ beat_offsets[5] = 168
 
 # syncopated
 chart[6] = "l1d r1.5d l2.5l r3u l4u r4.5r l5.5d r6u l7l r7.5r l8.5u r9d l10d r10.5l l11.5r r12u l13u r13.5u l14.5d r15d"
-chart[7] = "l0.5d r0.5d l1d r1d l2l r2u l2.5l r2.5u l3.5u r3.5r l4u r4r l5d r5u l5.5d r5.5u l6.5l r6.5r l7l r7r l8.5u r8.5d l9u r9d l10d r10l l10.5d r10.5l l11.5r r11.5u l12r r12u l13u r13u l13.5u r13.5u l14.5d r14.5d l15d r15d"
+chart[7] = "l0.5d r1d l2l r2u l2.5l r2.5u l3.5u r4r l5d r5u l5.5d r5.5u l6.5l r7r l8.5u r9d l10d r10l l10.5d r10.5l l11.5r r12u l13u r13u l13.5u r13.5u l14.5d r15d"
 beat_offsets[6] = 200
 beat_offsets[7] = 216
 
@@ -46,8 +46,8 @@ beat_offsets[9] = 268
 
 # syncopated part 2
 # not yet edited
-chart[10] = "l1d r1.5d l2.5l r3u l4u r4.5r l5.5d r6u l7l r7.5r l8.5u r9d l10d r10.5l l11.5r r12u l12.666666u l13.333333d r13.333333d l14l r14r l14.666666u r14.666666u l15.333333d r15.333333d"
-chart[11] = "l0.5d r0.5d l1d r1d l2l r2u l2.5l r2.5u l3.5u r3.5r l4u r4r l5d r5u l5.5d r5.5u l6.5l r6.5r l7l r7r l8.5u r8.5d l9u r9d l10l r10r l10.5l r10.5r l11.5u r11.5u l12d r12.5d l13d r13.5d l14d r14.5d l15d r15.5d"
+chart[10] = "l1d r1.5d l2.5l r3u l4u r4.5r l5.5d r6u l7l r7.5r l8.5u r9d l10d r10.5l l11.5u r12u l12.666666d r12.666666d l13.333333d r13.333333d l14u r14u l14.666666d r14.666666d l15.333333d r15.333333d"
+chart[11] = "l0.5d r1d l2l r2u l2.5l r2.5u l3.5u r4r l5d r5u l5.5d r5.5u l6.5l r7r l8.5u r9d l10l r10.5r l11.5u l12d r12.5d l13d r13.5d l14d r14.5d l15d r15.5d"
 beat_offsets[10] = 300
 beat_offsets[11] = 316
 

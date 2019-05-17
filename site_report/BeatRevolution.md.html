@@ -386,6 +386,17 @@ The two functions within `Button` are as follows:
 * `Button::update` has 5 states: resting, starting debounce, short press, long press, and ending debounce. We first `Button::read` the current press state of the button (whether or not it's being pressed). We then determine if the button state has recently been updated, and if not, reset its state to resting. The reason for this timeout is that we're not necessarily reading the buttons all the time, and we want to prevent strange behavior if a button enters non-resting state and then isn't read again for several seconds. In the rest state, if the button is pressed, then we go to the starting debounce or tentative press state. If the button is held for long enough, we move to the short press state. If the button is let go in this state, we move to the ending debounce state. In this state, if the button is let go for long enough, we return a short press, otherwise, return to the short press state. If the button is held for long enough in the short press state, we move into the long press state. If the button is let go for long enough afterwards, we return a long press, otherwise we return to the long press state. 
 
 
+Power Consumption
+===============================================================================
+Power was not much concern as we intended or system to remained plugged in. If future work would like to create a battery-powered system, the following pilot information may be useful.
+
+Using a USB current measuring device, we crudely estimated current and power consumption of the components. All numbers are approximate.
+
+* ESP32 SoC: $0.52 W$
+* Speaker: $0.26 W$
+* Two TFT displays: $0.36 W$
+* MP3 player and IMUs: $\leq0.06 W$
+
 Video Demo
 ===============================================================================
 ![](https://www.youtube.com/watch?v=IzBM-XGa37I)

@@ -33,10 +33,10 @@ chart[11] = "l0l r0l l0.5u r0.5u l1u r1u l1.5r r1.5r l2d r2d l2.5l r2.5l l3.5d r
 chart[12] = "l0u r0u l2d r2d l4u r4u l7d r7d l7.5d r7.5d"
 chart[13] = "l0r r0r l0.5u r0.5u l1u r1u l1.5l r1.5l l2d r2d l2.5r r2.5r l3.5d r3.5d l4l r4l l4.5u r4.5u l5u r5u l5.5r r5.5r l6d r6d l6.5l r6.5l l7.5d r7.5d"
 chart[14] = "l0u r0u l2d r2d l4u r4u l6d r7d"
-# chose repeated, now mismatched motion -- not much from idle hand
-chart[15] = "l0l r0u l0.5u l1u l1.5r l2d r2d l2.5l l3.5d l4u r4r r4.5u r5u r5.5l l6d r6d r6.5r r7.5d"
+# chose repeated, now mismatched motion -- just one hand, too hard with both
+chart[15] = "l0l l0.5u l1u l1.5r l2d l2.5l l3.5d r4r r4.5u r5u r5.5l r6d r6.5r r7.5d"
 chart[16] = "l0u r0u l2d r2d l4u r4.5r r5r l7d r7.5d"
-chart[17] = "l0u r0r r0.5u r1u r1.5l l2d r2d r2.5r r3.5d l4l r4u l4.5u l5u l5.5r l6d r6d l6.5l l7.5d"
+chart[17] = "r0r r0.5u r1u r1.5l r2d r2.5r r3.5d l4l l4.5u l5u l5.5r l6d l6.5l l7.5d"
 chart[18] = "l0r l2l r3r r4d l4.5u r4.5u l5d r5d l5.5u l6d l7l r7r"
 
 # intro again
@@ -57,13 +57,13 @@ chart[27] = "l0l r0l l0.5u r0.5u l1u r1u l1.5r r1.5r l2d r2d l2.5l r2.5l l3.5d r
 chart[28] = "l0u r0u l2d r2d l4u r4u l7d r7d l7.5d r7.5d"
 chart[29] = "l0r r0r l0.5u r0.5u l1u r1u l1.5l r1.5l l2d r2d l2.5r r2.5r l3.5d r3.5d l4l r4l l4.5u r4.5u l5u r5u l5.5r r5.5r l6d r6d l6.5l r6.5l l7.5d r7.5d"
 chart[30] = "l0u r0u l2d r2d l4u r4u l6d r7d"
-# chose repeated, now mismatched motion -- not much from idle hand
-chart[31] = "l0l r0u l0.5u l1u l1.5r l2d r2d l2.5l l3.5d l4u r4r r4.5u r5u r5.5l l6d r6d r6.5r r7.5d"
+# chose repeated, now mismatched motion -- just one hand, too hard with both
+chart[31] = "l0l l0.5u l1u l1.5r l2d l2.5l l3.5d r4r r4.5u r5u r5.5l r6d r6.5r r7.5d"
 chart[32] = "l0u r0u l2d r2d l4u r4.5r r5r l7d r7.5d"
-chart[33] = "l0u r0r r0.5u r1u r1.5l l2d r2d r2.5r r3.5d l4l r4u l4.5u l5u l5.5r l6d r6d l6.5l l7.5d"
+chart[33] = "r0r r0.5u r1u r1.5l r2d r2.5r r3.5d l4l l4.5u l5u l5.5r l6d l6.5l l7.5d"
 chart[34] = "l0r l2l r3r r4d l4.5u r4.5u l5d r5d l5.5u l6d l7l r7r"
 
-offset = 9470
+offset = 9480
 bpm = 128
 duration = 146000
 

@@ -86,7 +86,7 @@ void Interface::process() {
       clear_screens();
 
       if (complete) { // finished game
-        uint16_t score = game->get_score();
+        uint32_t score = game->get_score();
         upload_score(score);
         state = SCORE_STATE;
       } else { // ended game early, don't upload score
@@ -467,7 +467,9 @@ void Interface::upload_score(uint32_t score) {
   strcpy(url, SCORES_ENDPOINT);
   String response;
   char payload[40];
-  sprintf(payload, "user=%s&song=%i&score=%i", username, song_index, score);
+  Serial.println("score");
+  Serial.println(score);
+  sprintf(payload, "user=%s&song=%i&score=%lu", username, song_index, score);
 
   http.begin(url);
   http.addHeader("Content-Type", "application/x-www-form-urlencoded");

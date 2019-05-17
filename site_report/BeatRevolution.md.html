@@ -221,7 +221,7 @@ On an abstract level, the ESP32 plays the songs and runs the game, and the serve
 
 At the top of file tree, there is **(1)**, a SQLite database called `BeatRevolution.db`, **(2)**, a scoreboard script `scoreboard` written in Python that saves & handles all the scores, and **(3)**, an endpoint `chart.py` where the ESP32 can GET a song chart from. The file structure is shown above as a block diagram.
 
-#### `BeatRevolution.db`
+### `BeatRevolution.db`
 
 The database contains a table called `new` whose purpose is to save scores. It has these columns:
 

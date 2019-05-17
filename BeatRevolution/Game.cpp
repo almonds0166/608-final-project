@@ -47,7 +47,7 @@ boolean Game::load(int song_index) {
     int http_code = http.GET();
     Serial.println("____");
     if (http_code > 0) {
-      response = http.getString(); // offset,bpm:ts,dir;ts,dir;ts,dir;...
+      response = http.getString(); // duration,offset,bpm:ts,dir;ts,dir;ts,dir;...
       int i = 0;
       while (i < MAX_BODY_LENGTH) {
         body[i] = response[i];

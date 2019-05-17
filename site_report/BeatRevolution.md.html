@@ -105,13 +105,40 @@ Parts List
 
 Charts
 -------------------------------------------------------------------------------
-All note charts were produced by hand.
-Making the chart for a song involved listening to small portions of the song on repeat
-and determining the beats where it felt appropriate to include hand motion (e.g. on beat $2$ of measure $4,$ the left hand moves to the left).
-The list of beats, directions, and the corresponding hand was passed into a Python script
-along with the tempo to determine the time, in ms, of each note relative to the beginning of the song.
+
+The ESP32 needs a list of notes in order to work. These notes have a time associated with them, a direction, and whether they're on the left screen or the right screen. These lists of notes are in the form of song charts.
+
+Each song chart is a `.txt` file under `/charts/`. The syntax  of a song chart was designed by hosed & empathetic humans and thus should be straightforward to work with. For example, take a look at the head of an iteration of `bloody_purity.txt`:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ plaintext
+
+offset 1503
+bpm 155
+duration 147000
+
+L 6193 d
+R 6193 d
+L 6774 u
+...
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* `offset 1503` - The first note starts at 1503 milliseconds.
+* `bpm 155` - The song runs at 155 beats per minute. This is important because BeatRevolution colors the notes according to the beat they land on.
+* `duration 147000` - The song ends after 147 seconds (2:27). The player's score appears after the song ends.
+* `L 6193 d` - This is a note that needs to be hit at 6193 milliseconds relative to the offset. The `L` means this note is for the *left* saber. `d`, *downward*, is the direction of the note. Naturally, the letters are:
+   * `u` = up
+   * `d` = down
+   * `l` = left
+   * `r` = right
+
+All note charts were produced by hand. To create the charts, we recommend (1) using a simple audio processing tool such as [Audacity](https://www.audacityteam.org/) and (2) taking note of the song's beats per minute. The notes are colored according to the beat they land on, like in DDR, so it may help [to understand how DDR colors the notes](https://dancedancerevolution.fandom.com/wiki/Note_(option)). Making the chart for a song involved listening to small portions of the song on repeat and determining the beats where it felt appropriate to include hand motion (e.g. on beat $2$ of measure $4,$ the left hand moves to the left).
+
+Something we've looked into are programs that help create charts. Shown below, the list of beats, directions, and the corresponding saber side was passed into a Python script along with the tempo to determine the time, in ms, of each note relative to the beginning of the song.
 
 ![Chart making script](./images/script.png height=400)
+
+For future improvements, we imagined that a more advanced script would play the song, shows its waveform or frequency spectrum along the way, and listens for the player to input their notes; specifically, it would be cool if `asdf` can input the left saber's notes and `up`/`down`/`left`/`right` can input the right saber's notes.
 
 Design Challenges and Decisions
 -------------------------------------------------------------------------------
@@ -171,8 +198,90 @@ Important functions:
 
 Server Side
 -------------------------------------------------------------------------------
-todo
 
+**********************************************************
+*            Server-side                                 *
+*  .------------------------------.                      *
+* |     /                          |                     *
+* |     |                          |          Front      *
+* | +-> +-> BeatRevolution.db      |         .-----.     *
+* | +-> +-> scoreboard <---------+-+------->| ESP32 |    *
+* |     +-> html/table.html --+  | |         '-----'     *
+* |     +-> chart.py <-+      |  v |       .----------.  *
+* |     +-> charts/     \     +->*-+----->| Webbrowser | *
+* |         |            |         |       '----------'  *
+* |         +-> asterisk.txt       |                     *
+* |         +-> bad_apple.txt      |                     *
+* |         +-> bloody_purity.txt  |                     *
+* |         +-> ...                |                     *
+*  '------------------------------'                      *
+**********************************************************
+
+On an abstract level, the ESP32 plays the songs and runs the game, and the server saves scores and provides a song's list of notes (AKA the song chart). This section details the server side.
+
+At the top of file tree, there is **(1)**, a SQLite database called `BeatRevolution.db`, **(2)**, a scoreboard script `scoreboard` written in Python that saves & handles all the scores, and **(3)**, an endpoint `chart.py` where the ESP32 can GET a song chart from. The file structure is shown above as a block diagram.
+
+### `BeatRevolution.db`
+
+The database contains a table called `new` whose purpose is to save scores. It has these columns:
+
+* `t`, a timestamp: used when sorting by most recent scores
+* `song`, an integer: the song index
+* `user`, text: the player's username
+* `score`, an integer: self-explanatory
+
+For example:
+
+     `t`               | `song` |  `user`  | `score` 
+-----------------------|--------|----------|---------
+ `2019-05-17 20:06:43` |  `3`   | `DDRFAN` | `63000`
+ `2019-05-17 19:54:05` |  `4`   | `DDRFAN` | `50000`
+ ...                   |  ...   | ...      | ...
+
+### `scoreboard`
+
+The `scoreboard` endpoint is a Python script that saves and serves scores in the database with POST and GET requests, repsectively.
+
+The first responsibility of `scoreboard` is to accept POST requests that contain score information. Three parameters are expected:
+
+* `song`, the song index
+* `user`, the player name
+* `score`, the score the player achieved for the song
+
+If a POST request is sent to the endpoint with the above form parameters properly defined, then that score will be recorded into the database.
+
+The second responsibility is to get a list of high scores that BeatRevolution can display at the Song Selection screen. `&esp32` must be appended to the url when fetching score lists from the microcontroller. The scores are returned playername first, then score, separated by comma; further pairs of player and score are delimited by semicolon. For example, here is a list of three players' scores returned in the body of the response to the ESP32:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~ plaintext
+
+Z,938000;QQ,844740;ALMONDS,691050
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+
+The reason the `esp32` argument is required is for the third responsibility: the `scoreboard` endpoint may be accessed from a webbrowser to view the scores. The endpoint will return the scores formatted in chic HTML & CSS. The HTML is rendered dynamically from the template located at `/html/table.html`. Go ahead and take a look inside. The Python method `render_template` in the scoreboard script takes a list of keyword arguments and looks for the syntax `{{ foo }}`, and then replaces each instance of `{{ foo }}` with the value associated with `foo` according to the keyword args. It resulted from the constraints of the 6.08 sandbox server and was inspired by [jinja templates](http://jinja.pocoo.org/).
+
+For both of the two GET requests described above, one may use the following parameters to change how the scores are sorted:
+
+* `song`: only get scores for a certain song index
+* `user`: only get scores for a certain user
+* `sortby`: can be `top` or `new`, returning the high scores or the most recent scores, respectively
+
+### `chart.py`
+
+When `Game::load` is called, the microcontroller talks with `/chart.py` by giving it the following parameters:
+
+* `song`: The song index of the song just chosen by the player. The list of songs needs to be maintained in `charts.py` as it does on the ESP32.
+* `side`: Either `0` or `1`, which represent the left side and the right side respectively. The reason these are numbers rather than `l` and `r` or `left` and `right` is that it enables us to abstract the code easily with a simple for loop.
+
+`chart.py` will take the list of notes saved in one of the `.txt` files (see Charts for more information) and return the song duration, the offset, and the beats per minute, followed by a list of all the notes. With the rest of the notes left out, a typical example would be:
+
+~~~~~~~~~~~~~~~~~~~ plaintext
+
+147000,1503,155:6193,d;6774,u;8129,d;...
+
+~~~~~~~~~~~~~~~~~~~
+
+The song duration is 147 seconds, the offset is 1503 ms, and the BPM is 155. You can see that the notes are time-direction pairs.
 
 Display
 -------------------------------------------------------------------------------
@@ -292,7 +401,7 @@ Team Members
 
 * Qi Qi
 * Wanlin Li
-* Matthew Dodaro
+* almonds@mit.edu
 * Diana Nguyen
 
 

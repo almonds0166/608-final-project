@@ -6,7 +6,7 @@ This repo contains our team's final project for **[6.08](http://student.mit.edu/
 
 ![(thumbnail of video demonstration)](https://i.imgur.com/kGdH17G.png "Click for a demonstration video")
 
-The image above links to a video demonstration. Beat Revolution is a combination between [Beat Saber](https://en.wikipedia.org/wiki/Beat_Saber) and [Dance Dance Revolution](https://en.wikipedia.org/wiki/Dance_Dance_Revolution), made on the [ESP32](https://en.wikipedia.org/wiki/ESP32) microcontroller with an MP3 module & SD card and two IMUs. Look at the documentation in `site_report/` for more robust documentation, or contact the owner of this repo for questions not answered there. (The documentation uses [Markdeep](https://casual-effects.com/markdeep/) and, in the future, may be hosted somewhere.)
+The image above links to a video demonstration. **Beat Revolution** is a combination between [Beat Saber](https://en.wikipedia.org/wiki/Beat_Saber) and [Dance Dance Revolution](https://en.wikipedia.org/wiki/Dance_Dance_Revolution), made on the [ESP32](https://en.wikipedia.org/wiki/ESP32) microcontroller with an MP3 module & SD card and two IMUs. [Look at the documentation in `site_report/`](https://koto.mit.edu/br/docs/) for more robust documentation, or contact the owner of this repo for questions not answered there. (The documentation uses [Markdeep](https://casual-effects.com/markdeep/).)
 
 ### Overview
 

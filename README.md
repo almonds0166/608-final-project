@@ -4,7 +4,7 @@
 
 This repo contains our team's final project for **[6.08](http://student.mit.edu/catalog/search.cgi?search=6.08&style=verbatim)** (Introduction to EECS via Interconnected Embedded Systems). (**Note**: for this reason, this repo may become private during the Spring semesters 6.08 is taught.)
 
-![(thumbnail of video demonstration)](https://i.imgur.com/kGdH17G.png "Click for a demonstration video")
+[![(thumbnail of video demonstration)](https://i.imgur.com/kGdH17G.png "Click for a demonstration video")](https://www.youtube.com/watch?v=IzBM-XGa37I)
 
 The image above links to a video demonstration. **Beat Revolution** is a combination between [Beat Saber](https://en.wikipedia.org/wiki/Beat_Saber) and [Dance Dance Revolution](https://en.wikipedia.org/wiki/Dance_Dance_Revolution), made on the [ESP32](https://en.wikipedia.org/wiki/ESP32) microcontroller with an MP3 module & SD card and two IMUs. [Look at the documentation in `site_report/`](https://koto.mit.edu/br/docs/) for more robust documentation, or contact the owner of this repo for questions not answered there. (The documentation uses [Markdeep](https://casual-effects.com/markdeep/).)
 

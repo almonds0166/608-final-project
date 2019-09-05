@@ -8,6 +8,8 @@ This repo contains our team's final project for **[6.08](http://student.mit.edu/
 
 The image above links to a video demonstration. **Beat Revolution** is a combination between [Beat Saber](https://en.wikipedia.org/wiki/Beat_Saber) and [Dance Dance Revolution](https://en.wikipedia.org/wiki/Dance_Dance_Revolution), made on the [ESP32](https://en.wikipedia.org/wiki/ESP32) microcontroller with an MP3 module & SD card and two IMUs. [Look at the documentation in `site_report/`](https://koto.mit.edu/br/docs/) for more robust documentation, or contact the owner of this repo for questions not answered there. (The documentation uses [Markdeep](https://casual-effects.com/markdeep/).)
 
+As of the time of writing this (09/05/2019), the [scoreboard](http://608dev.net/sandbox/sc/almonds/br/scoreboard) and other endpoints mentioned in the docs still live on the 6.08 dev site.
+
 ### Overview
 
 Our project Beat Revolution is a mix between the games [Beat Saber](https://www.youtube.com/watch?v=ZZWDwHN0dLw) and [Dance Dance Revolution](https://www.youtube.com/watch?v=lpekHL_vXOc) (DDR). Beat Saber is a virtual reality game where players hold "lightsabers" to hit incoming blocks to the beat of the song. DDR is a classic arcade game where players stomp or "dance" on directional arrow pads according to the given arrows on the monitor. Beat Revolution combines the lightsaber idea from Beat Saber and the directional arrows from DDR.

@@ -6,9 +6,9 @@ This repo contains our team's final project for **[6.08](http://student.mit.edu/
 
 [![(thumbnail of video demonstration)](https://i.imgur.com/QBUTozb.png "Click for a demonstration")](https://www.youtube.com/watch?v=QF8MjivZ0Nk)
 
-**Beat Revolution** is a combination between [Beat Saber](https://en.wikipedia.org/wiki/Beat_Saber) and [Dance Dance Revolution](https://en.wikipedia.org/wiki/Dance_Dance_Revolution), made on the [ESP32](https://en.wikipedia.org/wiki/ESP32) microcontroller with an MP3 module & SD card and two IMUs. [Look at the documentation in `site_report/`](https://koto.mit.edu/br/docs/) for more robust documentation, or contact an author of this repo for questions not answered there.
+**Beat Revolution** is a combination between [Beat Saber](https://en.wikipedia.org/wiki/Beat_Saber) and [Dance Dance Revolution](https://en.wikipedia.org/wiki/Dance_Dance_Revolution), made on the [ESP32](https://en.wikipedia.org/wiki/ESP32) microcontroller with an MP3 module & SD card and two IMUs. [Look at the documentation in `site_report/`](http://web.mit.edu/almonds/www/BeatRevolution/site_report/BeatRevolution.md.html) for more robust documentation, or contact an author of this repo for questions not answered there.
 
-As of the time of writing this (09/05/2019), the [scoreboard](http://608dev.net/sandbox/sc/almonds/br/scoreboard) and other endpoints mentioned in the docs still live on the 6.08 dev site.
+<!-- As of the time of writing this (09/05/2019), the [scoreboard](http://608dev.net/sandbox/sc/almonds/br/scoreboard) and other endpoints mentioned in the docs still live on the 6.08 dev site. Edit: It's no longer hosted (05/21/2020). -->
 
 ### Overview
 
